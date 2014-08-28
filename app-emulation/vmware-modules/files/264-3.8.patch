@@ -1,0 +1,29 @@
+--- vmci-only/linux/driver.c.orig   2012-06-09 09:50:06.000000000 +0300
++++ vmci-only/linux/driver.c   2013-03-07 18:57:08.000000000 +0200
+@@ -124,7 +124,7 @@
+    .name     = "vmci",
+    .id_table = vmci_ids,
+    .probe = vmci_probe_device,
+-   .remove = __devexit_p(vmci_remove_device),
++   .remove = vmci_remove_device,
+ };
+ 
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 19)
+@@ -1741,7 +1741,7 @@
+  *-----------------------------------------------------------------------------
+  */
+ 
+-static int __devinit
++static int
+ vmci_probe_device(struct pci_dev *pdev,           // IN: vmci PCI device
+                   const struct pci_device_id *id) // IN: matching device ID
+ {
+@@ -1969,7 +1969,7 @@
+  *-----------------------------------------------------------------------------
+  */
+ 
+-static void __devexit
++static void
+ vmci_remove_device(struct pci_dev* pdev)
+ {
+    struct vmci_device *dev = pci_get_drvdata(pdev);

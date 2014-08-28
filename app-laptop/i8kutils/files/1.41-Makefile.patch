@@ -1,0 +1,18 @@
+--- Makefile	2014-05-25 23:27:14.717724461 +0200
++++ Makefile.patched	2014-05-25 22:27:00.898195800 +0200
+@@ -14,11 +14,13 @@
+ # General Public License for more details.
+ 
+ 
+-all: i8kctl
++all: i8kctl i8kbuttons
+ 
+ i8kctl: i8kctl.c
+ 
++i8kbuttons: i8kbuttons.c
++
+ clean:
+-	rm -f i8kctl i8k.ko
++	rm -f i8kctl i8kbuttons i8k.ko
+ 
+ obj-m += i8k.o

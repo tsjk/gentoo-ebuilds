@@ -1,0 +1,187 @@
+Submitted By:            Fernando de Oliveira <famobr at yahoo dot com dot br>
+Date:                    2014-04-21
+Initial Package Version: 3.3.1
+Upstream Status:         Fixed
+Origin:                  Upstream
+Description:             Fixes for building with guile and for the test suite
+
+--- a/guile/src/core.c
++++ b/guile/src/core.c
+@@ -3364,11 +3364,6 @@
+ #include "core.x"
+ 
+   /* Use Guile's allocation routines, which will run the GC if need be.  */
+-  gnutls_malloc = scm_malloc;
+-  gnutls_realloc = scm_realloc;
+-  gnutls_secure_malloc = scm_malloc;
+-  gnutls_free = free;
+-
+   (void) gnutls_global_init ();
+ 
+   scm_gnutls_define_enums ();
+--- a/tests/cert-tests/aki
++++ b/tests/cert-tests/aki
+@@ -25,9 +25,19 @@
+ srcdir=${srcdir:-.}
+ CERTTOOL=${CERTTOOL:-../../src/certtool$EXEEXT}
+ DIFF=${DIFF:-diff}
++if ! test -z "${VALGRIND}";then
++VALGRIND="libtool --mode=execute ${VALGRIND}"
++fi
+ 
+-$CERTTOOL --certificate-info --infile $srcdir/aki-cert.pem \
++$VALGRIND $CERTTOOL --certificate-info --infile $srcdir/aki-cert.pem \
+ 	  |grep -v "Algorithm Security Level" > tmp-aki.pem
++rc=$?
++
++if test "$rc" != "0"; then
++  echo "info failed"
++  exit $rc
++fi
++
+ 
+ $DIFF $srcdir/aki-cert.pem tmp-aki.pem
+ rc=$?
+--- a/tests/cert-tests/pathlen
++++ b/tests/cert-tests/pathlen
+@@ -25,11 +25,27 @@
+ srcdir=${srcdir:-.}
+ CERTTOOL=${CERTTOOL:-../../src/certtool$EXEEXT}
+ DIFF=${DIFF:-diff}
++if ! test -z "${VALGRIND}";then
++VALGRIND="libtool --mode=execute ${VALGRIND}"
++fi
+ 
+-$CERTTOOL --certificate-info --infile $srcdir/ca-no-pathlen.pem \
++$VALGRIND $CERTTOOL --certificate-info --infile $srcdir/ca-no-pathlen.pem \
+ 	  |grep -v "Algorithm Security Level" > new-ca-no-pathlen.pem
+-$CERTTOOL --certificate-info --infile $srcdir/no-ca-or-pathlen.pem \
++rc=$?
++
++if test "$rc" != "0"; then
++  echo "info 1 failed"
++  exit $rc
++fi
++
++$VALGRIND $CERTTOOL --certificate-info --infile $srcdir/no-ca-or-pathlen.pem \
+ 	  |grep -v "Algorithm Security Level" > new-no-ca-or-pathlen.pem
++rc=$?
++
++if test "$rc" != "0"; then
++  echo "info 2 failed"
++  exit $rc
++fi
+ 
+ $DIFF $srcdir/ca-no-pathlen.pem new-ca-no-pathlen.pem
+ rc1=$?
+--- a/tests/cert-tests/pem-decoding
++++ b/tests/cert-tests/pem-decoding
+@@ -25,9 +25,12 @@
+ srcdir=${srcdir:-.}
+ CERTTOOL=${CERTTOOL:-../../src/certtool$EXEEXT}
+ DIFF=${DIFF:-diff}
++if ! test -z "${VALGRIND}";then
++VALGRIND="libtool --mode=execute ${VALGRIND}"
++fi
+ 
+ #check whether "funny" spaces can be interpreted
+-$CERTTOOL --certificate-info --infile $srcdir/funny-spacing.pem >/dev/null 2>&1
++$VALGRIND $CERTTOOL --certificate-info --infile $srcdir/funny-spacing.pem >/dev/null 2>&1
+ rc=$?
+ 
+ # We're done.
+@@ -37,7 +40,7 @@
+ fi
+ 
+ #check whether a BMPString attribute can be properly decoded
+-$CERTTOOL --certificate-info --infile $srcdir/bmpstring.pem >tmp-pem.pem
++$VALGRIND $CERTTOOL --certificate-info --infile $srcdir/bmpstring.pem >tmp-pem.pem
+ rc=$?
+ 
+ if test "$rc" != "0"; then
+@@ -56,7 +59,7 @@
+ fi
+ 
+ #check whether complex-cert is decoded as expected
+-$CERTTOOL --certificate-info --infile $srcdir/complex-cert.pem >tmp-pem.pem
++$VALGRIND $CERTTOOL --certificate-info --infile $srcdir/complex-cert.pem >tmp-pem.pem
+ rc=$?
+ 
+ if test "$rc" != "0"; then
+@@ -75,7 +78,7 @@
+ fi
+ 
+ #check whether the cert with many othernames is decoded as expected
+-$CERTTOOL --certificate-info --infile $srcdir/xmpp-othername.pem >tmp-pem.pem
++$VALGRIND $CERTTOOL --certificate-info --infile $srcdir/xmpp-othername.pem >tmp-pem.pem
+ rc=$?
+ 
+ if test "$rc" != "0"; then
+--- a/lib/x509/x509.c
++++ b/lib/x509/x509.c
+@@ -847,7 +847,8 @@
+ inline static int is_type_printable(int type)
+ {
+ 	if (type == GNUTLS_SAN_DNSNAME || type == GNUTLS_SAN_RFC822NAME ||
+-	    type == GNUTLS_SAN_URI || type == GNUTLS_SAN_OTHERNAME_XMPP)
++	    type == GNUTLS_SAN_URI || type == GNUTLS_SAN_OTHERNAME_XMPP ||
++	    type == GNUTLS_SAN_OTHERNAME)
+ 		return 1;
+ 	else
+ 		return 0;
+--- a/lib/x509/output.c
++++ b/lib/x509/output.c
+@@ -724,12 +724,14 @@
+ {
+ 	unsigned int altname_idx;
+ 	gnutls_datum_t t;
++	char *buffer;
++	size_t size;
++	int err;
+ 
+ 	for (altname_idx = 0;; altname_idx++) {
+-		char *buffer = NULL;
+-		size_t size = 0;
+-		int err;
+ 
++		buffer = NULL;
++		size = 0;
+ 		if (altname_type == TYPE_CRT_SAN)
+ 			err =
+ 			    gnutls_x509_crt_get_subject_alt_name(cert.crt,
+
+@@ -771,14 +773,14 @@
+ 			return;
+ 		}
+ 
+-		if (altname_type == TYPE_CRT_SAN)
++		if (altname_type == TYPE_CRT_SAN) {
+ 			err =
+ 			    gnutls_x509_crt_get_subject_alt_name(cert.crt,
+ 								 altname_idx,
+ 								 buffer,
+ 								 &size,
+ 								 NULL);
+-		else if (altname_type == TYPE_CRQ_SAN)
++		} else if (altname_type == TYPE_CRQ_SAN) {
+ 			err =
+ 			    gnutls_x509_crq_get_subject_alt_name(cert.crq,
+ 								 altname_idx,
+
+@@ -786,14 +788,14 @@
+ 								 &size,
+ 								 NULL,
+ 								 NULL);
+-		else if (altname_type == TYPE_CRT_IAN)
++		} else if (altname_type == TYPE_CRT_IAN) {
+ 			err =
+ 			    gnutls_x509_crt_get_issuer_alt_name(cert.crt,
+ 								altname_idx,
+ 								buffer,
+ 								&size,
+ 								NULL);
+-
++		}
+ 		if (err < 0) {
+ 			gnutls_free(buffer);
+ 			addf(str,
