@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/app-arch/lha/lha-114i-r8.ebuild,v 1.11 2013/05/24 20:23:44 aballier Exp $
 
-EAPI=5
+EAPI=4
 inherit autotools eutils flag-o-matic
 
 MY_P=${PN}-1.14i-ac20050924p1
