@@ -25,6 +25,10 @@ DEPEND="${RDEPEND}
         xattr? ( sys-apps/attr )
         sys-devel/gettext"
 
+src_prepare() {
+        epatch "${FILESDIR}"/pod2man.patch
+}
+
 src_configure() {
         use xattr || export ac_cv_header_attr_xattr_h=no
 
