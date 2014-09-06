@@ -1,7 +1,7 @@
 # Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=2
+EAPI=5
 inherit autotools eutils multilib subversion
 
 DESCRIPTION="An implementation of encrypted filesystem in user-space using FUSE"
@@ -27,6 +27,8 @@ DEPEND="${RDEPEND}
 
 src_prepare() {
         epatch "${FILESDIR}"/pod2man.patch
+
+	eautoreconf
 }
 
 src_configure() {
