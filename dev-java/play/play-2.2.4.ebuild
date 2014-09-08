@@ -4,7 +4,7 @@
 
 EAPI="5"
 
-inherit eutils versionator
+inherit eutils user versionator
 
 DESCRIPTION="The High Velocity Web Framework For Java and Scala"
 HOMEPAGE="http://www.playframework.com/"
@@ -24,7 +24,7 @@ RDEPEND=">=virtual/jre-1.6
         "
 
 pkg_setup() {
-    enewgroup playdevelopers
+        enewgroup playdevelopers
 }
 
 src_install() {
