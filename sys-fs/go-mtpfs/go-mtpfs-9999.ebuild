@@ -26,13 +26,14 @@ RDEPEND="${COMMON_DEPEND}"
 
 src_unpack() {
 	mkdir -p "${S}"
+	GOPATH="${S}" go get -d -v github.com/hanwen/go-mtpfs
 }
 
 src_compile() {
-	mkdir -p "${S}/usr/$(get_libdir)/go"
-	GOPATH="${S}/usr/$(get_libdir)/go" go get github.com/hanwen/go-mtpfs
+	mkdir -p "${S}"
+	GOPATH="${S}" go build -ldflags '-extldflags=-fno-PIC' -v -x github.com/hanwen/go-mtpfs
 }
 
 src_install() {
-	dobin "${S}/usr/$(get_libdir)/go/bin/go-mtpfs"
+	dobin "go-mtpfs"
 }
