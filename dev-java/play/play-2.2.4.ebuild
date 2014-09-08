@@ -32,23 +32,12 @@ src_install() {
         insinto "${dir}"
         doins -r *
 
-        local repodir="${dir}/repository"
-        local sbtdir="${dir}/framework/sbt"
-        local skeldir="${dir}/framework/skeletons"
+        keepdir "${dir}/framework/sbt"
 
-        fperms 0755 "${dir}/${PN}"
-        fperms 0775 "${repodir}"
-        fowners root:playdevelopers "${repodir}"
-
-        keepdir "${sbtdir}"
-        fowners root:playdevelopers "${sbtdir}"
-        fperms 0775 "${sbtdir}"
-
-        chown -R root:playdevelopers "${ED}/${skeldir}"
-        find "${ED}/${skeldir}" -type d -print0 | xargs -0 chmod -R 775
-        find "${ED}/${skeldir}" -type f -print0 | xargs -0 chmod -R 664
-
-        find "${ED}/${dir}/framework" -maxdepth 1 -type f -print0 | xargs -0 chmod -R 755
+	fowners -R root:playdevelopers "${dir}"
+        find "${ED}/${dir}/" -type d -print0 | xargs -0 chmod 0775
+	find "${ED}/${dir}/" -type f -perm /111 -print0 | xargs -0 chmod 0775
+        find "${ED}/${dir}/" -type f ! -perm /111 -print0 | xargs -0 chmod 0664
 
         make_wrapper "${P}" "${dir}/${PN}"
         elog "You must be in the playdevelopers group to use Play2 framework."
