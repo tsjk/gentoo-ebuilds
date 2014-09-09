@@ -4,10 +4,11 @@
 
 EAPI=5
 
-inherit flag-o-matic toolchain-funcs
+inherit flag-o-matic git-r3 toolchain-funcs
 
 DESCRIPTION="a simple FUSE filesystem for mounting Android devices as a MTP device"
 HOMEPAGE="https://github.com/hanwen/go-mtpfs"
+EGIT_REPO_URI="https://github.com/hanwen/go-mtpfs.git"
 SRC_URI=""
 
 LICENSE="BSD"
