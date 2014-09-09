@@ -23,6 +23,8 @@ DEPEND=">=virtual/jdk-1.6
 RDEPEND=">=virtual/jre-1.6
         "
 
+S="${WORKDIR}/activator-${PV}"
+
 pkg_setup() {
         enewgroup playdevelopers
 }
