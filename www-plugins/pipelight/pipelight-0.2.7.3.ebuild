@@ -17,7 +17,7 @@ IUSE="adobereader +binary-pluginloader flash foxitpdf grandstream hikvision inst
 DEPEND="!binary-pluginloader? ( cross-i686-w64-mingw32/gcc[cxx] )"
 RDEPEND="${DEPEND}
 	app-arch/cabextract
-	>=app-emulation/wine-1.7.14[abi_x86_32]
+	app-emulation/wine[X,abi_x86_32,pipelight]
 	x11-apps/mesa-progs"
 
 S="${WORKDIR}/mmueller2012-pipelight-79b1b7ba0032"
@@ -44,8 +44,8 @@ src_prepare() {
 }
 
 src_configure() {
-
 	local myargs
+
 	if use binary-pluginloader; then
 		myargs+="--win32-prebuilt"
 	elif use !binary-pluginloader; then
@@ -55,6 +55,7 @@ src_configure() {
 			myargs+=" --gcc-runtime-dlls=/usr/$(get_libdir)/gcc/i686-w64-mingw32/$(gcc -v |& grep 'gcc version' | awk '{print $3}')"
 		fi
 	fi
+
 	if use installation-dialogs; then
 		myargs+=" --show-installation-dialogs"
 	fi
@@ -69,6 +70,7 @@ src_configure() {
 
 src_install() {
 	default
+
 	#licenses.txt is taken from src/linux/basicplugin.c in the pipelight source code.
 	dodoc ${FILESDIR}/licenses.txt debian/changelog
 }
