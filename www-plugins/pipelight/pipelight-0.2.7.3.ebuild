@@ -12,7 +12,7 @@ SRC_URI="https://bitbucket.org/mmueller2012/pipelight/get/v${PV}.tar.gz -> ${P}.
 LICENSE="GPL-2 LGPL-2.1 MPL-1.1"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="adobereader +binary-pluginloader flash foxitpdf grandstream hikvision installation-dialogs npactivex roblox shockwave silverlight4 silverlight50 silverlight51 static unity3d viewright-caiway wizzedrgr widevine x64-flash x64-unity3d"
+IUSE="adobereader +binary-pluginloader flash foxitpdf grandstream hikvision installation-dialogs npactivex roblox shockwave silverlight4 silverlight50 silverlight51 static triangleplayer unity3d viewright-caiway vizzedrgr widevine x64-flash x64-unity3d"
 
 DEPEND="!binary-pluginloader? ( cross-i686-w64-mingw32/gcc[cxx] )"
 RDEPEND="${DEPEND}
@@ -78,13 +78,13 @@ pkg_postinst() {
 	pipelight-plugin --create-mozilla-plugins
 
 	#The following plugins are not created by "pipelight-plugin --create-mozilla-plugins" and must be "unlocked"
-	for i in foxitpdf grandstream shockwave; do
+	for i in adobereader foxitpdf grandstream hikvision npactivex roblox shockwave triangleplayer vizzedrgr viewright-caiway; do
 		use ${i} && pipelight-plugin --unlock-plugin ${i}
 	done
 
 	einfo "Enabling plugins..."
         # Setup symlinks to enable plugins based on USE flags
-	for i in adobereader flash foxitpdf grandstream hikvision npactivex roblox shockwave silverlight4 unity3d viewright-caiway wizzedrgr widevine x64-flash x64-unity3d; do
+	for i in adobereader flash foxitpdf grandstream hikvision npactivex roblox shockwave silverlight4 unity3d viewright-caiway vizzedrgr widevine x64-flash x64-unity3d; do
 		use ${i} && ln -sf /usr/$(get_libdir)/pipelight/libpipelight-${i}.so /usr/$(get_libdir)/nsbrowser/plugins/libpipelight-${i}.so
 	done
         use silverlight50 && ln -sf /usr/$(get_libdir)/pipelight/libpipelight-silverlight5.0.so /usr/$(get_libdir)/nsbrowser/plugins/libpipelight-silverlight5.0.so
@@ -115,7 +115,7 @@ pkg_prerm() {
 	pipelight-plugin --remove-mozilla-plugins
 
 	einfo "Disabling plugins..."
-	for i in adobereader flash foxitpdf grandstream hikvision npactivex roblox shockwave silverlight4 unity3d viewright-caiway wizzedrgr widevine x64-flash x64-unity3d; do
+	for i in adobereader flash foxitpdf grandstream hikvision npactivex roblox shockwave silverlight4 unity3d viewright-caiway vizzedrgr widevine x64-flash x64-unity3d; do
 		if [ -h /usr/$(get_libdir)/nsbrowser/plugins/libpipelight-${i}.so ] ; then
 			rm /usr/$(get_libdir)/nsbrowser/plugins/libpipelight-${i}.so
 		fi
