@@ -23,10 +23,16 @@ src_prepare(){
 }
 
 src_install(){
-	doins -r "${S}"/*
-	fperms 777 /usr/share/${PN}
-	fperms 755 /usr/share/${PN}/Viber.sh
-	fperms 755 /usr/share/${PN}/Viber
+	cp -a "${S}"/* "${D}"/ || die
+
+	fowners -R root:root "/opt"
+	fowners -R root:root "/usr"
+        find "${D}/" -type d -print0 | xargs -0 chmod 0755
+        find "${D}/" -type f -perm /111 -print0 | xargs -0 chmod 0755
+        find "${D}/" -type f ! -perm /111 -print0 | xargs -0 chmod 0644
+	fperms 0777 "/usr/share/${PN}"
+
+        make_wrapper "${P}" "/opt/viber/${PN}/Viber"
 }
 
 pkg_prerm(){
