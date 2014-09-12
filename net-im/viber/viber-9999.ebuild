@@ -34,7 +34,7 @@ src_install(){
         find "${D}/" -type f ! -perm /111 -print0 | xargs -0 chmod 0644
 	fperms 0777 "/usr/share/${PN}"
 
-        make_wrapper "${P}" "/opt/viber/${PN}/Viber"
+        make_wrapper "${PN}" "/opt/viber/${PN}/Viber"
 }
 
 pkg_prerm(){
