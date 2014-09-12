@@ -23,3 +23,8 @@ RDEPEND="virtual/pkgconfig"
 DEPEND=""
 
 PATCHES="${FILESDIR}/fix-ftbfs-gcc-4.7.patch"
+
+src_install() {
+	default_src_install
+	doman "kredentials.1"
+}
