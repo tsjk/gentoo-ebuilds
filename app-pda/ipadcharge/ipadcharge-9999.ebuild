@@ -2,9 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=3
+EAPI=5
 
-inherit git-r3 eutils
+inherit autotools git-r3 eutils flag-o-matic
 
 DESCRIPTION="Enables USB charging for Apple devices."
 HOMEPAGE="https://github.com/mkorenkov/ipad_charge"
@@ -20,8 +20,8 @@ RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${P}"
 
-src_prepare(){
+src_prepare() {
 	#sed -i 's|\/usr|\$\{DESTDIR\}\/usr|g' Makefile
 	#sed -i 's|\/etc|\$\{DESTDIR\}\/etc|g' Makefile
-	( cd ${S} && 	epatch ${FILESDIR}/${PN}-9999-makefile.patch )
+	( cd "${S}" && epatch "${FILESDIR}/${PN}-9999-makefile.patch" )
 }
