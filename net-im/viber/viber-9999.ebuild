@@ -11,6 +11,7 @@ SRC_URI="http://download.cdn.viber.com/cdn/desktop/Linux/viber.deb"
 SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
+RESTRICT="mirror"
 
 src_unpack() {
 	unpack ${A}
@@ -18,7 +19,7 @@ src_unpack() {
 }
 
 src_prepare(){
-	tar -xf "${WORKDIR}/data.tar.gz" -C "${S}"	
+	tar -xf "${WORKDIR}/data.tar.gz" -C "${S}"
 }
 
 src_install(){
