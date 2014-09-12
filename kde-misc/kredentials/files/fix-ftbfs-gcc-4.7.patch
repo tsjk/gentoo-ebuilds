@@ -1,0 +1,10 @@
+--- a/src/krb5_wrap.cpp	2012-05-04 12:49:57.327668212 -0400
++++ b/src/krb5_wrap.cpp	2012-05-04 12:49:54.231668377 -0400
+@@ -28,6 +28,7 @@
+ #include <memory>
+ #include <termios.h>
+ #include <pwd.h>
++#include <unistd.h>
+ 
+ #ifndef NDEBUG
+   #define LOG kDebug()
