@@ -9,7 +9,7 @@ inherit eutils user versionator
 DESCRIPTION="The High Velocity Web Framework For Java and Scala"
 HOMEPAGE="http://www.playframework.com/"
 
-SRC_URI="http://downloads.typesafe.com/${PN}/${PV}/${P}.zip"
+SRC_URI="http://downloads.typesafe.com/typesafe-activator/${PV}/typesafe-activator-${PV}.zip"
 
 LICENSE="Apache-2.0"
 KEYWORDS="amd64 ppc ppc64 x86 ~x86-fbsd ~amd64-linux ~x86-linux ~x86-macos"
@@ -38,6 +38,6 @@ src_install() {
 	find "${D}/opt/activator-${PV}" -type f -perm /111 -print0 | xargs -0 chmod 0770
         find "${D}/opt/activator-${PV}" -type f ! -perm /111 -print0 | xargs -0 chmod 0660
 
-        make_wrapper "${P}" "/opt/activator-${PV}/${PN}"
+        make_wrapper "activator" "/opt/activator-${PV}/activator"
         elog "You must be in the playdevelopers group to use Play2 framework."
 }
