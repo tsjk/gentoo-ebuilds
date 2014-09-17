@@ -1,6 +1,6 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/www-client/firefox/firefox-31.0.ebuild,v 1.1 2014/07/28 21:02:53 axs Exp $
+# $Header: /var/cvsroot/gentoo-x86/www-client/firefox/firefox-32.0.ebuild,v 1.2 2014/09/05 16:23:25 axs Exp $
 
 EAPI="5"
 VIRTUALX_REQUIRED="pgo"
@@ -25,13 +25,16 @@ if [[ ${MOZ_ESR} == 1 ]]; then
 fi
 
 # Patch version
-PATCH="${PN}-31.0-patches-0.1"
+PATCH="${PN}-31.0-patches-0.2"
 # Upstream ftp release URI that's used by mozlinguas.eclass
 # We don't use the http mirror because it deletes old tarballs.
 MOZ_FTP_URI="ftp://ftp.mozilla.org/pub/${PN}/releases/"
 MOZ_HTTP_URI="http://ftp.mozilla.org/pub/${PN}/releases/"
 
-inherit check-reqs flag-o-matic toolchain-funcs eutils gnome2-utils mozconfig-v4.31 multilib pax-utils fdo-mime autotools virtualx mozlinguas
+MOZCONFIG_OPTIONAL_WIFI=1
+MOZCONFIG_OPTIONAL_JIT="enabled"
+
+inherit check-reqs flag-o-matic toolchain-funcs eutils gnome2-utils mozconfig-v4.1 multilib pax-utils fdo-mime autotools virtualx mozlinguas
 
 DESCRIPTION="Firefox Web Browser"
 HOMEPAGE="http://www.mozilla.com/firefox"
@@ -39,7 +42,7 @@ HOMEPAGE="http://www.mozilla.com/firefox"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux"
 SLOT="0"
 LICENSE="MPL-2.0 GPL-2 LGPL-2.1"
-IUSE="bindist gstreamer hardened +jit +minimal pgo pulseaudio selinux system-cairo system-icu system-jpeg system-sqlite test wifi"
+IUSE="bindist gstreamer hardened +minimal pgo pulseaudio selinux system-cairo system-icu system-jpeg system-sqlite test"
 
 # More URIs appended below...
 SRC_URI="${SRC_URI}
@@ -52,15 +55,15 @@ ASM_DEPEND=">=dev-lang/yasm-1.1"
 RDEPEND="
 	>=dev-libs/nss-3.16.2
 	>=dev-libs/nspr-4.10.6
-	>=media-libs/mesa-7.10
-	>=media-libs/libpng-1.6.7[apng]
+	>=media-libs/mesa-10.2
+	>=media-libs/libpng-1.6.10[apng]
 	virtual/libffi
 	gstreamer? ( media-plugins/gst-plugins-meta:1.0[ffmpeg] )
 	pulseaudio? ( media-sound/pulseaudio )
 	system-cairo? ( >=x11-libs/cairo-1.12[X] )
 	system-icu? ( >=dev-libs/icu-51.1 )
 	system-jpeg? ( >=media-libs/libjpeg-turbo-1.2.1 )
-	system-sqlite? ( >=dev-db/sqlite-3.8.3.1:3[secure-delete,debug=] )
+	system-sqlite? ( >=dev-db/sqlite-3.8.4.2:3[secure-delete,debug=] )
 	>=media-libs/libvpx-1.3.0
 	kernel_linux? ( media-libs/alsa-lib )
 	selinux? ( sec-policy/selinux-mozilla )"
@@ -134,6 +137,13 @@ pkg_pretend() {
 		CHECKREQS_DISK_BUILD="4G"
 	fi
 	check-reqs_pkg_setup
+
+	if use jit && [[ -n ${PROFILE_IS_HARDENED} ]]; then
+		ewarn "You are emerging this package on a hardened profile with USE=jit enabled."
+		ewarn "This is horribly insecure as it disables all PAGEEXEC restrictions."
+		ewarn "Please ensure you know what you are doing.  If you don't, please consider"
+		ewarn "emerging the package with USE=-jit"
+	fi
 }
 
 src_unpack() {
@@ -147,6 +157,7 @@ src_prepare() {
 	# Apply our patches
 	EPATCH_SUFFIX="patch" \
 	EPATCH_FORCE="yes" \
+	EPATCH_EXCLUDE="8000_gcc49_mozbug999496_ff31.patch" \
 	epatch "${WORKDIR}/firefox"
 
 	# Fix missing build options
@@ -368,6 +379,8 @@ src_install() {
 
 	# Required in order to use plugins and even run firefox on hardened.
 	pax-mark m "${ED}"${MOZILLA_FIVE_HOME}/{firefox,firefox-bin,plugin-container}
+	# Required in order for jit to work on hardened, as of firefox-31
+	use jit && pax-mark p "${ED}"${MOZILLA_FIVE_HOME}/{firefox,firefox-bin}
 
 	if use minimal; then
 		rm -r "${ED}"/usr/include "${ED}${MOZILLA_FIVE_HOME}"/{idl,include,lib,sdk} \
