@@ -52,12 +52,16 @@ S="${WORKDIR}/${P}/linux"
 
 src_prepare() {
 	sed -i \
-		-e 's/-O2//' \
-		-e 's/-ggdb3//' \
+		-e 's/-O2\ //' \
+		-e 's/^DEBUG=\ -g$/DEBUG=/' \
 		Makefile || die 'sed Makefile failed.'
 	sed -i \
-		-e 's#https://www\.cyphertite\.com#http://www.gentoo.org/#' \
+		-e 's/-O2\ //' \
+		-e 's/-ggdb3\ //' \
+		GNUmakefile || die 'sed GNUmakefile failed.'
+	sed -i \
 		-e "s#/usr/local#/usr#" \
+		-e 's#https://www\.cyphertite\.com#http://www.gentoo.org#' \
 		../xombrero.h || die 'sed ../xombrero.h failed.'
 	sed -i \
 		"s#Icon=#Icon=/usr/share/${PN}/#" \
@@ -66,7 +70,7 @@ src_prepare() {
 }
 
 src_compile() {
-	CC="$(tc-getCC)" CFLAGS="${CFLAGS}" LDADD="${LDFLAGS}" PREFIX=/usr emake
+	CC="$(tc-getCC)" CFLAGS="${CFLAGS}" LDADD="${LDFLAGS}" PREFIX="/usr" GTK_VERSION="gtk3" emake
 }
 
 src_install() {
