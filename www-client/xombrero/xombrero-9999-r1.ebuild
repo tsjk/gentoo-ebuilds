@@ -58,7 +58,7 @@ src_prepare() {
 	sed -i \
 		-e 's#https://www\.cyphertite\.com#http://www.gentoo.org/#' \
 		-e "s#/usr/local#/usr#" \
-		../xombrero.h || die 'sed ../xombrero.c failed.'
+		../xombrero.h || die 'sed ../xombrero.h failed.'
 	sed -i \
 		"s#Icon=#Icon=/usr/share/${PN}/#" \
 		../xombrero.desktop || die 'sed ../xombrero.desktop failed.'
@@ -66,7 +66,7 @@ src_prepare() {
 }
 
 src_compile() {
-	CC="$(tc-getCC)" CFLAGS="${CFLAGS}" LDADD="${LDFLAGS}" emake
+	CC="$(tc-getCC)" CFLAGS="${CFLAGS}" LDADD="${LDFLAGS}" PREFIX=/usr emake
 }
 
 src_install() {
