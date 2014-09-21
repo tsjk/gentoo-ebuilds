@@ -17,7 +17,7 @@ IUSE="adobereader +binary-pluginloader flash foxitpdf grandstream hikvision inst
 DEPEND="!binary-pluginloader? ( cross-i686-w64-mingw32/gcc[cxx] )"
 RDEPEND="${DEPEND}
 	app-arch/cabextract
-	app-emulation/wine[X,abi_x86_32,pipelight]
+	|| ( app-emulation/wine[X,abi_x86_32,pipelight] app-emulation/wine-compholio[X,abi_x86_32] )
 	x11-apps/mesa-progs"
 
 S="${WORKDIR}/mmueller2012-pipelight-79b1b7ba0032"
