@@ -1,0 +1,11 @@
+# ChangeLog for sys-fs/fatresize
+# Copyright 1999-2013 Gentoo Foundation; Distributed under the GPL v2
+# $Header: $
+
+*fatresize-1.0.2 (23 Nov 2013)
+
+  23 Nov 2013; Mario Fetka <mario.fetka@gmail.com> +fatresize-1.0.2.ebuild,
+  +files/fatresize-1.0.2-libparted_ver_check.patch,
+  +files/fatresize-1.0.2-ped_assert.patch,
+  +files/fatresize-1.0.2-ped_free.patch:
+  initial commit
