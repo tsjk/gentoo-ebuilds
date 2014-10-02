@@ -1,0 +1,11 @@
+--- gui/wxmain.cc.orig	2014-10-02 13:57:21.321157825 +0200
++++ gui/wxmain.cc	2014-01-13 19:03:40.451027000 +0100
+@@ -522,7 +522,7 @@
+   panel = new MyPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
+   panel->SetBackgroundColour(wxColour(0,0,0));
+   panel->SetFocus();
+-  wxGridSizer *sz = new wxGridSizer(1, 1);
++  wxGridSizer *sz = new wxGridSizer(1, 1, 0, 0);
+   sz->Add(panel, 0, wxGROW);
+   SetAutoLayout(TRUE);
+   SetSizer(sz);
