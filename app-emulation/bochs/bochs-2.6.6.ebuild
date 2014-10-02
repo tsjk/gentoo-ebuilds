@@ -15,7 +15,7 @@ SRC_URI="mirror://sourceforge/bochs/${P}.tar.gz"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~ppc ~sparc ~x86"
-IUSE="3dnow avx avx512 busmouse debugger doc gdb ncurses readline svga sdl +smp wxwidgets vnc voodoo X +x86-64"
+IUSE="3dnow avx avx512 busmouse debugger doc gdb ncurses readline svga sdl rfb +smp wxwidgets vmx vnc voodoo X +x86-64"
 REQUIRED_USE="avx? ( x86-64 )
 	avx512? ( x86-64 )
 	gdb? ( !debugger !smp )
@@ -82,11 +82,13 @@ src_configure() {
 		$(use_enable readline) \
 		$(use_enable smp) \
 		$(use_enable x86-64) \
+		$(use_enable vmx) \
+		$(use_enable voodoo) \
 		$(use_with ncurses term) \
+		$(use_with rfb) \
 		$(use_with sdl) \
 		$(use_with svga) \
-		$(use_with vnc rfb) \
-		$(use_enable voodoo) \
+		$(use_with vnc vncsrv) \
 		$(use_with wxwidgets wx) \
 		$(use_with X x) \
 		$(use_with X x11) \
