@@ -8,7 +8,7 @@ inherit autotools eutils git-r3 flag-o-matic linux-info readme.gentoo udev
 
 DESCRIPTION="IBM ThinkPad Harddrive Active Protection disk head parking daemon"
 HOMEPAGE="http://hdaps.sourceforge.net/"
-EGIT_REPO_URI="git@github.com:evgeni/hdapsd.git https://github.com/evgeni/hdapsd.git"
+EGIT_REPO_URI="git://github.com/evgeni/hdapsd.git https://github.com/evgeni/hdapsd.git"
 
 LICENSE="GPL-2"
 SLOT="0"
