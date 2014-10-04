@@ -8,7 +8,7 @@ inherit linux-mod
 
 if [ "${PV}" = "9999" ]; then
 	inherit git-2
-	EGIT_REPO_URI="git@github.com:evgeni/tp_smapi.git https://github.com/evgeni/tp_smapi.git"
+	EGIT_REPO_URI="git://github.com/evgeni/tp_smapi.git https://github.com/evgeni/tp_smapi.git"
 	KEYWORDS=""
 else
 	SRC_URI="mirror://github/evgeni/${PN}/${P}.tar.gz"
