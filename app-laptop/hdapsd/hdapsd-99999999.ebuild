@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit autotools eutils git-r3 flag-o-matic linux-info readme.gentoo udev
+inherit autotools eutils git-r3 flag-o-matic linux-info readme.gentoo systemd udev
 
 DESCRIPTION="IBM ThinkPad Harddrive Active Protection disk head parking daemon"
 HOMEPAGE="http://hdaps.sourceforge.net/"
@@ -13,7 +13,7 @@ EGIT_REPO_URI="git://github.com/evgeni/hdapsd.git https://github.com/evgeni/hdap
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS=""
-IUSE=""
+IUSE="systemd"
 
 pkg_setup() {
 	# We require the hdaps module which can either come from kernel sources
@@ -34,9 +34,11 @@ src_prepare() {
 }
 
 src_configure() {
+	if use systemd; then SYSTEMD_UNIT_DIR="$(systemd_get_unitdir)"; else SYSTEMD_UNIT_DIR="no"; fi
+
 	econf \
 		--with-udevdir="$(get_udevdir)" \
-		--with-systemdsystemunitdir=no
+		--with-systemdsystemunitdir="${SYSTEMD_UNIT_DIR}"
 }
 
 src_install() {
