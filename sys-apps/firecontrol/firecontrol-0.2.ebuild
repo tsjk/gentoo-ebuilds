@@ -11,8 +11,8 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 RESTRICT="mirror"
 
-RDEPEND="
-		sys-libs/libraw1394
+RDEPEND="	sys-libs/libraw1394
+		sys-libs/readline:0
 		"
 
 DEPEND="${RDEPEND}"
