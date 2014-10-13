@@ -29,6 +29,7 @@ DEPEND="${PYTHON_DEPS}
 DOCS=( ChangeLog LICENSE README README.irssi-headers README.xchat )
 
 src_prepare() {
+	sed -i -e 's/INSTALL(FILES README LICENSE DESTINATION ${DOCDIR})/INSTALL(FILES DESTINATION ${DOCDIR})/' irssi/CMakeLists.txt || die 'sed on irssi/CMakeLists.txt failed'
 	cmake-utils_src_prepare
 }
 
