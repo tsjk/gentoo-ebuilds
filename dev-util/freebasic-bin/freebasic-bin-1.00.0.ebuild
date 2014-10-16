@@ -41,4 +41,6 @@ fi
 src_install() {
 	dodir "/usr" || die
 	./install.sh -i "${D}/usr" || die
+	dodir "/usr/share" || die
+	mv "${D}/usr/man" "${D}/usr/share/" || die
 }
