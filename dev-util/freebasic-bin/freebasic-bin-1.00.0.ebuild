@@ -41,6 +41,8 @@ fi
 src_install() {
 	dodir "/usr" || die
 	./install.sh -i "${D}/usr" || die
+	mv "${D}"/usr/bin/fbc{,.real}
+	make_wrapper "fbc" "/usr/bin/fbc.real -prefix /usr"
 	dodir "/usr/share" || die
 	mv "${D}/usr/man" "${D}/usr/share/" || die
 }
