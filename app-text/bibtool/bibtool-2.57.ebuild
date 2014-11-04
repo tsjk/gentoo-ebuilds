@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="~x86 ~amd64"
 IUSE="doc"
 
-DEPEND="=dev-libs/kpathsea-6.1.1_p20130530
+DEPEND=">=dev-libs/kpathsea-6.1.1_p20130530
 	virtual/libc
 	doc? ( app-text/texlive )"
 RDEPEND="$DEPEND"
