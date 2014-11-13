@@ -5,7 +5,7 @@
 EAPI=5
 inherit cmake-utils
 
-DESCRIPTION="LXQt system configuration control center"
+DESCRIPTION="LightDM LXQt greeter"
 HOMEPAGE="http://www.lxqt.org/"
 
 if [[ ${PV} = *9999* ]]; then
@@ -35,14 +35,12 @@ RDEPEND="
 DEPEND="${RDEPEND}
     virtual/pkgconfig"
 
-PATCHES=(
-        "${FILESDIR}/${P}-add-qtlibdir.patch"
-)
+PATCHES=( "${FILESDIR}/${P}-add-qtlibdir.patch" )
 
 src_configure() {
-        QMAKE="/usr/lib/qt5/bin/qmake"
+	QMAKE="/usr/lib/qt5/qmake"
         local mycmakeargs=(
-		-DQT5=ON
+		-DUSE_QT5=ON
         )
         cmake-utils_src_configure
 }
