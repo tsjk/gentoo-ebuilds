@@ -25,5 +25,7 @@ src_prepare() {
 
 src_install() {
 	autotools-utils_src_install
+	mv doc/f2c.1 doc/f2c.1.txt
+	mv doc/f2c.1t doc/f2c.1
 	doman doc/f2c.1
 }
