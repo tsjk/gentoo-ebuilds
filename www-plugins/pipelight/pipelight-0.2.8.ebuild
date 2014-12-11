@@ -12,7 +12,10 @@ SRC_URI="https://bitbucket.org/mmueller2012/pipelight/get/v${PV}.tar.gz -> ${P}.
 LICENSE="GPL-2 LGPL-2.1 MPL-1.1"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="adobereader +binary-pluginloader flash foxitpdf grandstream hikvision installation-dialogs npactivex roblox shockwave silverlight4 silverlight50 silverlight51 static triangleplayer unity3d viewright-caiway vizzedrgr widevine x64-flash x64-unity3d"
+LOCKED_PLUGINS="adobereader foxitpdf grandstream hikvision npactivex roblox shockwave viewright-caiway vizzedrgr"
+ALL_PLUGINS="flash silverlight4 silverlight50 silverlight51 unity3d widevine x64-flash x64-unity3d ${LOCKED_PLUGINS}"
+IUSE="+binary-pluginloader installation-dialogs static ${ALL_PLUGINS}"
+RESTRICT="mirror"
 
 DEPEND="!binary-pluginloader? ( cross-i686-w64-mingw32/gcc[cxx] )"
 RDEPEND="${DEPEND}
@@ -20,7 +23,7 @@ RDEPEND="${DEPEND}
 	|| ( app-emulation/wine[X,abi_x86_32,pipelight] app-emulation/wine-compholio[X,abi_x86_32] )
 	x11-apps/mesa-progs"
 
-S="${WORKDIR}/mmueller2012-pipelight-79b1b7ba0032"
+S="${WORKDIR}/mmueller2012-pipelight-b7b5e5471d52"
 
 src_prepare() {
 	# Just in case someone runs 'emerge -O pipelight'
@@ -80,13 +83,13 @@ pkg_postinst() {
 	pipelight-plugin --create-mozilla-plugins
 
 	#The following plugins are not created by "pipelight-plugin --create-mozilla-plugins" and must be "unlocked"
-	for i in adobereader foxitpdf grandstream hikvision npactivex roblox shockwave triangleplayer vizzedrgr viewright-caiway; do
+	for i in ${LOCKED_PLUGINS}; do
 		use ${i} && pipelight-plugin --unlock-plugin ${i}
 	done
 
 	einfo "Enabling plugins..."
         # Setup symlinks to enable plugins based on USE flags
-	for i in adobereader flash foxitpdf grandstream hikvision npactivex roblox shockwave silverlight4 triangleplayer unity3d viewright-caiway vizzedrgr widevine x64-flash x64-unity3d; do
+	for i in ${ALL_PLUGINS/silverlight50\ silverlight51/}; do
 		use ${i} && ln -sf /usr/$(get_libdir)/pipelight/libpipelight-${i}.so /usr/$(get_libdir)/nsbrowser/plugins/libpipelight-${i}.so
 	done
         use silverlight50 && ln -sf /usr/$(get_libdir)/pipelight/libpipelight-silverlight5.0.so /usr/$(get_libdir)/nsbrowser/plugins/libpipelight-silverlight5.0.so
@@ -117,7 +120,7 @@ pkg_prerm() {
 	pipelight-plugin --remove-mozilla-plugins
 
 	einfo "Disabling plugins..."
-	for i in adobereader flash foxitpdf grandstream hikvision npactivex roblox shockwave silverlight4 triangleplayer unity3d viewright-caiway vizzedrgr widevine x64-flash x64-unity3d; do
+	for i in ${ALL_PLUGINS/silverlight50\ silverlight51/}; do
 		if [ -h /usr/$(get_libdir)/nsbrowser/plugins/libpipelight-${i}.so ] ; then
 			rm /usr/$(get_libdir)/nsbrowser/plugins/libpipelight-${i}.so
 		fi
