@@ -4,6 +4,8 @@
 
 EAPI="4"
 
+inherit eutils
+
 IUSE="gtk3"
 if [[ ${PV} == *9999* ]]; then
 	inherit git-2
@@ -91,10 +93,13 @@ pkg_setup() {
 }
 
 src_prepare() {
+	epatch_user
+
 	# remove -ggdb
 	sed -i "s/-ggdb //g" Makefile ||
 		die "-ggdb removal sed failed"
 
+	# fix DESTDIR support
 	sed -i "s@setup.py install --prefix=\$(PREFIX) --root=\$(DESTDIR)@setup.py install --prefix=\$(DESTDIR)/\$(PREFIX)@" Makefile ||
 		die "Makefile sed for install faled"
 
