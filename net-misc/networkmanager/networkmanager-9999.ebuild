@@ -72,7 +72,9 @@ DEPEND="${COMMON_DEPEND}
 		dev-perl/yaml
 		dev-util/gtk-doc
 		dev-util/gtk-doc-am )
-	openrc? ( dev-util/systemd2rc )
+	openrc? (
+		dev-lang/perl
+		dev-util/systemd2rc )
 	vala? ( $(vala_depend) )
 	test? (
 		$(python_gen_any_dep '
@@ -182,7 +184,7 @@ src_compile() {
 		systemd2rc --gentoo --pidfile /etc/NetworkManager/NetworkManager.pid NetworkManager.service | perl -0pe 's/depend\(\)\ \{[^\}]*\}\n\n//' > ../openrc/NetworkManager\:systemd2rc || die
 		systemd2rc --gentoo NetworkManager-dispatcher.service > ../openrc/NetworkManager-dispatcher\:systemd2rc || die
 		systemd2rc --gentoo NetworkManager-wait-online.service | perl -0pe 's/depend\(\)\ \{[^\}]*\}\n\n//' > ../openrc/NetworkManager-wait-online\:systemd2rc || die
-		echo -ne '\ndepend() {\n    need NetworkManager\n    provide net\n}\n' >> ../openrc/NetworkManager-wait-online\:systemd2rc
+		echo -ne '\ndepend() {\n    need NetworkManager:systemd2rc\n    provide net\n}\n' >> ../openrc/NetworkManager-wait-online\:systemd2rc
 		cd ..
 	fi
 }
