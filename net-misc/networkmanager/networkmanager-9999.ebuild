@@ -2,17 +2,18 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5"
-VALA_MIN_API_VERSION="0.18"
-VALA_USE_DEPEND="vapigen"
 
 # Tests need python2, https://bugzilla.gnome.org/show_bug.cgi?id=739448
 PYTHON_COMPAT=( python2_7 )
 
-inherit bash-completion-r1 eutils git-r3 linux-info multilib python-any-r1 systemd user readme.gentoo toolchain-funcs vala versionator virtualx udev
+VALA_MIN_API_VERSION="0.18"
+VALA_USE_DEPEND="vapigen"
 
 DESCRIPTION="Universal network configuration daemon for laptops, desktops, servers and virtualization hosts"
 HOMEPAGE="https://wiki.gnome.org/Projects/NetworkManager"
 EGIT_REPO_URI="http://anongit.freedesktop.org/git/NetworkManager/NetworkManager.git"
+
+inherit bash-completion-r1 eutils git-r3 linux-info multilib python-any-r1 systemd user readme.gentoo toolchain-funcs vala versionator virtualx udev
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -195,7 +196,6 @@ src_install() {
 
 	readme.gentoo_create_doc
 
-	newinitd "${FILESDIR}/init.d.NetworkManager" NetworkManager
 	newconfd "${FILESDIR}/conf.d.NetworkManager" NetworkManager
 
 	# /var/run/NetworkManager is used by some distros, but not by Gentoo
@@ -205,6 +205,7 @@ src_install() {
 	keepdir /etc/NetworkManager/dispatcher.d
 
 	if use openrc; then
+		newinitd "${FILESDIR}/init.d.NetworkManager" NetworkManager
 		for i in openrc/*; do
 			doinitd $i || die
 		done
