@@ -234,7 +234,6 @@ src_install() {
 }
 
 pkg_postinst() {
-	default_pkg_postinst
 	readme.gentoo_print_elog
 
 	if [[ -e "${EROOT}etc/NetworkManager/nm-system-settings.conf" ]]; then
