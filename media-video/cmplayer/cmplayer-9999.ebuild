@@ -57,7 +57,6 @@ src_prepare() {
 	git submodule update
 	git submodule sync
 	( cd "${S}/src/mpv"; python ./bootstrap.py )
-	#sed -i -E 's@^#include\ <QtXml>$@#include\ <QtXml>\n#include\ <QtOpenGL>\n@' src/cmplayer/stdafx.hpp || die
 }
 
 src_configure() {
@@ -70,7 +69,6 @@ src_configure() {
 		$(use_enable portaudio) \
 		$(use_enable pulseaudio) \
 		|| die
-	#sed -i -E 's@^QT\s*=\s*(.*)$@QT\ =\ \1\ opengl@' src/cmplayer/cmplayer.pro || die
 }
 
 src_install() {
