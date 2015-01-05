@@ -43,7 +43,6 @@ RDEPEND="dev-libs/fribidi
 		dev-libs/libcdio
 		dev-libs/libcdio-paranoia )
 	jack? ( media-sound/jack-audio-connection-kit )
-	portaudio? ( >=media-libs/portaudio-2.0 )
 	pulseaudio? ( media-sound/pulseaudio )
 	virtual/opengl"
 DEPEND="${RDEPEND}
@@ -66,7 +65,6 @@ src_configure() {
 		--prefix=/usr \
 		$(use_enable cdda) \
 		$(use_enable jack) \
-		$(use_enable portaudio) \
 		$(use_enable pulseaudio) \
 		|| die
 }
