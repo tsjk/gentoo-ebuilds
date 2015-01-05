@@ -13,7 +13,7 @@ EGIT_REPO_URI="git://github.com/xylosper/cmplayer.git"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS=""
-IUSE="cdda jack portaudio pulseaudio"
+IUSE="cdda jack pulseaudio"
 
 RDEPEND="dev-libs/fribidi
 	dev-libs/icu
