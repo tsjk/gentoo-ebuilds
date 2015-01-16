@@ -7,8 +7,8 @@ EAPI=5
 inherit eutils git-r3 qmake-utils
 
 DESCRIPTION="Powerful and easy-to-use multimedia player"
-HOMEPAGE="http://cmplayer.github.io/"
-EGIT_REPO_URI="git://github.com/xylosper/cmplayer.git"
+HOMEPAGE="http://bomi.github.io/"
+EGIT_REPO_URI="git://github.com/xylosper/bomi.git"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -51,11 +51,8 @@ DEPEND="${RDEPEND}
 	sys-apps/sed"
 
 src_prepare() {
-	git submodule init
-	sed -i "s|https://github\.com/xylosper/mpv\.git|${S}/mpv|g" .gitmodules
-	git submodule update
-	git submodule sync
 	( cd "${S}/src/mpv"; python ./bootstrap.py )
+	epatch "${FILESDIR}/gets_declaration.patch"
 }
 
 src_configure() {
