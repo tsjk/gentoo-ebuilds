@@ -38,6 +38,7 @@ RDEPEND="dev-libs/fribidi
 	media-libs/libdvdread
 	media-libs/libdvdnav
 	media-sound/mpg123
+	>=sys-devel/gcc-4.9
 	x11-libs/libva
 	cdda? (
 		dev-libs/libcdio
