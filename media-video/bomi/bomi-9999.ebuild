@@ -38,7 +38,6 @@ RDEPEND="dev-libs/fribidi
 	media-libs/libdvdread
 	media-libs/libdvdnav
 	media-sound/mpg123
-	>=sys-devel/gcc-4.9
 	x11-libs/libva
 	cdda? (
 		dev-libs/libcdio
@@ -49,7 +48,8 @@ RDEPEND="dev-libs/fribidi
 DEPEND="${RDEPEND}
 	dev-lang/python
 	media-libs/mesa
-	sys-apps/sed"
+	sys-apps/sed
+	>=sys-devel/gcc-4.9"
 
 src_prepare() {
 	( cd "${S}/src/mpv"; python ./bootstrap.py )
