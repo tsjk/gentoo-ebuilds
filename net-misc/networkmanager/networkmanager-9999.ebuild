@@ -52,18 +52,19 @@ COMMON_DEPEND="
 	dhclient? ( =net-misc/dhcp-4*[client] )
 	dhcpcd? ( >=net-misc/dhcpcd-4.0.0_rc3 )
 	introspection? ( >=dev-libs/gobject-introspection-0.10.3 )
-	ppp? ( >=net-dialup/ppp-2.4.5:=[ipv6] )
+	ppp? ( >=net-dialup/ppp-2.4.5:=[ipv6] net-dialup/rp-pppoe )
 	resolvconf? ( net-dns/openresolv )
-	systemd? ( >=sys-apps/systemd-183:0= )
-	!systemd? ( || ( sys-power/upower sys-power/upower-pm-utils ) )
+	systemd? ( >=sys-apps/systemd-209:0= )
 	teamd? ( >=net-misc/libteam-1.9 )
 	zeroconf? ( net-dns/avahi:=[autoipd] )
+	|| ( sys-power/upower sys-power/upower-pm-utils >=sys-apps/systemd-209 )
 "
 RDEPEND="${COMMON_DEPEND}
 	consolekit? ( sys-auth/consolekit )
 	wifi? ( >=net-wireless/wpa_supplicant-0.7.3-r3[dbus] )
 "
 DEPEND="${COMMON_DEPEND}
+	dev-util/gdbus-codegen
 	dev-util/gtk-doc-am
 	>=dev-util/intltool-0.40
 	>=sys-devel/gettext-0.17
@@ -147,6 +148,8 @@ src_configure() {
 		--disable-more-warnings \
 		--disable-static \
 		--localstatedir=/var \
+		--disable-lto \
+		--disable-config-plugin-ibft \
 		--disable-ifnet \
 		--without-netconfig \
 		--with-dbus-sys-dir=/etc/dbus-1/system.d \
