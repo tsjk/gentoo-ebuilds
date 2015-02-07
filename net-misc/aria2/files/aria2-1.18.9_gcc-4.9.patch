@@ -8,3 +8,13 @@
  #include <gmp.h>
  
  namespace aria2 {
+--- src/LibgmpDHKeyExchange.h.orig	2015-02-01 14:39:50.000000000 +0100
++++ src/LibgmpDHKeyExchange.h	2015-02-07 21:30:34.348243717 +0100
+@@ -37,6 +37,7 @@
+ 
+ #include "common.h"
+ 
++#include <stddef.h>
+ #include <gmp.h>
+ 
+ namespace aria2 {
