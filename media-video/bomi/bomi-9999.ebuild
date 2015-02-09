@@ -64,6 +64,7 @@ src_configure() {
 		$(use_enable cdda) \
 		$(use_enable jack) \
 		$(use_enable pulseaudio) \
+		--disable-systemd \
 		|| die
 }
 
