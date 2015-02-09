@@ -13,7 +13,7 @@ EGIT_REPO_URI="git://github.com/xylosper/bomi.git"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS=""
-IUSE="cdda jack pulseaudio"
+IUSE="cdda jack pulseaudio systemd"
 
 RDEPEND="dev-libs/fribidi
 	dev-libs/icu
@@ -44,6 +44,7 @@ RDEPEND="dev-libs/fribidi
 		dev-libs/libcdio-paranoia )
 	jack? ( media-sound/jack-audio-connection-kit )
 	pulseaudio? ( media-sound/pulseaudio )
+	systemd? ( sys-apps/systemd )
 	virtual/opengl"
 DEPEND="${RDEPEND}
 	dev-lang/python
@@ -64,7 +65,7 @@ src_configure() {
 		$(use_enable cdda) \
 		$(use_enable jack) \
 		$(use_enable pulseaudio) \
-		--disable-systemd \
+		$(use_enable systemd) \
 		|| die
 }
 
