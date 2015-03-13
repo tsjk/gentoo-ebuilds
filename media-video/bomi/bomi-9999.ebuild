@@ -13,7 +13,7 @@ EGIT_REPO_URI="git://github.com/xylosper/bomi.git"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS=""
-IUSE="cdda jack pulseaudio systemd"
+IUSE="cdda jack pulseaudio samba systemd"
 
 RDEPEND="dev-libs/fribidi
 	dev-libs/icu
@@ -30,9 +30,9 @@ RDEPEND="dev-libs/fribidi
 	>=dev-qt/qtx11extras-5.3
 	>=dev-qt/qtxml-5.3
 	media-libs/alsa-lib
-	>=media-video/ffmpeg-2.0
+	>=media-video/ffmpeg-2.4
 	media-libs/glew
-	media-libs/libass
+	>=media-libs/libass-0.12.1
 	media-libs/libbluray
 	>=media-libs/libquvi-0.9
 	media-libs/libdvdread
@@ -44,6 +44,7 @@ RDEPEND="dev-libs/fribidi
 		dev-libs/libcdio-paranoia )
 	jack? ( media-sound/jack-audio-connection-kit )
 	pulseaudio? ( media-sound/pulseaudio )
+	samba? ( net-fs/samba[client] )
 	systemd? ( sys-apps/systemd )
 	virtual/opengl"
 DEPEND="${RDEPEND}
@@ -53,7 +54,7 @@ DEPEND="${RDEPEND}
 	>=sys-devel/gcc-4.9"
 
 src_prepare() {
-	( cd "${S}/src/mpv"; python ./bootstrap.py )
+	#( cd "${S}/src/mpv"; python ./bootstrap.py )
 	epatch "${FILESDIR}/gets_declaration.patch"
 }
 
@@ -65,6 +66,7 @@ src_configure() {
 		$(use_enable cdda) \
 		$(use_enable jack) \
 		$(use_enable pulseaudio) \
+		$(use_enable samba) \
 		$(use_enable systemd) \
 		|| die
 }
