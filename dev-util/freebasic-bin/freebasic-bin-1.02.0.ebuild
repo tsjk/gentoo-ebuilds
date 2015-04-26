@@ -9,8 +9,8 @@ inherit eutils
 DESCRIPTION="A free/open source (GPL), BASIC compiler for Microsoft Windows, DOS and Linux."
 HOMEPAGE="http://www.freebasic.net/"
 
-SRC_URI="x86? ( http://sourceforge.net/projects/fbc/files/Binaries%20-%20Linux/FreeBASIC-1.00.0-linux-x86.tar.xz )
-	amd64? ( http://sourceforge.net/projects/fbc/files/Binaries%20-%20Linux/FreeBASIC-1.00.0-linux-x86_64.tar.xz )"
+SRC_URI="x86? ( http://sourceforge.net/projects/fbc/files/Binaries%20-%20Linux/FreeBASIC-${PV}-linux-x86.tar.gz )
+	amd64? ( http://sourceforge.net/projects/fbc/files/Binaries%20-%20Linux/FreeBASIC-${PV}-linux-x86_64.tar.gz )"
 
 KEYWORDS="~amd64 ~x86"
 IUSE=""
