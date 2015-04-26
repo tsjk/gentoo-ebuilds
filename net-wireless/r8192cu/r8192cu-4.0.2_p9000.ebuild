@@ -41,5 +41,4 @@ pkg_setup() {
 
 src_install() {
         linux-mod_src_install
-        dodoc README
 }
