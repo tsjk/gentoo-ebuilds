@@ -1,0 +1,14 @@
+--- Makefile.orig	2013-10-07 19:00:03.000000000 +0200
++++ Makefile	2015-05-06 10:36:56.353831966 +0200
+@@ -38,9 +38,8 @@
+ INSTALLMANPATH = $(INSTALLBASE)/man
+ INSTALLMANMODE = 444
+ GCCOPTS = -Wall -Wstrict-prototypes
+-CC = cc
+-CFLAGS = $(SWITCHES) -O
+-LDFLAGS = $(SWITCHES) # -s
++CC ?= cc
++CFLAGS += $(SWITCHES)
+ # To use an architecture-specific compile directory (inside of the
+ # source directory):
+ ARCHDIR = .
