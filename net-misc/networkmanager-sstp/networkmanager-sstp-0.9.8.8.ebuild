@@ -35,7 +35,12 @@ DEPEND="${RDEPEND}
 	dev-util/intltool
 "
 
-S="${WORKDIR}/${MY_P}"
+S="${WORKDIR}/${MY_PN}"
+
+src_prepare() {
+	rm "${S}/ltmain.sh"
+	ln -s "/usr/share/libtool/build-aux/ltmain.sh" "${S}/ltmain.sh"
+}
 
 src_configure() {
 	local PPPD_VERSION="$(echo $(best_version net-dialup/ppp) | sed -e 's:net-dialup/ppp-\(.*\):\1:' -e 's:-r.*$::')"
