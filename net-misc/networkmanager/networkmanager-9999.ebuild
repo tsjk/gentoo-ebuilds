@@ -13,7 +13,7 @@ DESCRIPTION="Universal network configuration daemon for laptops, desktops, serve
 HOMEPAGE="https://wiki.gnome.org/Projects/NetworkManager"
 EGIT_REPO_URI="http://anongit.freedesktop.org/git/NetworkManager/NetworkManager.git"
 
-inherit bash-completion-r1 eutils git-r3 linux-info multilib python-any-r1 systemd user readme.gentoo toolchain-funcs vala versionator virtualx udev
+inherit autotools bash-completion-r1 eutils git-r3 linux-info multilib python-any-r1 systemd user readme.gentoo toolchain-funcs vala versionator virtualx udev
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -128,11 +128,12 @@ src_prepare() {
 	use vala && vala_src_prepare
 
 	epatch_user # don't remove, users often want custom patches for NM
+
+	#NOCONFIGURE=yes ./autogen.sh
+	eautoreconf
 }
 
 src_configure() {
-	NOCONFIGURE=yes ./autogen.sh
-
 	# Same hack as net-dialup/pptpd to get proper plugin dir for ppp, bug #519986
 	if use ppp; then
 		local PPPD_VER=`best_version net-dialup/ppp`
