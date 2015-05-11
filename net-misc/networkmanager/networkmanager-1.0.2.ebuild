@@ -120,17 +120,12 @@ src_prepare() {
 	DOC_CONTENTS="To modify system network connections without needing to enter the
 		root password, add your user account to the 'plugdev' group."
 
-	# Find arping in our paths, upstream bug #742576 (from 1.0 branch)
-	epatch "${FILESDIR}"/${PN}-1.0.0-find-helpers.patch
-
-	# Fix lto configure switch, upstream bug #742575 (from 1.0 branch)
-	epatch "${FILESDIR}"/${PN}-1.0.0-lto-switch.patch
-
-	# Fix build with /bin/sh != bash, see bug #536540, upstream bug #743480
-	epatch "${FILESDIR}/${PN}-1.0.0-remove-bashisms.patch"
+	# Find arping at proper place, bug #523632
+	sed -i 's#"/sbin/arping"#"/bin/arping"#g' src/devices/nm-device.c || die
 
 	# Force use of /run, avoid eautoreconf, upstream bug #737139
-	sed -e 's:$localstatedir/run/:/run/:' -i configure || die
+	sed -e 's:$localstatedir/run/:/run/:' -i configure.ac || die
+	sed -e 's:/var/run/:/run/:' -i configure.ac || die
 
 	use vala && vala_src_prepare
 
