@@ -1,10 +1,10 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/net-misc/networkmanager-sstp/networkmanager-sstp-0.9.8.ebuild,v 1.2 2014/06/24 01:21:42 tetromino Exp $
+# $Header:
 
 EAPI=5
 
-inherit eutils multilib
+inherit autotools eutils multilib
 
 MY_PN="network-manager-sstp"
 MY_P="${MY_PN}_${PV}-0ubuntu1"
@@ -39,7 +39,7 @@ S="${WORKDIR}/${MY_PN}"
 
 src_prepare() {
 	rm "${S}/ltmain.sh"
-	ln -s "/usr/share/libtool/build-aux/ltmain.sh" "${S}/ltmain.sh"
+	eautoreconf
 }
 
 src_configure() {
