@@ -120,6 +120,8 @@ src_prepare() {
 	DOC_CONTENTS="To modify system network connections without needing to enter the
 		root password, add your user account to the 'plugdev' group."
 
+	epatch "${FILESDIR}/dns-fix-falling-back-in-the-resolv.conf-methods.patch"
+
 	# Find arping at proper place, bug #523632
 	sed -i 's#"/sbin/arping"#"/bin/arping"#g' src/devices/nm-device.c || die
 
