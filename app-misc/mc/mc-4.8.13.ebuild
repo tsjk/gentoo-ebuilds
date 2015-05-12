@@ -23,7 +23,7 @@ RDEPEND=">=dev-libs/glib-2.8:2
 	kernel_linux? ( sys-fs/e2fsprogs )
 	samba? ( net-fs/samba )
 	sftp? ( net-libs/libssh2 )
-	adb? ( dev-util/android-tools )
+	adb? ( || ( dev-util/android-tools dev-util/android-sdk-update-manager ) )
 	slang? ( >=sys-libs/slang-2 )
 	!slang? ( sys-libs/ncurses )
 	spell? ( app-text/aspell )
