@@ -63,9 +63,10 @@ COMMON_DEPEND="
 	mtp? ( >=media-libs/libmtp-1.0.0 )
 	moodbar? ( sci-libs/fftw:3.0 )
 	projectm? ( media-libs/glew )
-	spotify? (
+	spotify? ( || (
 		app-crypt/qca-ossl
-	)
+		>=app-crypt/qca-2.1[openssl]
+	) )
 	spotify-blob? ( >=media-libs/libspotify-10.1.16 )
 "
 # now only presets are used, libprojectm is internal
