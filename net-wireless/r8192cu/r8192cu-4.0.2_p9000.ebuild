@@ -17,7 +17,7 @@ KEYWORDS="~amd64 ~x86"
 RESTRICT="mirror"
 
 S="${WORKDIR}/rtl8188C_8192C_usb_linux_v4.0.2_9000.20130911"
-MODULE_NAMES="8192cu(net:${S})"
+MODULE_NAMES="8192cu(kernel/drivers/net/wireless/8192cu:)"
 BUILD_TARGETS="modules"
 
 CONFIG_CHECK="~!RTL8192CU ~!RTL8192C_COMMON ~!RTLWIFI"
@@ -36,7 +36,7 @@ src_prepare() {
 
 pkg_setup() {
         linux-mod_pkg_setup
-        BUILD_PARAMS="KERNELDIR=${KV_DIR}"
+        BUILD_PARAMS="KSRC=${KV_DIR} KVER=${KV_FULL}"
 }
 
 src_install() {
