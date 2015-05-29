@@ -1,0 +1,11 @@
+DEFINED_PHASES=compile install prepare
+DEPEND=>=dev-lang/perl-5.8
+EAPI=5
+HOMEPAGE=http://linux.zum-quadrat.de/
+KEYWORDS=~amd64 ~x86
+LICENSE=GPL-2
+RDEPEND=>=dev-lang/perl-5.8
+RESTRICT=mirror
+SLOT=0
+SRC_URI=http://linux.zum-quadrat.de/downloads/gsm-ussd_0.3.3-0.tar.gz
+_md5_=13abeccf8a33dd070bfc9d949c0b3dc4

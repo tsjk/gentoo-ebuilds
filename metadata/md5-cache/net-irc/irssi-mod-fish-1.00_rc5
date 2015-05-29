@@ -1,0 +1,12 @@
+DEFINED_PHASES=compile install prepare
+DEPEND=app-crypt/miracl net-irc/irssi dev-libs/glib
+DESCRIPTION=FiSH blowfish encryption irssi module
+EAPI=2
+HOMEPAGE=http://fish.secure.la/
+KEYWORDS=~amd64
+LICENSE=as-is
+RDEPEND=net-irc/irssi
+SLOT=0
+SRC_URI=http://fish.secure.la/irssi/FiSH-irssi.v1.00-RC5-source.zip
+_eclasses_=multilib	62927b3db3a589b0806255f3a002d5d3	toolchain-funcs	42408102d713fbad60ca21349865edb4
+_md5_=e9e9120218e0313a51a1ebb2c0e587d0

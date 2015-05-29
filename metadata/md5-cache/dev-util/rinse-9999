@@ -1,0 +1,11 @@
+DEFINED_PHASES=compile install unpack
+DEPEND=app-arch/rpm dev-lang/perl sys-apps/yum >=dev-vcs/git-1.8.2.1
+DESCRIPTION=Rinse can setup chroot systems running RPM-based distributions.
+EAPI=5
+HOMEPAGE=http://www.steve.org.uk/Software/rinse/
+KEYWORDS=~amd64
+LICENSE=|| ( Artistic GPL-1+ )
+RDEPEND=app-arch/rpm dev-lang/perl sys-apps/yum
+SLOT=0
+_eclasses_=eutils	9fb270e417e0e83d64ca52586c4a79de	git-r3	3a2bd0ae504c33a50061885480f3def3	multilib	62927b3db3a589b0806255f3a002d5d3	toolchain-funcs	42408102d713fbad60ca21349865edb4
+_md5_=4cb8f366aa1bd05a8a0b480d5f768f27

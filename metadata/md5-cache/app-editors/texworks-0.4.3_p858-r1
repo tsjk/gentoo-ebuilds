@@ -1,0 +1,14 @@
+DEFINED_PHASES=compile configure install prepare unpack
+DEPEND=>=dev-qt/qtcore-4.5.2 >=dev-qt/qtgui-4.5.2[dbus] >=app-text/poppler-0.12.3-r3[qt4] >=app-text/hunspell-1.2.8
+DESCRIPTION=A simple interface for working with TeX documents
+EAPI=2
+HOMEPAGE=http://tug.org/texworks/
+IUSE=+latex linguas_ar linguas_ca linguas_cs linguas_de linguas_es linguas_fa linguas_fr linguas_it linguas_ja linguas_ko linguas_nl linguas_pl linguas_pt_BR linguas_ru linguas_sl linguas_tr linguas_zh_CN
+KEYWORDS=~amd64 ~x86
+LICENSE=GPL-2
+PDEPEND=latex? ( dev-texlive/texlive-latex ) !latex? ( app-text/texlive-core )
+RDEPEND=>=dev-qt/qtcore-4.5.2 >=dev-qt/qtgui-4.5.2[dbus] >=app-text/poppler-0.12.3-r3[qt4] >=app-text/hunspell-1.2.8
+SLOT=0
+SRC_URI=http://texworks.googlecode.com/files/texworks-0.4.3-r858.tar.gz
+_eclasses_=base	87f7447ccfc06fd0729ff4684e11e0d6	eutils	9fb270e417e0e83d64ca52586c4a79de	multilib	62927b3db3a589b0806255f3a002d5d3	qmake-utils	b9c5231d68391b53f154f7643e94605c	qt4-r2	7199e3db5b5908325487d379c6f67cf0	toolchain-funcs	42408102d713fbad60ca21349865edb4
+_md5_=f891b28d3f722a26616b6db49144b823

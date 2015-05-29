@@ -1,0 +1,10 @@
+DEFINED_PHASES=compile configure install prepare test unpack
+DEPEND=sys-libs/zlib x11-libs/libXcursor x11-libs/libXfixes dev-qt/qtcore:5 dev-qt/qtgui:5 dev-qt/qtwidgets:5 lxqt-base/liblxqt >=dev-libs/libqtxdg-1.0.0 x11-misc/lightdm virtual/pkgconfig sys-devel/make >=dev-util/cmake-2.8.12 userland_GNU? ( >=sys-apps/findutils-4.4.0 ) >=dev-vcs/git-1.8.2.1
+DESCRIPTION=LightDM LXQt greeter
+EAPI=5
+HOMEPAGE=http://www.lxqt.org/
+LICENSE=LGPL-2.1+
+RDEPEND=sys-libs/zlib x11-libs/libXcursor x11-libs/libXfixes dev-qt/qtcore:5 dev-qt/qtgui:5 dev-qt/qtwidgets:5 lxqt-base/liblxqt >=dev-libs/libqtxdg-1.0.0 x11-misc/lightdm
+SLOT=0
+_eclasses_=cmake-utils	0430c386d85cec959d72640afd63ea91	eutils	9fb270e417e0e83d64ca52586c4a79de	flag-o-matic	c9602887773166fe300444712fc7ff98	git-r3	3a2bd0ae504c33a50061885480f3def3	multilib	62927b3db3a589b0806255f3a002d5d3	toolchain-funcs	42408102d713fbad60ca21349865edb4
+_md5_=67f84ec84868fbd3433e91d1f84a0e6c
