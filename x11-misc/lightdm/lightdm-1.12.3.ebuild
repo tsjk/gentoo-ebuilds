@@ -1,4 +1,4 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -52,7 +52,7 @@ DOCS=( NEWS )
 RESTRICT="test"
 
 src_prepare() {
-    use qt5 && export PATH="/usr/lib/qt5/bin/:${PATH}"
+	use qt5 && export PATH="/usr/lib/qt5/bin/:${PATH}"
 
 	sed -i -e 's:getgroups:lightdm_&:' tests/src/libsystem.c || die #412369
 	sed -i -e '/minimum-uid/s:500:1000:' data/users.conf || die
