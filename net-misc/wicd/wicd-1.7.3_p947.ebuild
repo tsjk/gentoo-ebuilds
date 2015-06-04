@@ -17,7 +17,7 @@ SRC_URI="http://launchpad.net/wicd/1.7/${PV%_p[0-9]*}/+download/${P%_p[0-9]*}.ta
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~mips ppc ppc64 x86"
+KEYWORDS="~amd64 ~arm ~mips ~ppc ~ppc64 ~x86"
 IUSE="doc X ambiance +gtk ioctl libnotify mac4lin ncurses nls +pm-utils gnome-shell"
 
 DEPEND="nls? ( dev-python/Babel )"
