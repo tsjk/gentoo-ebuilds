@@ -1,0 +1,1593 @@
+=== modified file 'INSTALL'
+--- INSTALL	2012-02-05 15:49:39 +0000
++++ INSTALL	2015-02-14 10:55:53 +0000
+@@ -14,6 +14,8 @@
+      Wicd supports using versions >=1.2.4 -- earlier versions may work just
+      fine, but they are completely unsupported here.
+   9. pybabel
++ 10. rfkill
++ 11. python-appindicator if you want the Unity-compatible appindicator notifications
+ 
+ Next, configure Wicd for installation.  Wicd will, by default, follow the 
+ FHS guidelines <http://www.pathname.com/fhs/> (or distribution standards 
+
+=== modified file 'encryption/templates/peap-tkip'
+--- encryption/templates/peap-tkip	2011-09-15 10:50:21 +0000
++++ encryption/templates/peap-tkip	2015-02-12 13:12:37 +0000
+@@ -1,4 +1,4 @@
+-name = PEAP with TKIP/MSCHAPV2
++name = WPA1-PEAP with TKIP/MSCHAPV2
+ author = Fralaltro
+ version = 1
+ require identity *Identity password *Password 
+
+=== modified file 'encryption/templates/psu'
+--- encryption/templates/psu	2011-09-15 10:56:14 +0000
++++ encryption/templates/psu	2015-02-12 13:12:37 +0000
+@@ -1,4 +1,4 @@
+-name = PSU
++name = PSU (IEEE 802.1x + PEAP + MSCHAPV2)
+ author = Alexander Anisimov
+ version = 1
+ require identity *Identity password *Password
+
+=== modified file 'encryption/templates/wired_8021x'
+--- encryption/templates/wired_8021x	2012-01-29 04:15:47 +0000
++++ encryption/templates/wired_8021x	2015-02-12 13:12:37 +0000
+@@ -1,4 +1,4 @@
+-name = 802.1x
++name = IEEE 802.1x with MSCHAPV2
+ author = Joe MacMahon
+ version = 1
+ require identity *Identity password *Password
+
+=== modified file 'encryption/templates/wpa-peap'
+--- encryption/templates/wpa-peap	2011-09-15 10:50:21 +0000
++++ encryption/templates/wpa-peap	2015-02-12 13:12:37 +0000
+@@ -1,4 +1,4 @@
+-name = WPA-PEAP
++name = WPA1-PEAP with CCMP/MSCHAPV2
+ author = atiketemola
+ version = 1
+ require identity *Username domain *Domain password *Password
+
+=== modified file 'encryption/templates/wpa2-peap'
+--- encryption/templates/wpa2-peap	2011-09-15 10:50:21 +0000
++++ encryption/templates/wpa2-peap	2015-02-12 13:12:37 +0000
+@@ -1,4 +1,4 @@
+-name = WPA2-PEAP
++name = WPA2-PEAP with CCMP/MSCHAPV2
+ author = atiketemola
+ version = 1
+ require identity *Username domain *Domain password *Password
+
+=== modified file 'gtk/wicd-client.py'
+--- gtk/wicd-client.py	2014-12-21 19:57:09 +0000
++++ gtk/wicd-client.py	2015-04-24 14:32:03 +0000
+@@ -11,6 +11,7 @@
+         and updates connection status.
+     class TrayIconGUI() -- Child class of TrayIcon which implements the tray.
+         icon itself.  Parent class of StatusTrayIconGUI and EggTrayIconGUI.
++    class IndicatorTrayIconGUI() -- Implements the tray icon using appindicator.Indicator.
+     class StatusTrayIconGUI() -- Implements the tray icon using a
+                                  gtk.StatusIcon.
+     class EggTrayIconGUI() -- Implements the tray icon using egg.trayicon.
+@@ -48,6 +49,12 @@
+ import pygtk
+ pygtk.require('2.0')
+ 
++USE_APP_INDICATOR = True
++try:
++    import appindicator
++except ImportError:
++    USE_APP_INDICATOR = False
++
+ HAS_NOTIFY = True
+ try:
+     import pynotify
+@@ -145,7 +152,9 @@
+         self.max_snd_gain = 10000
+         self.max_rcv_gain = 10000
+ 
+-        if USE_EGG:
++        if USE_APP_INDICATOR:
++            self.tr = self.IndicatorTrayIconGUI(self)
++        elif USE_EGG:
+             self.tr = self.EggTrayIconGUI(self)
+         else:
+             self.tr = self.StatusTrayIconGUI(self)
+@@ -529,7 +538,8 @@
+             self.current_icon_name = None
+             self._is_scanning = False
+             net_menuitem = self.manager.get_widget("/Menubar/Menu/Connect/")
+-            net_menuitem.connect("activate", self.on_net_menu_activate)
++            if not USE_APP_INDICATOR:
++                net_menuitem.connect("activate", self.on_net_menu_activate)
+ 
+             self.parent = parent
+             self.time = 2           # Time between updates
+@@ -958,6 +968,82 @@
+                 """
+                 self.set_visible(val)
+ 
++    if USE_APP_INDICATOR:
++        class IndicatorTrayIconGUI(gtk.StatusIcon, TrayIconGUI):
++            """ Class for creating the wicd AppIndicator.
++            This is required on recent versions of Unity (>=13.04).
++            
++            Uses appindicator.Indicator to implement a tray icon.
++            
++            """
++            def __init__(self, parent):
++                TrayIcon.TrayIconGUI.__init__(self, parent)
++                self.ind = appindicator.Indicator(
++                    "wicd", "wicd-gtk", appindicator.CATEGORY_SYSTEM_SERVICES, wpath.images)
++                self.current_icon_name = ''
++
++                # Rescaning when hovering over the net_menu doesn't work.
++                # (AFAICT, AppIndicator menus don't report PRELIGHT status.)
++                # We use a separate menu item instead.
++                rescan = gtk.MenuItem("Rescan")
++                self.menu.prepend(rescan)
++                rescan.connect("activate", self.on_rescan)
++                rescan.show()
++
++                sep = gtk.SeparatorMenuItem()
++                self.menu.prepend(sep)
++                sep.show()
++
++                # AppIndicator does not support tooltips so we use a
++                # menu item to contain what was the tooltip.
++                #
++                # Also, since AppIndicator does not support actions on
++                # clicking the tray icon, we use this tooltip menu
++                # item to toggle the GUI
++                self.tooltip_item = gtk.MenuItem("Initializing wicd...")
++                self.menu.prepend(self.tooltip_item)
++                self.tooltip_item.connect("activate", self.on_activate)
++                self.tooltip_item.show()
++
++                self.ind.set_menu(self.menu)
++
++            def on_rescan(self, *data):
++                """ Triggers a network rescan that updates the 'Connect' menu when the 'Rescan' menu item is selected. """
++                self.init_network_menu()
++                wireless.Scan(False)
++
++            def set_from_file(self, path=None):
++                """ Sets a new tray icon picture. """
++                if path != self.current_icon_path:
++                    self.current_icon_path = path
++                    self.ind.set_icon(path)
++                    
++            def set_from_name(self, name=None):
++                """ Sets a new tray icon picture. """
++                if name != self.current_icon_name:
++                    self.current_icon_name = name
++                    self.ind.set_icon(name)
++
++            def visible(self, val):
++                """ Set if the icon is visible or not.
++
++                If val is True, makes the icon visible, if val is False,
++                hides the tray icon.
++
++                """
++                self.ind.set_status(val and appindicator.STATUS_ACTIVE or appindicator.STATUS_PASSIVE)
++
++            def set_tooltip(self, str):
++                """ Set the tooltip for this tray icon.
++                
++                Since AppIndicators do not support tooltips, actually
++                sets the label for the top menu item associated with
++                this tray icon.
++
++                """
++                self.tooltip_item.set_label(str)
++
++
+ def usage():
+     """ Print usage information. """
+     print """
+
+=== modified file 'po/ar_EG.po'
+--- po/ar_EG.po	2014-12-19 06:11:21 +0000
++++ po/ar_EG.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:11+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/ast.po'
+--- po/ast.po	2014-12-19 06:11:21 +0000
++++ po/ast.po	2015-02-15 05:46:35 +0000
+@@ -14,8 +14,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:08+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:44+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/be.po'
+--- po/be.po	2014-12-19 06:11:21 +0000
++++ po/be.po	2015-02-15 05:46:35 +0000
+@@ -14,8 +14,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=UTF-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:44+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ 
+ #: gtk/wicd-client.py:610
+ msgid ""
+
+=== modified file 'po/bg.po'
+--- po/bg.po	2014-12-19 06:11:21 +0000
++++ po/bg.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:44+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/ca.po'
+--- po/ca.po	2014-12-19 06:11:21 +0000
++++ po/ca.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:44+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/cs.po'
+--- po/cs.po	2014-12-19 06:11:21 +0000
++++ po/cs.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:44+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/cy.po'
+--- po/cy.po	2014-12-19 06:11:21 +0000
++++ po/cy.po	2015-02-15 05:46:35 +0000
+@@ -14,8 +14,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=UTF-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ 
+ #: gtk/wicd-client.py:610
+ msgid ""
+
+=== modified file 'po/da.po'
+--- po/da.po	2014-12-19 06:11:21 +0000
++++ po/da.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:44+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/de.po'
+--- po/de.po	2014-12-19 06:11:21 +0000
++++ po/de.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/el.po'
+--- po/el.po	2014-12-19 06:11:21 +0000
++++ po/el.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/en.po'
+--- po/en.po	2014-12-19 06:11:21 +0000
++++ po/en.po	2015-02-15 05:46:35 +0000
+@@ -14,8 +14,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/en_CA.po'
+--- po/en_CA.po	2014-12-19 06:11:21 +0000
++++ po/en_CA.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:11+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/en_GB.po'
+--- po/en_GB.po	2014-12-19 06:11:21 +0000
++++ po/en_GB.po	2015-02-15 05:46:35 +0000
+@@ -14,8 +14,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:11+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/eo.po'
+--- po/eo.po	2014-12-19 06:11:21 +0000
++++ po/eo.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/es.po'
+--- po/es.po	2014-12-19 06:11:21 +0000
++++ po/es.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/es_AR.po'
+--- po/es_AR.po	2014-12-19 06:11:21 +0000
++++ po/es_AR.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/es_CL.po'
+--- po/es_CL.po	2014-12-19 06:11:21 +0000
++++ po/es_CL.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:11+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/es_CO.po'
+--- po/es_CO.po	2014-12-19 06:11:21 +0000
++++ po/es_CO.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/es_GT.po'
+--- po/es_GT.po	2014-12-19 06:11:21 +0000
++++ po/es_GT.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:11+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/es_MX.po'
+--- po/es_MX.po	2014-12-19 06:11:21 +0000
++++ po/es_MX.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:11+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/es_NI.po'
+--- po/es_NI.po	2014-12-19 06:11:21 +0000
++++ po/es_NI.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/es_VE.po'
+--- po/es_VE.po	2014-12-19 06:11:21 +0000
++++ po/es_VE.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/et.po'
+--- po/et.po	2014-12-19 06:11:21 +0000
++++ po/et.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/eu.po'
+--- po/eu.po	2014-12-19 06:11:21 +0000
++++ po/eu.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:08+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:44+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/fa.po'
+--- po/fa.po	2014-12-19 06:11:21 +0000
++++ po/fa.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/fi.po'
+--- po/fi.po	2014-12-19 06:11:21 +0000
++++ po/fi.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/fr.po'
+--- po/fr.po	2014-12-19 06:11:21 +0000
++++ po/fr.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/fr_CA.po'
+--- po/fr_CA.po	2014-12-19 06:11:21 +0000
++++ po/fr_CA.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:11+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/gl.po'
+--- po/gl.po	2014-12-19 06:11:21 +0000
++++ po/gl.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/he.po'
+--- po/he.po	2014-12-20 05:35:19 +0000
++++ po/he.po	2015-02-15 05:46:35 +0000
+@@ -16,8 +16,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-20 05:35+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/hr.po'
+--- po/hr.po	2014-12-19 06:11:21 +0000
++++ po/hr.po	2015-04-27 05:11:32 +0000
+@@ -6,14 +6,14 @@
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2012-09-26 17:26+0200\n"
+-"PO-Revision-Date: 2013-04-29 08:50+0000\n"
+-"Last-Translator: freedomrun <Unknown>\n"
++"PO-Revision-Date: 2015-04-26 14:26+0000\n"
++"Last-Translator: gogo <trebelnik2@gmail.com>\n"
+ "Language-Team: hr <LL@li.org>\n"
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-04-27 05:11+0000\n"
++"X-Generator: Launchpad (build 17430)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+@@ -299,7 +299,7 @@
+ 
+ #: curses/prefs_curses.py:117
+ msgid "Debugging"
+-msgstr "Otklanjanje pogrešaka"
++msgstr "Otklanjanje grešaka"
+ 
+ #: curses/wicd-curses.py:608
+ msgid "Disconn"
+
+=== modified file 'po/hu.po'
+--- po/hu.po	2014-12-19 06:11:21 +0000
++++ po/hu.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/id.po'
+--- po/id.po	2014-12-19 06:11:21 +0000
++++ po/id.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/it.po'
+--- po/it.po	2014-12-19 06:11:21 +0000
++++ po/it.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/ja.po'
+--- po/ja.po	2014-12-19 06:11:21 +0000
++++ po/ja.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/ka.po'
+--- po/ka.po	2014-12-19 06:11:21 +0000
++++ po/ka.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/kk.po'
+--- po/kk.po	2014-12-19 06:11:21 +0000
++++ po/kk.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/ko.po'
+--- po/ko.po	2014-12-19 06:11:21 +0000
++++ po/ko.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/lt.po'
+--- po/lt.po	2014-12-19 06:11:21 +0000
++++ po/lt.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/lv.po'
+--- po/lv.po	2014-12-19 06:11:21 +0000
++++ po/lv.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/ml.po'
+--- po/ml.po	2014-12-19 06:11:21 +0000
++++ po/ml.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/nb.po'
+--- po/nb.po	2014-12-19 06:11:21 +0000
++++ po/nb.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/nl.po'
+--- po/nl.po	2014-12-19 06:11:21 +0000
++++ po/nl.po	2015-02-15 05:46:35 +0000
+@@ -6,14 +6,14 @@
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2012-09-26 17:26+0200\n"
+-"PO-Revision-Date: 2013-06-20 20:05+0000\n"
+-"Last-Translator: berry van den berg <berryv.dberg@gmail.com>\n"
++"PO-Revision-Date: 2015-01-14 14:36+0000\n"
++"Last-Translator: Johan <Unknown>\n"
+ "Language-Team: nl <LL@li.org>\n"
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:44+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+@@ -1017,19 +1017,19 @@
+ 
+ #: data/wicd.ui:306
+ msgid "Pre-connection Script:"
+-msgstr "Pre-verbindingverbrekings-script uitvoeren"
++msgstr "Pre-verbindingsscript uitvoeren"
+ 
+ #: data/wicd.ui:339
+ msgid "Post-connection Script:"
+-msgstr "Post-verbindingsverbreking-script uitvoeren"
++msgstr "Post-verbindingsscript uitvoeren"
+ 
+ #: data/wicd.ui:372
+ msgid "Pre-disconnection Script:"
+-msgstr "Pre-verbindingverbrekings-script uitvoeren"
++msgstr "Pre-verbrekingsscript uitvoeren"
+ 
+ #: data/wicd.ui:405
+ msgid "Post-disconnection Script:"
+-msgstr "Post-verbindingsverbreking-script uitvoeren"
++msgstr "Post-verbrekingsscript uitvoeren"
+ 
+ #: data/wicd.ui:524
+ msgid "Always switch to a wired connection when available"
+
+=== modified file 'po/nn.po'
+--- po/nn.po	2014-12-19 06:11:21 +0000
++++ po/nn.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:09+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/pl.po'
+--- po/pl.po	2014-12-19 06:11:21 +0000
++++ po/pl.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/pt.po'
+--- po/pt.po	2014-12-19 06:11:21 +0000
++++ po/pt.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/pt_BR.po'
+--- po/pt_BR.po	2014-12-19 06:11:21 +0000
++++ po/pt_BR.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/ro.po'
+--- po/ro.po	2014-12-19 06:11:21 +0000
++++ po/ro.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/ru.po'
+--- po/ru.po	2014-12-19 06:11:21 +0000
++++ po/ru.po	2015-03-14 05:14:30 +0000
+@@ -6,14 +6,14 @@
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2012-09-26 17:26+0200\n"
+-"PO-Revision-Date: 2014-05-22 15:39+0000\n"
+-"Last-Translator: Dorzhi Tarbaev <diixtra@gmail.com>\n"
++"PO-Revision-Date: 2015-03-13 11:20+0000\n"
++"Last-Translator: igor <igor@sato.ru>\n"
+ "Language-Team: ru <LL@li.org>\n"
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-03-14 05:14+0000\n"
++"X-Generator: Launchpad (build 17389)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+@@ -102,7 +102,7 @@
+ 
+ #: gtk/gui.py:330
+ msgid "BSSID"
+-msgstr ""
++msgstr "BSSID"
+ 
+ #: curses/prefs_curses.py:113 curses/prefs_curses.py:114
+ msgid "Backend"
+@@ -234,19 +234,19 @@
+ 
+ #: cli/wicd-cli.py:92
+ msgid "Connection status"
+-msgstr ""
++msgstr "Состояние подключения"
+ 
+ #: wicd/misc.py:104
+ msgid "Connection successful."
+-msgstr "Соединение прервано"
++msgstr "Соединение установлено"
+ 
+ #: wicd/misc.py:54
+ msgid "Connection suspended"
+-msgstr ""
++msgstr "Подключение приостановлено"
+ 
+ #: cli/wicd-cli.py:94
+ msgid "Connection type"
+-msgstr ""
++msgstr "Тип подключения"
+ 
+ #: gtk/gui.py:65 gtk/wicd-client.py:955
+ msgid ""
+@@ -394,7 +394,7 @@
+ 
+ #: gtk/gui.py:321
+ msgid "Global settings for this ESSID"
+-msgstr ""
++msgstr "Основные настройки для этого ESSID"
+ 
+ #: curses/wicd-curses.py:603
+ msgid "Help"
+@@ -439,7 +439,7 @@
+ 
+ #: curses/wicd-curses.py:536 gtk/gui.py:310
+ msgid "List of saved networks"
+-msgstr ""
++msgstr "Список сохраненных сетей"
+ 
+ #: curses/netentry_curses.py:51 gtk/netentry.py:76
+ msgid "Netmask"
+@@ -447,7 +447,7 @@
+ 
+ #: cli/wicd-cli.py:99
+ msgid "Network ID: $A"
+-msgstr ""
++msgstr "Идентификатор сети: $A"
+ 
+ #: curses/prefs_curses.py:66
+ msgid "Network Interfaces"
+@@ -521,7 +521,7 @@
+ 
+ #: curses/wicd-curses.py:521
+ msgid "Please select the networks to forget"
+-msgstr ""
++msgstr "Пожалуйста, укажите сеть, которую надо забыть"
+ 
+ #: curses/configscript_curses.py:57 gtk/configscript.py:129
+ msgid "Post-connection Script"
+@@ -553,7 +553,7 @@
+ 
+ #: wicd/translations.py:87
+ msgid "Preshared key"
+-msgstr ""
++msgstr "Пароль для подключения"
+ 
+ #: curses/wicd-curses.py:229
+ msgid "Press any key to return."
+@@ -605,11 +605,11 @@
+ 
+ #: curses/wicd-curses.py:538
+ msgid "Remove"
+-msgstr ""
++msgstr "Удалить"
+ 
+ #: curses/wicd-curses.py:224 data/wicd.ui:67
+ msgid "Remove settings for saved networks"
+-msgstr ""
++msgstr "Удалить настройки для сохраненных сетей"
+ 
+ #: curses/wicd-curses.py:441
+ msgid "Rename wired profile"
+@@ -843,7 +843,7 @@
+ 
+ #: cli/wicd-cli.py:85
+ msgid "Wired"
+-msgstr ""
++msgstr "Проводное подключение"
+ 
+ #: gtk/wicd-client.py:628
+ msgid ""
+@@ -971,7 +971,7 @@
+ 
+ #: data/wicd.ui:65
+ msgid "Forget network settings"
+-msgstr ""
++msgstr "Забыть настройки сети"
+ 
+ #: data/wicd.ui:89
+ msgid "_Switch Off Wi-Fi"
+@@ -1081,19 +1081,19 @@
+ 
+ #: data/wicd.ui:793
+ msgid "<b>Network Interfaces</b>"
+-msgstr "Сетевые интерфейсы"
++msgstr "<b>Сетевые интерфейсы</b>"
+ 
+ #: data/wicd.ui:809
+ msgid "DNS server 3:"
+-msgstr "DNS сервер:"
++msgstr "DNS сервер 3:"
+ 
+ #: data/wicd.ui:840
+ msgid "DNS server 2:"
+-msgstr "DNS сервер:"
++msgstr "DNS сервер 2:"
+ 
+ #: data/wicd.ui:858
+ msgid "DNS server 1:"
+-msgstr "DNS сервер:"
++msgstr "DNS сервер 1:"
+ 
+ #: data/wicd.ui:876
+ msgid "Search domain:"
+@@ -1109,7 +1109,7 @@
+ "window. This can be useful if your wired network card does not detect when "
+ "the interface is connected to a cable."
+ msgstr ""
+-"Если выбрано, кабельный интерфейс всегда отображается вглавном окне. Может "
++"Если выбрано, кабельный интерфейс всегда отображается в главном окне. Может "
+ "быть полезно, если ваша сетевая карта автоматически не определяет "
+ "подключение кабеля."
+ 
+@@ -1119,11 +1119,11 @@
+ 
+ #: data/wicd.ui:1060
+ msgid "<b>Route Table Flushing</b>"
+-msgstr "Очистка таблицы маршрутизации"
++msgstr "<b>Очистка таблицы маршрутизации</b>"
+ 
+ #: data/wicd.ui:1073
+ msgid "<b>Wired Link Detection</b>"
+-msgstr "Определение проводного соединения"
++msgstr "<b>Определение проводного соединения</b>"
+ 
+ #: data/wicd.ui:1299
+ msgid "<b>DHCP Client</b>"
+@@ -1147,7 +1147,7 @@
+ 
+ #: data/wicd.ui:1540
+ msgid "<b>Wireless Interface</b>"
+-msgstr "Беспроводной интерфейс"
++msgstr "<b>Беспроводной интерфейс</b>"
+ 
+ #: data/wicd.ui:1554
+ msgid "<b>WPA Supplicant</b>"
+@@ -1155,7 +1155,7 @@
+ 
+ #: data/wicd.ui:1566
+ msgid "<b>Debugging</b>"
+-msgstr "Отладка"
++msgstr "<b>Отладка</b>"
+ 
+ #: data/wicd.ui:1584
+ msgid "Backend:"
+
+=== modified file 'po/si.po'
+--- po/si.po	2014-12-19 06:11:21 +0000
++++ po/si.po	2015-02-15 05:46:35 +0000
+@@ -14,8 +14,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=UTF-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ 
+ #: gtk/wicd-client.py:610
+ msgid ""
+
+=== modified file 'po/sk.po'
+--- po/sk.po	2014-12-19 06:11:21 +0000
++++ po/sk.po	2015-04-10 04:56:36 +0000
+@@ -6,14 +6,14 @@
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2012-09-26 17:26+0200\n"
+-"PO-Revision-Date: 2012-02-25 11:44+0000\n"
+-"Last-Translator: David Paleino <dapal@debian.org>\n"
++"PO-Revision-Date: 2015-04-09 20:17+0000\n"
++"Last-Translator: [SG]Orava <sgd.orava@gmail.com>\n"
+ "Language-Team: sk <LL@li.org>\n"
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-04-10 04:56+0000\n"
++"X-Generator: Launchpad (build 17413)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+@@ -895,7 +895,14 @@
+ "Strength:\n"
+ "RX:\n"
+ "TX:"
+-msgstr "Bezdátový SSID: Rýchlosť: IP: Signál: RX: TX:"
++msgstr ""
++"Bezdátový\n"
++"SSID:\n"
++"Rýchlosť:\n"
++"IP:\n"
++"Signál:\n"
++"RX:\n"
++"TX:"
+ 
+ #: curses/prefs_curses.py:68 curses/prefs_curses.py:120
+ msgid "Wireless Interface"
+
+=== modified file 'po/sl.po'
+--- po/sl.po	2014-12-19 06:11:21 +0000
++++ po/sl.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/sr.po'
+--- po/sr.po	2014-12-19 06:11:21 +0000
++++ po/sr.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:45+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/sv.po'
+--- po/sv.po	2014-12-19 06:11:21 +0000
++++ po/sv.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/te.po'
+--- po/te.po	2014-12-19 06:11:21 +0000
++++ po/te.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/tr.po'
+--- po/tr.po	2014-12-19 06:11:21 +0000
++++ po/tr.po	2015-02-15 05:46:35 +0000
+@@ -6,14 +6,14 @@
+ "Project-Id-Version: PACKAGE VERSION\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2012-09-26 17:26+0200\n"
+-"PO-Revision-Date: 2014-03-30 14:44+0000\n"
+-"Last-Translator: Volkan Gezer <Unknown>\n"
++"PO-Revision-Date: 2015-01-02 12:18+0000\n"
++"Last-Translator: Yusuf ÜLKÜ <Unknown>\n"
+ "Language-Team: tr <LL@li.org>\n"
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+@@ -840,7 +840,7 @@
+ 
+ #: wicd/misc.py:216
+ msgid "Wicd needs to access your computer's network cards."
+-msgstr "Wicd'in bilgisayarınızdaki ağ kartlarını ulaşması gerekir."
++msgstr "Wicd'in bilgisayarınızdaki ağ kartlarına ulaşması gerekir."
+ 
+ #: cli/wicd-cli.py:85
+ msgid "Wired"
+
+=== modified file 'po/uk.po'
+--- po/uk.po	2014-12-19 06:11:21 +0000
++++ po/uk.po	2015-02-15 05:46:35 +0000
+@@ -13,8 +13,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/vi.po'
+--- po/vi.po	2014-12-19 06:11:21 +0000
++++ po/vi.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/zh_CN.po'
+--- po/zh_CN.po	2014-12-19 06:11:21 +0000
++++ po/zh_CN.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:11+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/zh_HK.po'
+--- po/zh_HK.po	2014-12-19 06:11:21 +0000
++++ po/zh_HK.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:10+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'po/zh_TW.po'
+--- po/zh_TW.po	2014-12-19 06:11:21 +0000
++++ po/zh_TW.po	2015-02-15 05:46:35 +0000
+@@ -12,8 +12,8 @@
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=utf-8\n"
+ "Content-Transfer-Encoding: 8bit\n"
+-"X-Launchpad-Export-Date: 2014-12-19 06:11+0000\n"
+-"X-Generator: Launchpad (build 17286)\n"
++"X-Launchpad-Export-Date: 2015-02-15 05:46+0000\n"
++"X-Generator: Launchpad (build 17341)\n"
+ "Generated-By: Babel 0.9.6\n"
+ 
+ #: gtk/wicd-client.py:610
+
+=== modified file 'wicd/backends/be-ioctl.py'
+--- wicd/backends/be-ioctl.py	2012-11-17 00:07:08 +0000
++++ wicd/backends/be-ioctl.py	2015-02-12 12:44:32 +0000
+@@ -269,8 +269,11 @@
+         self.CheckWirelessTools()
+ 
+     @neediface([])
+-    def GetNetworks(self):
++    def GetNetworks(self, essid=None):
+         """ Get a list of available wireless networks.
++	
++        NOTE: the essid parameter is not used here,
++        it was added for the iwlist scan for hidden networks.
+ 
+         Returns:
+         A list containing available wireless networks.
+
+=== modified file 'wicd/configmanager.py'
+--- wicd/configmanager.py	2012-11-17 23:15:04 +0000
++++ wicd/configmanager.py	2015-02-12 17:01:42 +0000
+@@ -112,7 +112,7 @@
+                 self.add_section(section)
+             else:
+                 return None
+-    
++
+         if self.has_option(section, option):
+             ret = RawConfigParser.get(self, section, option)
+             if (isinstance(ret, basestring) and ret.startswith(self.mrk_ws) 
+@@ -130,7 +130,7 @@
+                     else:
+                         print ''.join(['found ', option, ' in configuration ',
+                                        str(ret)])
+-        else:
++        else:	# Use the default, unless no default was provided
+             if default != "__None__":
+                 print 'did not find %s in configuration, setting default %s' \
+                     % (option, str(default))
+
+=== modified file 'wicd/networking.py'
+--- wicd/networking.py	2013-02-01 21:14:15 +0000
++++ wicd/networking.py	2015-02-14 10:44:03 +0000
+@@ -476,7 +476,13 @@
+             else:
+                 hname = None
+                 print "Running DHCP with NO hostname"
+-            dhcp_status = iface.StartDHCP(hname)
++            
++            # Check if a global DNS is configured. If it is, then let the DHCP know *not* to update resolv.conf
++            staticdns = False
++            if self.network.get('use_global_dns') or (self.network.get('use_static_dns') and (self.network.get('dns1') or self.network.get('dns2') or self.network.get('dns3'))):
++                staticdns = True
++
++            dhcp_status = iface.StartDHCP(hname, staticdns)
+             if dhcp_status in ['no_dhcp_offers', 'dhcp_failed']:
+                 if self.connect_result != "aborted":
+                     self.abort_connection(dhcp_status)
+@@ -648,14 +654,15 @@
+ 
+         # If there is a hidden essid then set it now, so that when it is
+         # scanned it will be recognized.
++        # Note: this does not always work, sometimes we have to pass it with "iwlist wlan0 scan essid -- XXXXX"
+         essid = misc.Noneify(essid)
+         if essid is not None:
+-            print 'Setting hidden essid' + essid
++            print 'Setting hidden essid ' + essid
+             wiface.SetEssid(essid)
+             # sleep for a bit; scanning to fast will result in nothing
+             time.sleep(1)
+ 
+-        aps = wiface.GetNetworks()
++        aps = wiface.GetNetworks(essid)
+         aps.sort(cmp=comp, reverse=True)
+         
+         return aps
+
+=== modified file 'wicd/wicd-daemon.py'
+--- wicd/wicd-daemon.py	2014-12-11 13:50:12 +0000
++++ wicd/wicd-daemon.py	2015-02-12 17:01:42 +0000
+@@ -162,6 +162,7 @@
+     def SetWiredInterface(self, interface):
+         """ Sets the wired interface for the daemon to use. """
+         print "setting wired interface %s" % (str(interface))
++        # Set it to a blank string, otherwise a network card named "None" will be searched
+         self.wired.wired_interface = noneToBlankString(interface)
+         self.config.set("Settings", "wired_interface", interface, write=True)
+ 
+@@ -169,6 +170,7 @@
+     def SetWirelessInterface(self, interface):
+         """ Sets the wireless interface the daemon will use. """
+         print "setting wireless interface %s" % (str(interface))
++        # Set it to a blank string, otherwise a network card named "None" will be searched
+         self.wifi.wireless_interface = noneToBlankString(interface)
+         self.config.set("Settings", "wireless_interface", interface, write=True)
+ 
+
+=== modified file 'wicd/wnettools.py'
+--- wicd/wnettools.py	2013-02-15 21:30:48 +0000
++++ wicd/wnettools.py	2015-02-14 10:44:03 +0000
+@@ -296,7 +296,7 @@
+         return path
+ 
+     
+-    def _get_dhcp_command(self, flavor=None, hostname=None):
++    def _get_dhcp_command(self, flavor=None, hostname=None, staticdns=False):
+         """ Returns the correct DHCP client command. 
+        
+         Given a type of DHCP request (create or release a lease),
+@@ -333,26 +333,26 @@
+         
+         client_dict = {
+             "dhclient" : 
+-                {'connect' : r"%(cmd)s -cf %(dhclientconf)s %(iface)s",
+-                 'connect_with_hostname' : r"%(cmd)s -cf %(dhclientconf)s %(iface)s",
++                {'connect' : r"%(cmd)s -cf %(dhclientconf)s %(extra)s %(iface)s",
++                 'connect_with_hostname' : r"%(cmd)s -cf %(dhclientconf)s %(extra)s %(iface)s",
+                  'release' : r"%(cmd)s -r %(iface)s",
+                  'id' : misc.DHCLIENT, 
+                  },
+             "pump" : 
+-                { 'connect' : r"%(cmd)s -i %(iface)s",
+-                  'connect_with_hostname' : r"%(cmd)s -i %(iface)s -h %(hostname)s",
++                { 'connect' : r"%(cmd)s -i %(iface)s %(extra)s",
++                  'connect_with_hostname' : r"%(cmd)s -i %(iface)s -h %(hostname)s %(extra)s",
+                   'release' : r"%(cmd)s -r -i %(iface)s",
+                   'id' : misc.PUMP,
+                 },
+             "dhcpcd" : 
+-                {'connect' : r"%(cmd)s --noipv4ll %(iface)s",
+-                 'connect_with_hostname' : r"%(cmd)s -h %(hostname)s --noipv4ll %(iface)s ",
++                {'connect' : r"%(cmd)s --noipv4ll %(extra)s %(iface)s",
++                 'connect_with_hostname' : r"%(cmd)s -h %(hostname)s --noipv4ll %(extra)s %(iface)s ",
+                  'release' : r"%(cmd)s -k %(iface)s",
+                  'id' : misc.DHCPCD,
+                 },
+             "udhcpc":
+-                {'connect' : r"%(cmd)s -n -i %(iface)s",
+-                 'connect_with_hostname' : r"%(cmd)s -n -i %(iface)s -H %(hostname)s ",
++                {'connect' : r"%(cmd)s -n -i %(iface)s %(extra)s",
++                 'connect_with_hostname' : r"%(cmd)s -n -i %(iface)s -H %(hostname)s %(extra)s",
+                  'release' : r"killall -SIGUSR2 %(cmd)s",
+                  'id' : misc.UDHCPC,
+                 },
+@@ -388,16 +388,25 @@
+             return ""
+             
+         if flavor == "connect":
++
++            # set up (optional) extra arguments to the dhcp client,
++            # used for disabling the resolv.conf update of dhcpd
++            extra_args = ""
++            if staticdns and client_name == "dhcpcd":
++                extra_args = "--nohook resolv.conf"
++
+             if hostname:
+                 return client_dict[client_name]['connect_with_hostname'] % \
+                     { "cmd" : cmd,
+                       "iface" : self.iface,
+                       "hostname" : hostname,
++                      'extra': extra_args,
+                       'dhclientconf' : dhclient_conf_path }
+             else:
+                 return client_dict[client_name]['connect'] % \
+                     { "cmd" : cmd,
+                       "iface" : self.iface,
++                      'extra': extra_args,
+                       'dhclientconf' : dhclient_conf_path }
+         elif flavor == "release":
+             return client_dict[client_name]['release'] % \
+@@ -655,7 +664,7 @@
+             return 'dhcp_failed'
+             
+     @neediface(False)
+-    def StartDHCP(self, hostname):
++    def StartDHCP(self, hostname, staticdns):
+         """ Start the DHCP client to obtain an IP address.
+ 
+         Keyword Arguments:
+@@ -666,7 +675,7 @@
+         _check_dhcp_result for the possible values.
+         
+         """
+-        cmd = self._get_dhcp_command('connect', hostname)
++        cmd = self._get_dhcp_command('connect', hostname, staticdns)
+         if self.verbose:
+             print cmd
+         self.dhcp_object = misc.Run(cmd, include_stderr=True, return_obj=True)
+@@ -1339,14 +1348,23 @@
+                     misc.Run(cmd)
+ 
+     @neediface([])
+-    def GetNetworks(self):
++    def GetNetworks(self, essid=None):
+         """ Get a list of available wireless networks.
+ 
+         Returns:
+         A list containing available wireless networks.
+ 
+         """
++
+         cmd = 'iwlist ' + self.iface + ' scan'
++
++        # If there is a hidden essid then it was set earlier, with iwconfig wlan0 essid,
++	# but on some drivers (iwlwifi, in my case) we have to pass it to iwlist scan.
++        essid = misc.Noneify(essid)
++        if essid is not None:
++            print 'Passing hidden essid to iwlist scan: ' + essid
++            cmd = cmd + ' essid ' + essid
++
+         if self.verbose:
+             print cmd
+         results = misc.Run(cmd)
+
