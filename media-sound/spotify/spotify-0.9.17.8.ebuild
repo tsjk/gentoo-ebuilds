@@ -85,8 +85,8 @@ src_prepare() {
 
 src_install() {
 	dodoc opt/spotify/spotify-client/changelog
-	dodoc usr/share/doc/spotify-client/changelog.Debian.gz
-	dodoc usr/share/doc/spotify-client/copyright
+	dodoc usr/share/doc/spotify-client-0.9.17/changelog.Debian.gz
+	dodoc usr/share/doc/spotify-client-0.9.17/copyright
 
 	insinto /usr/share/pixmaps
 	doins opt/spotify/spotify-client/Icons/*.png
