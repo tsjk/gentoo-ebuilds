@@ -49,7 +49,7 @@ src_install() {
 
 	mv "bin/webide.png" "bin/${FOLDER}.png"
 	doicon "bin/${FOLDER}.png"
-	make_desktop_entry ${FOLDER} "${PROGRAM_NAME} (v${MY_PV.${PV}})" "${FOLDER}"
+	make_desktop_entry ${FOLDER} "${PROGRAM_NAME} (v${MY_PV}.${PV})" "${FOLDER}"
 }
 
 pkg_postinst() {
