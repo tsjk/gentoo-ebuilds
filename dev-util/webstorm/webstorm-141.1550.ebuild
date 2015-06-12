@@ -6,7 +6,7 @@ EAPI=5
 
 inherit user eutils
 
-MY_PV="10.0.3"
+MY_PV="10.0.4"
 
 DESCRIPTION="WebStorm is a lightweight yet powerful IDE, perfectly equipped for complex client-side development and server-side development with Node.js."
 HOMEPAGE="https://www.jetbrains.com/webstorm"
