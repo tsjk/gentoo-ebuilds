@@ -50,10 +50,10 @@ src_install() {
 
 	for size in 16 22 24 32 48 64 128 256; do
 			newicon -s ${size} "${FILESDIR}/icons/spotify-linux-${size}.png" \
-						"${MY_PN}.png"
+						"${MY_PN/-/_}.png"
 							done
 
-	make_desktop_entry "${MY_PN}" "Spotify Client (v${MY_PV})"
+	make_desktop_entry "${MY_PN}" "Spotify Client (v${MY_PV})" "${MY_PN/-/_}"
 	domenu "${S}${SPOTIFY_HOME}/${MY_PN}.desktop"
 }
 
