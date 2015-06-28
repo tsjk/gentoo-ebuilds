@@ -6,6 +6,7 @@ EAPI=5
 
 KDE_DOC_DIRS="doc"
 KDE_HANDBOOK="optional"
+EGIT_BRANCH="livepreview-kde4"
 MY_P=${P/_beta/b}
 inherit kde4-base
 
