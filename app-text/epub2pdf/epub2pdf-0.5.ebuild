@@ -21,12 +21,14 @@ RESTRICT="mirror"
 DEPEND=">=virtual/jdk-1.6
 	app-arch/unzip"
 RDEPEND=">=virtual/jre-1.6
-	dev-java/batik:1.7
+	dev-java/batik:1.8
 	>=dev-java/itext-2.1.5:0
 	>=dev-java/sac-1.3
 	>=dev-java/saxon-6.5.5:6.5
 	>=dev-java/xml-commons-resolver-1.2
 	dev-java/xerces:2"
+
+S="${WORKDIR}"
 
 src_unpack() {
 	unpack "$A"
@@ -38,7 +40,7 @@ src_compile() {
 	mkdir classes
 	ejavac -d classes -classpath \
 	$(java-pkg_getjars \
-	batik-1.7,itext,sac,saxon-6.5,xml-commons-resolver,xerces-2) \
+	batik-1.8,itext,sac,saxon-6.5,xml-commons-resolver,xerces-2) \
 	"@${T}/src.list"
 	cd classes
 	jar -cf ../$PN.jar *
