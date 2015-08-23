@@ -146,12 +146,12 @@ pkg_pretend() {
 }
 
 pkg_setup() {
-	kde5-base_pkg_setup
+	kde5_pkg_setup
 	check-reqs_pkg_setup
 }
 
 src_prepare() {
-	kde5-base_src_prepare
+	kde5_src_prepare
 	epatch "${FILESDIR}/libs_widgets_CMakeLists.patch"
 }
 
@@ -234,5 +234,5 @@ src_configure() {
 
 	# filters
 
-	kde5-base_src_configure
+	kde5_src_configure
 }
