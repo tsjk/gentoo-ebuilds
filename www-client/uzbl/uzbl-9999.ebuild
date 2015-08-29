@@ -2,13 +2,13 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/www-client/uzbl/uzbl-9999.ebuild,v 1.26 2012/08/20 17:12:46 radhermit Exp $
 
-EAPI="4"
+EAPI="5"
 
 inherit eutils
 
 IUSE="gtk3"
 if [[ ${PV} == *9999* ]]; then
-	inherit git-2
+	inherit git-r3
 	EGIT_REPO_URI=${EGIT_REPO_URI:-"git://github.com/Dieterbe/uzbl.git"}
 	KEYWORDS=""
 	SRC_URI=""
@@ -118,6 +118,7 @@ src_install() {
 	use browser && use tabbed && targets="${targets} install-uzbl-tabbed"
 
 	mkdir -m0755 -p "${D}/usr/share/man/man1"
+	mkdir -m0755 -p "${D}/usr/share/appdata"
 	emake DESTDIR="${D}" PREFIX="${EPREFIX}/usr" DOCDIR="${ED}/usr/share/doc/${PF}" ${targets}
 
 	if use vim-syntax; then
