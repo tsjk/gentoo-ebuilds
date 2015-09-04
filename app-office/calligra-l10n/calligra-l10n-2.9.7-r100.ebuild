@@ -4,10 +4,10 @@
 
 EAPI=5
 
-inherit kde4-base
+inherit kde5
 
 DESCRIPTION="Calligra localization package"
-HOMEPAGE="http://www.kde.org/"
+HOMEPAGE="https://www.kde.org/"
 LICENSE="GPL-2"
 
 DEPEND="sys-devel/gettext"
@@ -16,8 +16,8 @@ RDEPEND="!app-office/koffice-l10n"
 KEYWORDS="~amd64 ~arm ~x86"
 IUSE="doc"
 
-MY_LANGS="bs ca ca@valencia cs da de el en_GB es et fi fr gl hu it ja kk nb
-nl pl pt pt_BR ru sk sv uk zh_CN zh_TW"
+MY_LANGS="bs ca ca@valencia cs da de el en_GB es et fi fr gl hu it ja kk nb nl
+pl pt pt_BR ru sk sv tr uk zh_CN zh_TW"
 
 case ${PV} in
 	2.[456789].[789]?)
@@ -31,7 +31,7 @@ case ${PV} in
 esac
 
 SRC_URI=""
-SLOT="4"
+SLOT="5"
 
 for MY_LANG in ${MY_LANGS} ; do
 	IUSE="${IUSE} linguas_${MY_LANG}"
@@ -73,17 +73,17 @@ src_configure() {
 		-DBUILD_MESSAGES=ON -DBUILD_DATA=ON
 		$(cmake-utils_use_build doc)
 	)
-	[[ -e "${S}"/CMakeLists.txt ]] && kde4-base_src_configure
+	[[ -e "${S}"/CMakeLists.txt ]] && kde5_src_configure
 }
 
 src_compile() {
-	[[ -e "${S}"/CMakeLists.txt ]] && kde4-base_src_compile
+	[[ -e "${S}"/CMakeLists.txt ]] && kde5_src_compile
 }
 
 src_test() {
-	[[ -e "${S}"/CMakeLists.txt ]] && kde4-base_src_test
+	[[ -e "${S}"/CMakeLists.txt ]] && kde5_src_test
 }
 
 src_install() {
-	[[ -e "${S}"/CMakeLists.txt ]] && kde4-base_src_install
+	[[ -e "${S}"/CMakeLists.txt ]] && kde5_src_install
 }

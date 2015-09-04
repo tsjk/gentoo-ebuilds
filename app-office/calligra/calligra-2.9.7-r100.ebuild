@@ -2,12 +2,15 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
+# note: files that need to be checked for dependencies etc:
+# CMakeLists.txt, kexi/CMakeLists.txt kexi/migration/CMakeLists.txt
+# krita/CMakeLists.txt
+
 EAPI=5
 
 CHECKREQS_DISK_BUILD="4G"
 KDE_HANDBOOK="optional"
 KDE_LINGUAS_LIVE_OVERRIDE="true"
-KDE_MINIMAL="4.13.3"
 OPENGL_REQUIRED="optional"
 inherit check-reqs kde5 versionator
 
@@ -30,19 +33,17 @@ case ${PV} in
 esac
 
 LICENSE="GPL-2"
-SLOT="5"
+SLOT="4"
 
 if [[ ${KDE_BUILD_TYPE} == release ]] ; then
 	KEYWORDS="~amd64 ~arm ~x86"
 fi
 
-IUSE="attica +crypt +eigen +exif fftw +fontconfig freetds +glew +glib +gsf
-gsl import-filter +jpeg jpeg2k +kdcraw kde +kdepim +lcms marble mysql
-+okular colorio openexr opengl +pdf postgres spacenav sybase test tiff
+IUSE="attica color-management +crypt +eigen +exif fftw +fontconfig freetds
++glew +glib +gsf gsl import-filter +jpeg jpeg2k +kdcraw kde +kdepim +lcms
+marble mysql +okular openexr opengl +pdf postgres spacenav sybase test tiff
 +threads +truetype vc xbase +xml"
 
-# Using Product Sets now, order doesn't matter so alphebetical
-# Gemini is new in 2.9. Mainly for touchscreens.
 # Don't use Active, it's broken on desktops.
 CAL_FTS="author braindump flow gemini karbon kexi krita plan sheets stage words"
 for cal_ft in ${CAL_FTS}; do
@@ -52,7 +53,8 @@ unset cal_ft
 
 REQUIRED_USE="
 	calligra_features_author? ( calligra_features_words )
-	calligra_features_krita? ( eigen exif lcms )
+	calligra_features_gemini? ( opengl )
+	calligra_features_krita? ( eigen exif lcms opengl )
 	calligra_features_plan? ( kdepim )
 	calligra_features_sheets? ( eigen )
 	vc? ( calligra_features_krita )
@@ -66,30 +68,28 @@ RDEPEND="
 	dev-lang/perl
 	dev-libs/boost
 	dev-qt/qtcore:4[exceptions]
-	media-libs/libpng
+	media-libs/libpng:0
 	sys-libs/zlib
-        x11-misc/shared-mime-info
-        >=dev-qt/qtgui-4.8.1-r1:4
 	virtual/libiconv
 	attica? ( dev-libs/libattica )
+	color-management? ( media-libs/opencolorio )
 	crypt? ( app-crypt/qca:2[qt4(+)] )
 	eigen? ( dev-cpp/eigen:3 )
 	exif? ( media-gfx/exiv2:= )
 	fftw? ( sci-libs/fftw:3.0 )
 	fontconfig? ( media-libs/fontconfig )
 	freetds? ( dev-db/freetds )
-	glew? ( media-libs/glew )
 	glib? ( dev-libs/glib:2 )
 	gsf? ( gnome-extra/libgsf )
 	gsl? ( sci-libs/gsl )
 	import-filter? (
 		app-text/libetonyek
 		app-text/libodfgen
-		app-text/libwpd
-		app-text/libwpg
+		app-text/libwpd:*
+		app-text/libwpg:*
 		app-text/libwps
-		media-libs/libvisio
 		dev-libs/librevenge
+		media-libs/libvisio
 	)
 	jpeg? ( virtual/jpeg:0 )
 	jpeg2k? ( media-libs/openjpeg:0 )
@@ -103,10 +103,9 @@ RDEPEND="
 	marble? ( $(add_kdeapps_dep marble) )
 	mysql? ( virtual/mysql )
 	okular? ( $(add_kdeapps_dep okular '' '5.9999') )
-	colorio? ( media-libs/opencolorio )
 	opengl? (
+		media-libs/glew
 		virtual/glu
-		>=dev-qt/qtopengl-4.8.1:4
 	)
 	openexr? ( media-libs/openexr )
 	pdf? (
@@ -114,12 +113,12 @@ RDEPEND="
 		media-gfx/pstoedit
 	)
 	postgres? (
-		dev-db/postgresql
+		dev-db/postgresql:*
 		dev-libs/libpqxx
 	)
-	spacenav? ( dev-libs/libspnav  )
+	spacenav? ( dev-libs/libspnav )
 	sybase? ( dev-db/freetds )
-	tiff? ( media-libs/tiff )
+	tiff? ( media-libs/tiff:0 )
 	truetype? ( media-libs/freetype:2 )
 	vc? ( dev-libs/vc )
 	xbase? ( dev-db/xbase )
@@ -134,13 +133,17 @@ RDEPEND="
 	)
 	calligra_features_words? ( dev-libs/libxslt )
 "
-DEPEND="${RDEPEND}"
+DEPEND="${RDEPEND}
+	x11-misc/shared-mime-info
+"
 
 [[ ${PV} == 9999 ]] && LANGVERSION="2.9" || LANGVERSION="$(get_version_component_range 1-2)"
 PDEPEND=">=app-office/calligra-l10n-${LANGVERSION}"
 
-RESTRICT=test
 # bug 394273
+RESTRICT=test
+
+PATCHES=( "${FILESDIR}/${PN}-2.9.6-ghns-linking.patch" )
 
 pkg_pretend() {
 	check-reqs_pkg_pretend
@@ -151,58 +154,44 @@ pkg_setup() {
 	check-reqs_pkg_setup
 }
 
-src_prepare() {
-	kde5_src_prepare
-	epatch "${FILESDIR}/libs_widgets_CMakeLists.patch"
-}
-
-
 src_configure() {
 	local cal_ft myproducts
 
-	# PRODUCTSET now is the upstream recommended way and phasing out -DBUILD_foo=off
+	# applications
 	for cal_ft in ${CAL_FTS}; do
-                use calligra_features_${cal_ft} && myproducts+=( ${cal_ft^^} )
+		use calligra_features_${cal_ft} && myproducts+=( ${cal_ft^^} )
 	done
 
 	local mycmakeargs=( -DPRODUCTSET="${myproducts[*]}" )
 
 	# first write out things we want to hard-enable
-	local mycmakeargs=(
-		"-DWITH_PNG=ON"
-		"-DWITH_ZLIB=ON"
+	mycmakeargs+=(
 		"-DGHNS=ON"
 		"-DWITH_Iconv=ON"            # available on all supported arches and many more
-		"-DWITH_OCIO=ON"
 	)
 
 	# default disablers
 	mycmakeargs+=(
-		"-DBUILD_active=OFF"         # we dont support active gui, maybe arm could
 		"-DCREATIVEONLY=OFF"
 		"-DPACKAGERS_BUILD=OFF"
 		"-DWITH_Soprano=OFF"
 	)
 
-	# complete disablement of opengl is controlled by USEOPENGL. Defaults to ON.
-	use opengl || mycmakeargs+=( "-DUSEOPENGL=OFF" )
-
 	# regular options
 	mycmakeargs+=(
 		$(cmake-utils_use_with attica LibAttica)
-		$(cmake-utils_use_with colorio OCIO)
+		$(cmake-utils_use_with color-management OCIO)
 		$(cmake-utils_use_with crypt QCA2)
 		$(cmake-utils_use_with eigen Eigen3)
 		$(cmake-utils_use_with exif Exiv2)
 		$(cmake-utils_use_with fftw FFTW3)
 		$(cmake-utils_use_with fontconfig Fontconfig)
 		$(cmake-utils_use_with freetds FreeTDS)
-		$(cmake-utils_use_with glew GLEW)
 		$(cmake-utils_use_with glib GLIB2)
 		$(cmake-utils_use_with gsl GSL)
-		$(cmake-utils_use_with import-filter LibRevenge)
 		$(cmake-utils_use_with import-filter LibEtonyek)
 		$(cmake-utils_use_with import-filter LibOdfGen)
+		$(cmake-utils_use_with import-filter LibRevenge)
 		$(cmake-utils_use_with import-filter LibVisio)
 		$(cmake-utils_use_with import-filter LibWpd)
 		$(cmake-utils_use_with import-filter LibWpg)
@@ -217,7 +206,7 @@ src_configure() {
 		$(cmake-utils_use_with mysql MySQL)
 		$(cmake-utils_use_with okular Okular)
 		$(cmake-utils_use_with openexr OpenEXR)
-		$(cmake-utils_use_with opengl OpenGL)
+		$(cmake-utils_use opengl USEOPENGL)
 		$(cmake-utils_use_with pdf Poppler)
 		$(cmake-utils_use_with pdf Pstoedit)
 		$(cmake-utils_use_with postgres CalligraPostgreSQL)
@@ -232,8 +221,6 @@ src_configure() {
 	)
 
 	mycmakeargs+=( $(cmake-utils_use_build test cstester) )
-
-	# filters
 
 	kde5_src_configure
 }
