@@ -33,7 +33,7 @@ case ${PV} in
 esac
 
 LICENSE="GPL-2"
-SLOT="4"
+SLOT="5"
 
 if [[ ${KDE_BUILD_TYPE} == release ]] ; then
 	KEYWORDS="~amd64 ~arm ~x86"
