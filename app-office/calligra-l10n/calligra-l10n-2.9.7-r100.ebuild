@@ -10,7 +10,9 @@ DESCRIPTION="Calligra localization package"
 HOMEPAGE="https://www.kde.org/"
 LICENSE="GPL-2"
 
-DEPEND="sys-devel/gettext"
+RDEPEND="!app-office/calligra-l10n:4"
+DEPEND="${RDEPEND}
+	sys-devel/gettext"
 RDEPEND="!app-office/koffice-l10n"
 
 KEYWORDS="~amd64 ~arm ~x86"
