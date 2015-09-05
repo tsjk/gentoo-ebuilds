@@ -154,7 +154,7 @@ pkg_setup() {
 src_prepare() {
 	kde5_src_prepare
 	epatch "${FILESDIR}/${PN}-2.9.6-ghns-linking.patch"
-	epatch "${FILESDIR}/libs_widgets_CMakeLists.patch"
+	epatch "${FILESDIR}/${PN}-2.9.6-libs_widgets_CMakeLists.patch"
 }
 
 
