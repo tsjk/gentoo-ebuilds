@@ -36,7 +36,7 @@ DEPEND="${RDEPEND}
 	dev-util/intltool
 "
 
-S="${WORKDIR}/${MY_PN}"
+S="${WORKDIR}/${MY_P}"
 
 src_prepare() {
 	rm "${S}/ltmain.sh"
