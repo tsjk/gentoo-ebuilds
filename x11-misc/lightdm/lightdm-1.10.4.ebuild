@@ -49,7 +49,7 @@ PDEPEND="gtk? ( x11-misc/lightdm-gtk-greeter )
 	razor? ( razorqt-base/razorqt-lightdm-greeter )"
 
 DOCS=( NEWS )
-RESTRICT="test"
+RESTRICT="mirror test"
 
 src_prepare() {
     use qt5 && export PATH="/usr/lib/qt5/bin/:${PATH}"
