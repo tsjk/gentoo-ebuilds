@@ -1,26 +1,26 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Id$
 
 EAPI=5
-inherit autotools eutils pam readme.gentoo systemd
+inherit autotools eutils pam readme.gentoo systemd versionator
 
-TRUNK_VERSION="1.10"
+TRUNK_VERSION="$(get_version_component_range 1-2)"
 DESCRIPTION="A lightweight display manager"
 HOMEPAGE="http://www.freedesktop.org/wiki/Software/LightDM"
-SRC_URI="http://launchpad.net/${PN}/${TRUNK_VERSION}/${PV}/+download/${P}.tar.xz
+SRC_URI="https://launchpad.net/${PN}/${TRUNK_VERSION}/${PV}/+download/${P}.tar.xz
 	mirror://gentoo/introspection-20110205.m4.tar.bz2"
 
 LICENSE="GPL-3 LGPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~arm ~ppc ~x86"
-IUSE="+gtk +introspection kde lxqt qt4 qt5 razor"
+IUSE="+gtk +introspection +gnome kde lxqt qt4 qt5 razor"
 REQUIRED_USE="|| ( gtk kde razor lxqt )
     || ( qt4 qt5 )"
 
 COMMON_DEPEND=">=dev-libs/glib-2.32.3:2
 	dev-libs/libxml2
-	sys-apps/accountsservice
+	gnome? ( sys-apps/accountsservice )
 	virtual/pam
 	x11-libs/libX11
 	>=x11-libs/libxklavier-5
@@ -40,7 +40,7 @@ RDEPEND="${COMMON_DEPEND}
 DEPEND="${COMMON_DEPEND}
 	dev-util/gtk-doc-am
 	dev-util/intltool
-	gnome-base/gnome-common
+	gnome? ( gnome-base/gnome-common )
 	sys-devel/gettext
 	virtual/pkgconfig"
 PDEPEND="gtk? ( x11-misc/lightdm-gtk-greeter )
@@ -52,7 +52,7 @@ DOCS=( NEWS )
 RESTRICT="mirror test"
 
 src_prepare() {
-    use qt5 && export PATH="/usr/lib/qt5/bin/:${PATH}"
+	use qt5 && export PATH="/usr/lib/qt5/bin/:${PATH}"
 
 	sed -i -e 's:getgroups:lightdm_&:' tests/src/libsystem.c || die #412369
 	sed -i -e '/minimum-uid/s:500:1000:' data/users.conf || die
@@ -114,11 +114,16 @@ src_install() {
 	doins data/{${PN},keys}.conf
 	doins "${FILESDIR}"/Xsession
 	fperms +x /etc/${PN}/Xsession
+	# /var/lib/lightdm-data could be useful. Bug #522228
+	dodir /var/lib/lightdm-data
 
 	prune_libtool_files --all
 	rm -rf "${ED}"/etc/init
 
-	pamd_mimic system-local-login ${PN} auth account session #372229
+	# Remove existing pam file. We will build a new one. Bug #524792
+	rm -rf "${ED}"/etc/pam.d/${PN}{,-greeter}
+	pamd_mimic system-local-login ${PN} auth account password session #372229
+	pamd_mimic system-local-login ${PN}-greeter auth account password session #372229
 	dopamd "${FILESDIR}"/${PN}-autologin #390863, #423163
 
 	readme.gentoo_create_doc
