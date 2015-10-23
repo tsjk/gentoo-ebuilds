@@ -1,0 +1,18 @@
+--- dante-1.4.1/lib/upnp.c.orig	2014-08-21 18:21:50.000000000 +0200
++++ dante-1.4.1/lib/upnp.c	2015-10-23 10:47:28.285488885 +0200
+@@ -155,8 +155,13 @@
+                            NULL,
+                            0
+ #if HAVE_LIBMINIUPNP17
+-                          ,0,
+-                          &rc
++                          ,0
++#endif /* HAVE_LIBMINIUPNP17 */
++#if MINIUPNPC_API_VERSION > 13
++                          ,2
++#endif /* MINIUPNPC_API_VERSION > 13 */
++#if HAVE_LIBMINIUPNP17
++                          ,&rc
+ #endif /* HAVE_LIBMINIUPNP17 */
+                          );
+ 
