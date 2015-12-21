@@ -142,7 +142,7 @@ PDEPEND=">=app-office/calligra-l10n-${LANGVERSION}"
 RESTRICT=test
 
 PATCHES=( "${FILESDIR}/${PN}-2.9.6-ghns-linking.patch"
-	  "${FILESDIR}/${P}-kis_advanced_color_space_selector.patch" )
+	  "${FILESDIR}/${PN}-2.9.7-kis_advanced_color_space_selector.patch" )
 
 pkg_pretend() {
 	check-reqs_pkg_pretend
