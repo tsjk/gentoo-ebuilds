@@ -24,6 +24,9 @@ case ${PV} in
 	2.[456789].?)
 		# stable releases
 		SRC_URI="mirror://kde/stable/${P}/${P}.tar.xz" ;;
+	2.[456789].??)
+		# stable releases
+		SRC_URI="mirror://kde/stable/${P}/${P}.tar.xz" ;;
 	2.[456789].9999)
 		# stable branch live ebuild
 		SRC_URI="" ;;
@@ -34,6 +37,7 @@ esac
 
 LICENSE="GPL-2"
 SLOT="4"
+RESTRICT="mirror"
 
 if [[ ${KDE_BUILD_TYPE} == release ]] ; then
 	KEYWORDS="~amd64 ~arm ~x86"

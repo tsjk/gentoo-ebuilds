@@ -12,7 +12,7 @@ CHECKREQS_DISK_BUILD="4G"
 KDE_HANDBOOK="optional"
 KDE_LINGUAS_LIVE_OVERRIDE="true"
 OPENGL_REQUIRED="optional"
-inherit check-reqs kde4-base versionator
+inherit check-reqs kde5 versionator
 
 DESCRIPTION="KDE Office Suite"
 HOMEPAGE="http://www.calligra.org/"
@@ -24,6 +24,9 @@ case ${PV} in
 	2.[456789].?)
 		# stable releases
 		SRC_URI="mirror://kde/stable/${P}/${P}.tar.xz" ;;
+	2.[456789].??)
+		# stable releases
+		SRC_URI="mirror://kde/stable/${P}/${P}.tar.xz" ;;
 	2.[456789].9999)
 		# stable branch live ebuild
 		SRC_URI="" ;;
@@ -33,7 +36,7 @@ case ${PV} in
 esac
 
 LICENSE="GPL-2"
-SLOT="4"
+SLOT="5"
 RESTRICT="mirror"
 
 if [[ ${KDE_BUILD_TYPE} == release ]] ; then
@@ -42,8 +45,8 @@ fi
 
 IUSE="attica color-management +crypt +eigen +exif fftw +fontconfig freetds
 +glew +glib +gsf gsl import-filter +jpeg jpeg2k +kdcraw kde +kdepim +lcms
-marble mysql +okular openexr +pdf postgres spacenav sybase test tiff +threads
-+truetype vc xbase +xml"
+marble mysql +okular openexr opengl +pdf postgres spacenav sybase test tiff
++threads +truetype vc xbase +xml"
 
 # Don't use Active, it's broken on desktops.
 CAL_FTS="author braindump flow gemini karbon kexi krita plan sheets stage words"
@@ -63,7 +66,9 @@ REQUIRED_USE="
 "
 
 RDEPEND="
-	$(add_kdeapps_dep knewstuff)
+	!app-office/calligra:4
+	$(add_frameworks_dep kdelibs4support)
+	$(add_frameworks_dep knewstuff)
 	dev-lang/perl
 	dev-libs/boost
 	dev-qt/qtcore:4[exceptions]
@@ -92,16 +97,16 @@ RDEPEND="
 	)
 	jpeg? ( virtual/jpeg:0 )
 	jpeg2k? ( media-libs/openjpeg:0 )
-	kdcraw? ( $(add_kdeapps_dep libkdcraw) )
-	kde? ( $(add_kdebase_dep kactivities) )
-	kdepim? ( $(add_kdebase_dep kdepimlibs) )
+	kdcraw? ( >kde-apps/libkdcraw-15 )
+	kde? ( $(add_frameworks_dep kactivities) )
+	kdepim? ( >=kde-base/kdepimlibs-4.14.3 )
 	lcms? (
 		media-libs/lcms:2
 		x11-libs/libX11
 	)
 	marble? ( $(add_kdeapps_dep marble) )
 	mysql? ( virtual/mysql )
-	okular? ( $(add_kdeapps_dep okular) )
+	okular? ( $(add_kdeapps_dep okular '' '5.9999') )
 	opengl? (
 		media-libs/glew
 		virtual/glu
@@ -143,14 +148,14 @@ PDEPEND=">=app-office/calligra-l10n-${LANGVERSION}"
 RESTRICT=test
 
 PATCHES=( "${FILESDIR}/${PN}-2.9.6-ghns-linking.patch"
-	  "${FILESDIR}/${P}-kis_advanced_color_space_selector.patch" )
+	  "${FILESDIR}/${PN}-2.9.7-kis_advanced_color_space_selector.patch" )
 
 pkg_pretend() {
 	check-reqs_pkg_pretend
 }
 
 pkg_setup() {
-	kde4-base_pkg_setup
+	kde5_pkg_setup
 	check-reqs_pkg_setup
 }
 
@@ -222,5 +227,5 @@ src_configure() {
 
 	mycmakeargs+=( $(cmake-utils_use_build test cstester) )
 
-	kde4-base_src_configure
+	kde5_src_configure
 }

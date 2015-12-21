@@ -31,6 +31,7 @@ esac
 
 LICENSE="GPL-2"
 SLOT="5"
+RESTRICT="mirror"
 
 if [[ ${KDE_BUILD_TYPE} == release ]] ; then
 	KEYWORDS="~amd64 ~arm ~x86"
