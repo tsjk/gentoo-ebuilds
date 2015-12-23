@@ -58,7 +58,7 @@ src_install() {
 	dodoc usr/share/doc/spotify-client/changelog.Debian.gz
 
 	SPOTIFY_PKG_HOME=usr/share/spotify
-	insinto /usr/share/pixmaps
+	insinto /usr/share/spotify/icons
 	doins ${SPOTIFY_PKG_HOME}/icons/*.png
 
 	SPOTIFY_HOME=/usr/share/spotify
