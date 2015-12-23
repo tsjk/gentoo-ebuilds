@@ -1,37 +1,57 @@
-EAPI=5
-inherit eutils gnome2-utils fdo-mime pax-utils unpacker
+# Copyright 1999-2015 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Id$
 
-DESCRIPTION="Spotify beta is a proprietary music streaming platform"
-HOMEPAGE="https://www.spotify.com/download/previews/"
-MY_PN="spotify-client"
+EAPI=5
+inherit eutils fdo-mime gnome2-utils pax-utils unpacker
+
+DESCRIPTION="Spotify is a social music platform"
+HOMEPAGE="https://www.spotify.com/ch-de/download/previews/"
 MY_PV="${PV}.gb8a7150f"
-MY_P="${MY_PN}_${MY_PV}"
-SRC_URI="amd64? ( http://repository.spotify.com/pool/non-free/s/${MY_PN}/${MY_P}_amd64.deb )
-	 x86? ( http://repository.spotify.com/pool/non-free/s/${MY_PN}/${MY_P}_i386.deb )"
+MY_P="${PN}-client_${MY_PV}"
+SRC_BASE="http://repository.spotify.com/pool/non-free/${PN:0:1}/${PN}-client/"
+SRC_URI="amd64? ( ${SRC_BASE}${MY_P}_amd64.deb )
+	x86? ( ${SRC_BASE}${MY_P}_i386.deb )"
 LICENSE="Spotify"
 SLOT="1.0"
 KEYWORDS="~amd64 ~x86"
-IUSE="pulseaudio"
+IUSE="gnome pax_kernel pulseaudio"
 RESTRICT="mirror strip"
 
 DEPEND=""
-RDEPEND="${DEPEND}
-	pulseaudio? ( >=media-sound/pulseaudio-0.9.21 )
-	|| ( dev-libs/libgcrypt:11/11 dev-libs/libgcrypt:0/11 )
-	dev-libs/glib:2
-	>=dev-libs/nspr-4.9
+# zenety needed for filepicker
+RDEPEND="
+	${DEPEND}
 	dev-libs/nss
-	gnome-base/gconf:2
-	>=media-libs/alsa-lib-1.0.14
-	sys-apps/dbus[X]
+	gnome-base/gconf
+	gnome-extra/zenity
+	media-libs/alsa-lib
+	media-libs/harfbuzz
+	media-libs/fontconfig
+	media-libs/mesa
+	net-misc/curl
+	net-print/cups[ssl]
+	sys-libs/glibc
 	x11-libs/gtk+:2
-	x11-libs/libXScrnSaver"
+	x11-libs/libXScrnSaver
+	x11-libs/libXtst
+	pulseaudio? ( media-sound/pulseaudio )
+	gnome? ( gnome-extra/gnome-integration-spotify )"
 
-S="${WORKDIR}"
+S=${WORKDIR}/
 
 QA_PREBUILT="usr/share/spotify/spotify
 		usr/share/spotify/libcef.so
 		usr/share/spotify/libffmpegsumo.so"
+
+src_prepare() {
+	# Fix desktop entry to launch spotify-dbus.py for GNOME integration
+	if use gnome ; then
+	sed -i \
+		-e 's/spotify \%U/spotify-dbus.py \%U/g' \
+		usr/share/spotify/spotify.desktop || die "sed failed"
+	fi
+}
 
 src_install() {
 	rm -f usr/share/spotify/spotify.desktop
@@ -56,6 +76,17 @@ src_install() {
 
 	make_desktop_entry "${MY_PN}" "Spotify Client (v${MY_PV})" "${MY_PN/-/_}"
 	domenu "${S}${SPOTIFY_HOME}/${MY_PN}.desktop"
+	if use pax_kernel; then
+		#create the headers, reset them to default, then paxmark -m them
+		pax-mark C "${ED}${SPOTIFY_HOME}/${PN}" || die
+		pax-mark z "${ED}${SPOTIFY_HOME}/${PN}" || die
+		pax-mark m "${ED}${SPOTIFY_HOME}/${PN}" || die
+		eqawarn "You have set USE=pax_kernel meaning that you intend to run"
+		eqawarn "${PN} under a PaX enabled kernel.  To do so, we must modify"
+		eqawarn "the ${PN} binary itself and this *may* lead to breakage!  If"
+		eqawarn "you suspect that ${PN} is being broken by this modification,"
+		eqawarn "please open a bug."
+	fi
 }
 
 pkg_preinst() {
