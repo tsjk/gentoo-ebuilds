@@ -57,13 +57,17 @@ src_install() {
 	rm -f usr/share/spotify/spotify.desktop
 	dodoc usr/share/doc/spotify-client/changelog.Debian.gz
 
+	SPOTIFY_PKG_HOME=usr/share/spotify
+	insinto /usr/share/pixmaps
+	doins ${SPOTIFY_PKG_HOME}/icons/*.png
+
 	SPOTIFY_HOME=/usr/share/spotify
 	insinto ${SPOTIFY_HOME}
-	doins -r usr/share/spotify/*
+	doins -r ${SPOTIFY_PKG_HOME}/*
 	fperms +x ${SPOTIFY_HOME}/spotify
 
 	dodir /usr/bin
-	cat <<-EOF >"${D}"/usr/bin/${MY_PN}
+	cat <<-EOF >"${D}"/usr/bin/spotify-client
 		#! /bin/sh
 		exec ${SPOTIFY_HOME}/spotify "\$@"
 	EOF
@@ -71,11 +75,12 @@ src_install() {
 
 	for size in 16 22 24 32 48 64 128 256; do
 			newicon -s ${size} "${FILESDIR}/icons/spotify-linux-${size}.png" \
-						"${MY_PN/-/_}.png"
+						"spotify_client.png"
 							done
 
-	make_desktop_entry "${MY_PN}" "Spotify Client (v${MY_PV})" "${MY_PN/-/_}"
-	domenu "${S}${SPOTIFY_HOME}/${MY_PN}.desktop"
+        make_desktop_entry "spotify-client" "Spotify Client (v${MY_PV})" "spotify_client"
+        domenu "${S}${SPOTIFY_HOME}/spotify-client.desktop"
+
 	if use pax_kernel; then
 		#create the headers, reset them to default, then paxmark -m them
 		pax-mark C "${ED}${SPOTIFY_HOME}/${PN}" || die
