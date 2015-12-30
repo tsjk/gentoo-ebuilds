@@ -99,7 +99,7 @@ RDEPEND="
 	jpeg2k? ( media-libs/openjpeg:0 )
 	kdcraw? ( >kde-apps/libkdcraw-15 )
 	kde? ( $(add_frameworks_dep kactivities) )
-	kdepim? ( >=kde-base/kdepimlibs-4.14.3 )
+	kdepim? ( >=kde-apps/kdepimlibs-4.14.3 )
 	lcms? (
 		media-libs/lcms:2
 		x11-libs/libX11
