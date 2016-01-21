@@ -38,9 +38,9 @@ QA_TEXTRELS_x86_fbsd="/boot/modules/libafs.ko"
 QA_TEXTRELS_amd64_fbsd="/boot/modules/libafs.ko"
 
 pkg_pretend() {
-	if use kernel_linux && kernel_is ge 4 4 ; then
+	if use kernel_linux && kernel_is ge 4 5 ; then
 		ewarn "Gentoo supports kernels which are supported by OpenAFS"
-		ewarn "which are limited to the kernel versions: <4.4"
+		ewarn "which are limited to the kernel versions: <4.5"
 		ewarn ""
 		ewarn "You are free to utilize epatch_user to provide whatever"
 		ewarn "support you feel is appropriate, but will not receive"
@@ -61,6 +61,8 @@ src_prepare() {
 	EPATCH_EXCLUDE="040_all_flags.patch" \
 	EPATCH_SUFFIX="patch" \
 	epatch "${WORKDIR}"/gentoo/patches
+	kernel_is ge 4 4 0 && epatch "${FILESDIR}/0001-Linux-4.4-key_payload-has-no-member-value.patch"
+	kernel_is ge 4 4 0 && epatch "${FILESDIR}/0002-Linux-4.4-Use-locks_lock_file_wait.patch"
 	epatch_user
 
 	# packaging is f-ed up, so we can't run eautoreconf
