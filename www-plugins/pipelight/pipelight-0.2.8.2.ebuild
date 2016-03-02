@@ -7,7 +7,7 @@ inherit eutils multilib
 DESCRIPTION="A browser plugin which allows one to use windows-only plugins inside Linux browsers."
 HOMEPAGE="http://fds-team.de/cms/index.html https://launchpad.net/pipelight"
 SRC_URI="https://bitbucket.org/mmueller2012/pipelight/get/v${PV}.tar.gz -> ${P}.tar.gz
-	binary-pluginloader? ( http://repos.fds-team.de/pluginloader/v0.2.8.1/pluginloader.tar.gz -> pluginloader-prebuilt-v0.2.8.1.tar.xz )"
+	binary-pluginloader? ( http://repos.fds-team.de/pluginloader/v0.2.8.2/pluginloader.tar.gz -> pluginloader-prebuilt-v0.2.8.2.tar.xz )"
 
 LICENSE="GPL-2 LGPL-2.1 MPL-1.1"
 SLOT="0"
@@ -23,7 +23,7 @@ RDEPEND="${DEPEND}
 	|| ( app-emulation/wine[X,abi_x86_32,pipelight] app-emulation/wine-compholio[X,abi_x86_32] app-emulation/wine-staging[X,abi_x86_32] )
 	x11-apps/mesa-progs"
 
-S="${WORKDIR}/mmueller2012-pipelight-8a1bdc6c254f"
+S="${WORKDIR}/mmueller2012-pipelight-792e7a4885a6"
 
 src_prepare() {
 	# Just in case someone runs 'emerge -O pipelight'
