@@ -20,7 +20,7 @@ RESTRICT="mirror"
 DEPEND="!binary-pluginloader? ( cross-i686-w64-mingw32/gcc[cxx] cross-x86_64-w64-mingw32/gcc[cxx] )"
 RDEPEND="${DEPEND}
 	app-arch/cabextract
-	( app-emulation/wine[X,abi_x86_32,staging] app-emulation/wine[X,abi_x86_32,pipelight] app-emulation/wine-compholio[X,abi_x86_32] app-emulation/wine-staging[X,abi_x86_32] )
+	|| ( app-emulation/wine[X,abi_x86_32,staging] app-emulation/wine[X,abi_x86_32,pipelight] app-emulation/wine-compholio[X,abi_x86_32] app-emulation/wine-staging[X,abi_x86_32] )
 	x11-apps/mesa-progs"
 
 S="${WORKDIR}/mmueller2012-pipelight-792e7a4885a6"
