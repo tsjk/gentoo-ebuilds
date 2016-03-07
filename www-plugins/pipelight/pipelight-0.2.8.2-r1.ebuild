@@ -28,7 +28,7 @@ S="${WORKDIR}/mmueller2012-pipelight-792e7a4885a6"
 src_prepare() {
 	# Just in case someone runs 'emerge -O pipelight'
 	if use !binary-pluginloader ; then
-		if ! has_version "cross-i686-w64-mingw32/gcc" -o ! has_version "cross-x86_64-w64-mingw32/gcc" ; then
+		if ! has_version "cross-i686-w64-mingw32/gcc" || ! has_version "cross-x86_64-w64-mingw32/gcc"; then
 			eerror
 			eerror "In order to compile pluginloader.exe, you must have an appropriate cross compiler installed."
 			eerror
