@@ -56,7 +56,6 @@ src_install() {
 	doexe ${S}/${PN}/Browser/TorBrowser/Tor/tor
 
 	exeinto "${TARGETDIR}"/TorBrowser/Tor/PluggableTransports/
-	doexe ${S}/${PN}/Browser/TorBrowser/Tor/PluggableTransports/flashproxy-*
 	doexe ${S}/${PN}/Browser/TorBrowser/Tor/PluggableTransports/fteproxy.bin
 	doexe ${S}/${PN}/Browser/TorBrowser/Tor/PluggableTransports/meek-*
 	doexe ${S}/${PN}/Browser/TorBrowser/Tor/PluggableTransports/obfs4proxy
