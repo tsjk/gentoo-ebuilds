@@ -16,7 +16,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="frost"
 
 RDEPEND="virtual/libiconv
-	frost? ( net-libs/polarssl )
+	frost? ( <net-libs/mbedtls-2 )
 	>=dev-libs/poco-1.4.3_p1
 	>=dev-db/sqlite-3.6.15"
 DEPEND="${RDEPEND}
