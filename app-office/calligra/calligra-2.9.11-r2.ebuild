@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -21,10 +21,7 @@ case ${PV} in
 	2.[456789].[789]?)
 		# beta or rc releases
 		SRC_URI="mirror://kde/unstable/${P}/${P}.tar.xz" ;;
-	2.[456789].?)
-		# stable releases
-		SRC_URI="mirror://kde/stable/${P}/${P}.tar.xz" ;;
-	2.[456789].??)
+	2.[456789].?|2.[456789].??)
 		# stable releases
 		SRC_URI="mirror://kde/stable/${P}/${P}.tar.xz" ;;
 	2.[456789].9999)
@@ -40,7 +37,7 @@ SLOT="4"
 RESTRICT="mirror"
 
 if [[ ${KDE_BUILD_TYPE} == release ]] ; then
-	KEYWORDS="~amd64 ~arm ~x86"
+	KEYWORDS="amd64 ~arm ~x86"
 fi
 
 IUSE="attica color-management +crypt +eigen +exif fftw +fontconfig freetds
@@ -122,7 +119,7 @@ RDEPEND="
 	sybase? ( dev-db/freetds )
 	tiff? ( media-libs/tiff:0 )
 	truetype? ( media-libs/freetype:2 )
-	vc? ( dev-libs/vc )
+	vc? ( <dev-libs/vc-1.0.0 )
 	xbase? ( dev-db/xbase )
 	calligra_features_kexi? (
 		>=dev-db/sqlite-3.8.7:3[extensions(+)]
@@ -130,6 +127,7 @@ RDEPEND="
 	)
 	calligra_features_krita? (
 		dev-qt/qtdeclarative:4
+		net-misc/curl
 		x11-libs/libX11
 		x11-libs/libXi
 	)
@@ -159,7 +157,10 @@ src_configure() {
 
 	# applications
 	for cal_ft in ${CAL_FTS}; do
-		use calligra_features_${cal_ft} && myproducts+=( ${cal_ft^^} )
+		# Switch to ^^ when we switch to EAPI=6.
+		#local prod=${cal_ft^^}
+		local prod=$(tr '[:lower:]' '[:upper:]' <<<"${cal_ft}")
+		use calligra_features_${cal_ft} && myproducts+=( "${prod}" )
 	done
 
 	local mycmakeargs=( -DPRODUCTSET="${myproducts[*]}" )
