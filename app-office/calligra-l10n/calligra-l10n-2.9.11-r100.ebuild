@@ -74,7 +74,7 @@ src_unpack() {
 src_configure() {
 	local mycmakeargs=(
 		-DBUILD_MESSAGES=ON -DBUILD_DATA=ON
-		$(cmake-utils_use_build doc)
+		-DBUILD_doc="$(usex doc)"
 	)
 	[[ -e "${S}"/CMakeLists.txt ]] && kde5_src_configure
 }
