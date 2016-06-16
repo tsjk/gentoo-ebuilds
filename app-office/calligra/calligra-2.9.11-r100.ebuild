@@ -182,48 +182,48 @@ src_configure() {
 
 	# regular options
 	mycmakeargs+=(
-		$(cmake-utils_use_with attica LibAttica)
-		$(cmake-utils_use_with color-management OCIO)
-		$(cmake-utils_use_with crypt QCA2)
-		$(cmake-utils_use_with eigen Eigen3)
-		$(cmake-utils_use_with exif Exiv2)
-		$(cmake-utils_use_with fftw FFTW3)
-		$(cmake-utils_use_with fontconfig Fontconfig)
-		$(cmake-utils_use_with freetds FreeTDS)
-		$(cmake-utils_use_with glib GLIB2)
-		$(cmake-utils_use_with gsl GSL)
-		$(cmake-utils_use_with import-filter LibEtonyek)
-		$(cmake-utils_use_with import-filter LibOdfGen)
-		$(cmake-utils_use_with import-filter LibRevenge)
-		$(cmake-utils_use_with import-filter LibVisio)
-		$(cmake-utils_use_with import-filter LibWpd)
-		$(cmake-utils_use_with import-filter LibWpg)
-		$(cmake-utils_use_with import-filter LibWps)
-		$(cmake-utils_use_with jpeg JPEG)
-		$(cmake-utils_use_with jpeg2k OpenJPEG)
-		$(cmake-utils_use_with kdcraw Kdcraw)
-		$(cmake-utils_use_with kde KActivities)
-		$(cmake-utils_use_with kdepim KdepimLibs)
-		$(cmake-utils_use_with lcms LCMS2)
-		$(cmake-utils_use_with marble CalligraMarble)
-		$(cmake-utils_use_with mysql MySQL)
-		$(cmake-utils_use_with okular Okular)
-		$(cmake-utils_use_with openexr OpenEXR)
-		$(cmake-utils_use opengl USEOPENGL)
-		$(cmake-utils_use_with pdf Poppler)
-		$(cmake-utils_use_with pdf Pstoedit)
-		$(cmake-utils_use_with postgres CalligraPostgreSQL)
-		$(cmake-utils_use_build postgres pqxx)
-		$(cmake-utils_use_with spacenav Spnav)
-		$(cmake-utils_use_with sybase FreeTDS)
-		$(cmake-utils_use_with tiff TIFF)
-		$(cmake-utils_use_with threads Threads)
-		$(cmake-utils_use_with truetype Freetype)
-		$(cmake-utils_use_with vc Vc)
-		$(cmake-utils_use_with xbase XBase)
+		-DWITH_LibAttica="$(usex attica ON OFF)"
+		-DWITH_OCIO="$(usex color-management ON OFF)"
+		-DWITH_QCA2="$(usex crypt ON OFF)"
+		-DWITH_Eigen3="$(usex eigen ON OFF)"
+		-DWITH_Exiv2="$(usex exif ON OFF)"
+		-DWITH_FFTW3="$(usex fftw ON OFF)"
+		-DWITH_Fontconfig="$(usex fontconfig ON OFF)"
+		-DWITH_FreeTDS="$(usex freetds ON OFF)"
+		-DWITH_GLIB2="$(usex glib ON OFF)"
+		-DWITH_GSL="$(usex gsl ON OFF)"
+		-DWITH_LibEtonyek="$(usex import-filter ON OFF)"
+		-DWITH_LibOdfGen="$(usex import-filter ON OFF)"
+		-DWITH_LibRevenge="$(usex import-filter ON OFF)"
+		-DWITH_LibVisio="$(usex import-filter ON OFF)"
+		-DWITH_LibWpd="$(usex import-filter ON OFF)"
+		-DWITH_LibWpg="$(usex import-filter ON OFF)"
+		-DWITH_LibWps="$(usex import-filter ON OFF)"
+		-DWITH_JPEG="$(usex jpeg ON OFF)"
+		-DWITH_OpenJPEG="$(usex jpeg2k ON OFF)"
+		-DWITH_Kdcraw="$(usex kdcraw ON OFF)"
+		-DWITH_KActivities="$(usex kde ON OFF)"
+		-DWITH_KdepimLibs="$(usex kdepim ON OFF)"
+		-DWITH_LCMS2="$(usex lcms ON OFF)"
+		-DWITH_CalligraMarble="$(usex marble ON OFF)"
+		-DWITH_MySQL="$(usex mysql ON OFF)"
+		-DWITH_Okular="$(usex okular ON OFF)"
+		-DWITH_OpenEXR="$(usex openexr ON OFF)"
+		-DUSEOPENGL="$(usex opengl ON OFF)"
+		-DWITH_Poppler="$(usex pdf ON OFF)"
+		-DWITH_Pstoedit="$(usex pdf ON OFF)"
+		-DWITH_CalligraPostgreSQL="$(usex postgres ON OFF)"
+		-DWITH_PQXX="$(usex postgres ON OFF)"
+		-DWITH_Spnav="$(usex spacenav ON OFF)"
+		-DWITH_FreeTDS="$(usex sybase ON OFF)"
+		-DWITH_TIFF="$(usex tiff ON OFF)"
+		-DWITH_Threads="$(usex threads ON OFF)"
+		-DWITH_Freetype="$(usex truetype ON OFF)"
+		-DWITH_Vc="$(usex vc ON OFF)"
+		-DWITH_XBase="$(usex xbase ON OFF)"
 	)
 
-	mycmakeargs+=( $(cmake-utils_use_build test cstester) )
+	mycmakeargs+=( $(DBUILD_ctester="$(usex test ON OFF)") )
 
 	kde5_src_configure
 }
