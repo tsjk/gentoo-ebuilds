@@ -51,6 +51,8 @@ src_prepare() {
 		-e 's/spotify \%U/spotify-dbus.py \%U/g' \
 		usr/share/spotify/spotify.desktop || die "sed failed"
 	fi
+
+	default
 }
 
 src_install() {
