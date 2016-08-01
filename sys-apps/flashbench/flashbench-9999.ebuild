@@ -3,19 +3,18 @@
 
 # build with
 # ACCEPT=~arm emerge-$BOARD flashbench
-EAPI="4"
+EAPI="5"
 
 inherit eutils
 
 if [[ ${PV} == "9999" ]] ; then
-	EGIT_REPO_URI="https://github.com/bradfa/flashbench.git"
-	EGIT_MASTER="dev"
-	inherit git-2
 	SRC_URI=""
+	EGIT_REPO_URI="https://github.com/bradfa/flashbench.git"
+	EGIT_BRANCH="dev"
+	inherit git-r3
 else
-	# This is a snapshot of "dev" branch
-	VER="dev-20121121"
-	SRC_URI="https://storage.cloud.google.com/chromeos-localmirror/distfiles/flashbench-${VER}.tar.gz"
+	VER="20120606"
+	SRC_URI="https://dev.gentoo.org/~bircoph/distfiles/flashbench-${VER}.tar.xz"
 	S=${WORKDIR}/${PN}-${VER}
 fi
 
@@ -28,7 +27,7 @@ KEYWORDS="~amd64 ~arm ~x86"
 IUSE=""
 
 src_prepare() {
-	epatch "${FILESDIR}"/flashbench-20121121-Makefile-install.patch
+	epatch "${FILESDIR}"/flashbench-20160801-Makefile-install.patch
 }
 
 src_configure() {
