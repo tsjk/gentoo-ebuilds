@@ -1,22 +1,19 @@
 # $Id$
-
 EAPI=5
 
 AUTOTOOLS_AUTORECONF=1
 AUTOTOOLS_IN_SOURCE_BUILD=1
-inherit autotools-utils systemd
+inherit autotools-utils git-r3 systemd
 
 DESCRIPTION="Thermal daemon for Intel architectures"
 HOMEPAGE="https://01.org/linux-thermal-daemon"
-SRC_URI="https://github.com/01org/thermal_daemon/archive/v${PV}.tar.gz -> ${P}.tar.gz"
+EGIT_REPO_URI="https://github.com/01org/thermal_daemon.git"
 
 LICENSE="GPL-2+"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS=""
 
 IUSE=""
-S=${WORKDIR}/thermal_daemon-${PV}
-
 RESTRICT="mirror"
 
 CDEPEND="dev-libs/dbus-glib
