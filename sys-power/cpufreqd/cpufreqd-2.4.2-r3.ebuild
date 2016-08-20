@@ -4,7 +4,7 @@ EAPI="5"
 
 inherit autotools eutils
 
-NVCLOCK_VERSION="0.8b"
+NVCLOCK_VERSION="0.8b4"
 
 DESCRIPTION="CPU Frequency Daemon"
 HOMEPAGE="http://www.linux.it/~malattia/wiki/index.php/Cpufreqd"
@@ -27,8 +27,7 @@ DOCS=( AUTHORS ChangeLog NEWS README TODO )
 
 src_prepare() {
 	epatch "${FILESDIR}"/${PN}-conf.d.patch
-	epatch "${FILESDIR}"/${P}-PATH_MAX.patch #318287
-	epatch "${FILESDIR}"/${PN}-cpupower.patch
+	epatch "${FILESDIR}"/${PN}-PATH_MAX.patch #318287
 	epatch "${FILESDIR}"/${PN}-acpi_battery.patch
 
 	if use nvidia; then
