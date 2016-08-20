@@ -17,7 +17,7 @@ KEYWORDS="~amd64 ~ppc ~ppc64 ~sparc ~x86"
 
 IUSE="acpi apm lm_sensors nforce2 nvidia pmu"
 RDEPEND="	sys-fs/sysfsutils
-		sys-power/cpupower
+		sys-power/cpufrequtils
 		lm_sensors? ( >sys-apps/lm_sensors-3 )"
 DEPEND="sys-apps/sed
 	${RDEPEND}"
