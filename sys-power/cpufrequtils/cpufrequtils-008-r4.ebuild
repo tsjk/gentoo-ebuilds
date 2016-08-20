@@ -1,19 +1,20 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/sys-power/cpufrequtils/cpufrequtils-008-r4.ebuild,v 1.8 2013/08/03 07:29:55 ago Exp $
+# $Id$
 
-EAPI=4
+EAPI=6
 
 inherit eutils toolchain-funcs multilib systemd
 
 DESCRIPTION="Userspace utilities for the Linux kernel cpufreq subsystem"
 HOMEPAGE="http://www.kernel.org/pub/linux/utils/kernel/cpufreq/cpufrequtils.html"
-SRC_URI="mirror://kernel/linux/utils/kernel/cpufreq/${P}.tar.bz2"
+SRC_URI="mirror://kernel/linux/utils/kernel/cpufreq/${P}.tar.xz"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="amd64 arm ia64 ~mips ppc ppc64 sparc x86 ~amd64-linux ~arm-linux ~x86-linux"
 IUSE="debug nls"
+RESTRICT="mirror"
 
 DEPEND="nls? ( virtual/libintl )"
 RDEPEND=""
