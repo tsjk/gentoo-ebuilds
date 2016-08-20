@@ -29,6 +29,7 @@ src_prepare() {
 	epatch "${FILESDIR}"/${PN}-008-fix-msr-read.patch
 	epatch "${FILESDIR}"/${PN}-008-increase-MAX_LINE_LEN.patch
 	epatch "${FILESDIR}"/${PN}-008-fix-compilation-on-x86-32-with-fPIC.patch #375967
+	eapply_user
 }
 
 src_configure() {
