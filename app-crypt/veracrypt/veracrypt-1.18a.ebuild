@@ -12,13 +12,13 @@ SRC_URI="https://github.com/veracrypt/VeraCrypt/archive/VeraCrypt_${PV}.tar.gz -
 
 LICENSE="truecrypt-3.0"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
-IUSE="X +asm"
+KEYWORDS="~alpha ~amd64 ~amd64-fbsd ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~nios2 ~ppc ~ppc64 ~s390 ~sh ~sparc ~sparc-fbsd ~x86 ~x86-fbsd"
+IUSE="+asm"
 RESTRICT="mirror bindist"
 
 RDEPEND=">=sys-fs/lvm2-2.02.45
 	sys-fs/fuse
-	x11-libs/wxGTK:3.0[X?]
+	x11-libs/wxGTK:3.0[X]
 	app-arch/makeself
 	app-admin/sudo"
 DEPEND="${RDEPEND}
@@ -31,19 +31,10 @@ pkg_setup() {
 	linux-info_pkg_setup
 
 	local WX_GTK_VER="3.0"
-	if use X; then
-		need-wxwidgets unicode
-	else
-		need-wxwidgets base-unicode
-	fi
+	need-wxwidgets unicode
 }
 
 src_prepare() {
-	if has_version x11-libs/wxGTK[X]; then
-		# Fix linking when NOGUI=1
-		sed -e "s/WX_CONFIG_LIBS := base/&,core/" -i Main/Main.make || die "sed Main/Main.make failed"
-	fi
-
 	epatch "${FILESDIR}/makefile-archdetect.diff"
 	epatch "${FILESDIR}/execstack-fix.diff"
 }
@@ -51,7 +42,6 @@ src_prepare() {
 src_compile() {
 	local EXTRA
 
-	use X || EXTRA+=" NOGUI=1"
 	use asm  || EXTRA+=" NOASM=1"
 	append-flags -DCKR_NEW_PIN_MODE=0x000001B0 -DCKR_NEXT_OTP=0x000001B1
 
