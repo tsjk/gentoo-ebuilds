@@ -41,8 +41,8 @@ src_prepare() {
 
 src_compile() {
 	local EXTRA
-
 	use asm  || EXTRA+=" NOASM=1"
+
 	append-flags -DCKR_NEW_PIN_MODE=0x000001B0 -DCKR_NEXT_OTP=0x000001B1
 
 	emake \
@@ -67,11 +67,8 @@ src_test() {
 src_install() {
 	dobin Main/veracrypt
 	dodoc Readme.txt
-	if use X; then
-		newicon Resources/Icons/VeraCrypt-48x48.xpm veracrypt.xpm
-		make_desktop_entry ${PN} "VeraCrypt" ${PN} "System"
-	fi
-
+	newicon Resources/Icons/VeraCrypt-48x48.xpm veracrypt.xpm
+	make_desktop_entry ${PN} "VeraCrypt" ${PN} "System"
 	pax-mark -m "${D}/usr/bin/veracrypt"
 }
 
