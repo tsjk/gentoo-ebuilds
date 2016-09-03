@@ -56,6 +56,7 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	#( cd "${S}/src/mpv"; python ./bootstrap.py )
 	epatch "${FILESDIR}/gets_declaration.patch"
+	epatch "${FILESDIR}/20160819.patch"
 	sed -i -E 's#^WAFURL\ \ \ \ \ =\ "http://ftp\.waf\.io/pub/release/"\ \+\ WAFRELEASE$#WAFURL\ \ \ \ \ =\ "http://www\.freehackers\.org/~tnagy/release/"\ \+\ WAFRELEASE#' "${S}/src/mpv/bootstrap.py"
 }
 
