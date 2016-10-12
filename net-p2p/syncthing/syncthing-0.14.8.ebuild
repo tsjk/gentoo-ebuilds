@@ -16,6 +16,7 @@ LICENSE="MPL-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86 ~arm"
 IUSE="tools"
+
 RESTRICT="mirror"
 
 DOCS="README.md AUTHORS CONTRIBUTING.md"
@@ -69,7 +70,7 @@ src_install() {
 		dobin bin/syncthing
 		exeinto /usr/libexec/syncthing
 		for exe in bin/* ; do
-			[ "${exe}" = "bin/syncthing" ] || doexe "${exe}"
+			[[ "${exe}" = "bin/syncthing" ]] || doexe "${exe}"
 		done
 	else
 		dobin syncthing
@@ -112,7 +113,7 @@ pkg_postinst() {
 
 	# check if user syncthing-relaysrv exists
 	# if yes, warn that it has been moved to strelaysrv
-	if [ -n "$(egetent passwd syncthing-relaysrv 2>/dev/null)" ]; then
+	if [[ -n "$(egetent passwd syncthing-relaysrv 2>/dev/null)" ]]; then
 		ewarn
 		ewarn "The user and group for the relay server have been changed"
 		ewarn "from syncthing-relaysrv to strelaysrv"
