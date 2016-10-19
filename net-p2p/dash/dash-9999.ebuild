@@ -56,10 +56,9 @@ COMMON_DEPEND="
 		dev-qt/qtpaths:5
 		dev-qt/qtplugininfo:5
 		dev-qt/qtwidgets:5
-	)
-"
+	)"
 
-DEPEND="
+DEPEND="${COMMON_DEPEND}
 	dev-util/automoc
 	media-gfx/qrencode
 	sys-devel/autoconf
@@ -69,13 +68,10 @@ DEPEND="
 	sys-devel/libtool
 	sys-devel/make
 	virtual/pkgconfig
-	${COMMON_DEPEND}
-	qt5? ( dev-qt/linguist-tools:5 )
-"
+	qt5? ( dev-qt/linguist-tools:5 )"
 
 RDEPEND="
-	${COMMON_DEPEND}
-"
+	${COMMON_DEPEND}"
 
 REQUIRED_USE="^^ ( qt4 qt5 )"
 
