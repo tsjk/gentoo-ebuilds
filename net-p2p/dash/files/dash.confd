@@ -1,0 +1,10 @@
+# Config file for /etc/init.d/dash
+
+# owner of dashd process (don't change, must be existing)
+DASH_USER="dash"
+
+# extra options for dashd process
+DASH_OPTS="${DASH_OPTS}"
+
+# nice level
+NICELEVEL="19"
