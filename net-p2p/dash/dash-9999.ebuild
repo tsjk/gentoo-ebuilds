@@ -125,7 +125,7 @@ src_install() {
 	dosym /etc/dash/dash.conf /var/lib/dash/.dash/dash.conf
 
 	dodoc COPYING
-	dodoc -r doc/
+	dodoc -r doc/*
 	doman contrib/debian/manpages/{dashd.1,dash.conf.5,dash-qt.1}
 
 	insinto /etc/logrotate.d
