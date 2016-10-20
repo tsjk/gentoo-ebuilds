@@ -26,11 +26,12 @@ SLOT="0"
 IUSE+="dbus kde qrcode qt4 qt5"
 
 COMMON_DEPEND="
-	dev-libs/boost
+	>=dev-libs/boost-1.52.0[threads(+)]
 	>=dev-libs/libsecp256k1-0.0.0_pre20151118
-	dev-libs/openssl
+	dev-libs/openssl:0[-bindist]
 	dev-libs/univalue
 	net-libs/miniupnpc
+	sys-libs/db:$(db_ver_to_slot "${DB_VER}")[cxx]
 	dbus? (
 		qt4? ( dev-qt/qtdbus:4 )
 		qt5? ( dev-qt/qtdbus:5 )
@@ -86,29 +87,26 @@ src_prepare() {
 	append-cxxflags "-fPIE -DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT=1"
 	if [[ ${PV} == "9999" ]]; then eautoreconf; fi
 	default
-        rm -r src/leveldb || die
-        rm -r src/secp256k1 || die
 }
 
 src_configure() {
 	econf	--disable-bench  \
 		--disable-ccache \
 		--disable-static \
+		--disable-zmq \
+		--with-miniupnpc \
+		--enable-daemon \
 		--enable-tests=no \
+		--enable-upnp-default \
+		--enable-wallet \
 		$(use_with dbus qtdbus)  \
 		--with-gui=$(usex qt5 qt5 qt4) \
 		$(use_with qrcode qrencode)  \
-		--with-system-libsecp256k1  \
-		--with-system-leveldb
 		--with-system-univalue
 }
 
 src_install() {
 	default
-
-	#doexe src/dashd
-	#doexe src/dash-cli
-	#doexe src/qt/dash-qt
 
 	insinto /etc/dash
 	newins "${FILESDIR}/dash.conf" dash.conf
@@ -141,4 +139,22 @@ src_install() {
 		insinto /usr/share/kde4/services
 		doins contrib/debian/dash-qt.protocol
 	fi
+}
+
+pkg_preinst() {
+	gnome2_icon_savelist
+}
+
+update_caches() {
+	gnome2_icon_cache_update
+	fdo-mime_desktop_database_update
+	buildsycoca
+}
+
+pkg_postinst() {
+	update_caches
+}
+
+pkg_postrm() {
+	update_caches
 }
