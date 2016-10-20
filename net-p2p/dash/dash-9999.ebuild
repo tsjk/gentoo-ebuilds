@@ -77,11 +77,11 @@ RDEPEND="
 REQUIRED_USE="^^ ( qt4 qt5 )"
 
 
-#pkg_setup() {
-#	local UG=´dash'
-#	enewgroup "${UG}"
-#	enewuser "${UG}" -1 -1 /var/lib/dash "${UG}"
-#}
+pkg_setup() {
+	local UG=´dash'
+	enewgroup "${UG}"
+	enewuser "${UG}" -1 -1 /var/lib/dash "${UG}"
+}
 
 src_prepare() {
 	append-cxxflags "-fPIE -DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT=1"
