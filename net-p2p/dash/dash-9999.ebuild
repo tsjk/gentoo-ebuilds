@@ -5,7 +5,7 @@
 EAPI="6"
 
 DB_VER="4.8"
-inherit autotools db-use eutils fdo-mime flag-o-matic gnome2-utils kde4-functions toolchain-funcs
+inherit autotools db-use eutils fdo-mime flag-o-matic gnome2-utils kde4-functions toolchain-funcs user
 
 if [[ ${PV} == *9999* ]]; then
 	inherit git-r3
