@@ -5,7 +5,7 @@
 EAPI="6"
 
 DB_VER="4.8"
-inherit autotools db-use eutils fdo-mime flag-o-matic gnome2-utils kde4-functions toolchain-funcs user
+inherit autotools db-use eutils fdo-mime flag-o-matic gnome2-utils kde4-functions systemd toolchain-funcs user
 
 if [[ ${PV} == *9999* ]]; then
 	inherit git-r3
@@ -125,7 +125,7 @@ src_install() {
 	dosym /etc/dash/dash.conf /var/lib/dash/.dash/dash.conf
 
 	dodoc COPYING
-	dodoc doc/*
+	dodoc -r doc/
 	doman contrib/debian/manpages/{dashd.1,dash.conf.5,dash-qt.1}
 
 	insinto /etc/logrotate.d
