@@ -131,8 +131,8 @@ src_install() {
 	insinto /etc/logrotate.d
 	newins "${FILESDIR}/dashd.logrotate-r1" dashd
 
-	for size in 16 32 64 128 256; do newicon -s ${size} "share/pixmaps/bitcoin${size}.png" "dash.png"; done
-	make_desktop_entry "${PN} %u" "DASH-Qt" "${PN}" "Qt;Network;P2P;Office;Finance;" "MimeType=x-scheme-handler/bitcoin;\nTerminal=false"
+	for size in 16 32 64 128 256; do newicon -s ${size} "share/pixmaps/bitcoin${size}.png" "dash-qt.png"; done
+	make_desktop_entry "${PN}-qt %u" "DASH-Qt" "${PN}-qt" "Qt;Network;P2P;Office;Finance;" "MimeType=x-scheme-handler/bitcoin;\nTerminal=false"
 
 	if use kde; then
 		insinto /usr/share/kde4/services
