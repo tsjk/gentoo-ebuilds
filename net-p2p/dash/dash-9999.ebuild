@@ -78,7 +78,7 @@ REQUIRED_USE="^^ ( qt4 qt5 )"
 
 
 pkg_setup() {
-	local UG=´dash'
+	local UG='dash'
 	enewgroup "${UG}"
 	enewuser "${UG}" -1 -1 /var/lib/dash "${UG}"
 }
