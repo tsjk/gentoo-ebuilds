@@ -113,7 +113,7 @@ src_install() {
 	fowners dash:dash /etc/dash/dash.conf
 	fperms 600 /etc/dash/dash.conf
 
-	sed -i 's@BITCOIN@DASH@g' "contrib/init/dashd.openrcconf" "contrib/init/dashd.openrc"
+	sed -i 's@BITCOIN@DASH@g;s@Bitcoin@DASH@g' "contrib/init/dashd.openrcconf" "contrib/init/dashd.openrc"
 	newconfd "contrib/init/dashd.openrcconf" "${PN}d"
 	newinitd "contrib/init/dashd.openrc" "${PN}d"
 	systemd_dounit "${FILESDIR}/dashd.service"
