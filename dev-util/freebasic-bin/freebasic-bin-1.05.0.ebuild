@@ -32,11 +32,14 @@ DEPEND="media-libs/mesa
 
 RDEPEND="${DEPEND}"
 
-if use amd64; then
-	S="${WORKDIR}/FreeBASIC-${PV}-linux-x86_64"
-elif use x86; then
-	S="${WORKDIR}/FreeBASIC-${PV}-linux-x86"
-fi
+src_unpack() {
+	default
+	if use amd64; then
+		S="${WORKDIR}/FreeBASIC-${PV}-linux-x86_64"
+	elif use x86; then
+		S="${WORKDIR}/FreeBASIC-${PV}-linux-x86"
+	fi
+}
 
 src_install() {
 	dodir "/usr" || die
