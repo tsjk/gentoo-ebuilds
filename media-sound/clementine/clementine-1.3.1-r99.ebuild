@@ -62,10 +62,6 @@ COMMON_DEPEND="
 	moodbar? ( sci-libs/fftw:3.0 )
 	projectm? ( media-libs/glew:=
 			>=media-libs/libprojectm-1.2.0 )
-	spotify? ( || (
-		app-crypt/qca-ossl
-		>=app-crypt/qca-2.1[openssl]
-	) )
 	spotify-blob? ( >=media-libs/libspotify-10.1.16 )
 "
 # Note: sqlite driver of dev-qt/qtsql is bundled, so no sqlite use is required; check if this can be overcome someway;
