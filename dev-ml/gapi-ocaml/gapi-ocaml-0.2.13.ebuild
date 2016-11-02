@@ -9,7 +9,7 @@ inherit oasis
 OASIS_BUILD_DOCS=1
 DESCRIPTION="A simple OCaml client for Google Services"
 HOMEPAGE="http://gapi-ocaml.forge.ocamlcore.org/"
-SRC_URI="http://forge.ocamlcore.org/frs/download.php/1584/${P}.tar.gz"
+SRC_URI="http://forge.ocamlcore.org/frs/download.php/1647/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
