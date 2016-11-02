@@ -24,9 +24,9 @@ RDEPEND=">=dev-ml/ocurl-0.5.3:=
 	>=dev-ml/extlib-1.5.1:=
 	>=dev-ml/yojson-1.0.2:=
 	>=dev-ml/xmlm-1.0.2:=
-	>=dev-ml/gapi-ocaml-0.2.5
-	>=dev-ml/ocamlfuse-2.7.1
-	>=dev-ml/ocaml-sqlite3-1.6.1"
+	>=dev-ml/gapi-ocaml-0.2.10:=
+	>=dev-ml/ocamlfuse-2.7.1:=
+	>=dev-ml/ocaml-sqlite3-1.6.1:="
 DEPEND="${RDEPEND}
 	test? ( >=dev-ml/ounit-1.1.0
 	>=dev-ml/pa_monad-6.0 )"
