@@ -31,3 +31,16 @@ DEPEND="${RDEPEND}
 	test? ( >=dev-ml/ounit-1.1.0
 	>=dev-ml/pa_monad-6.0 )"
 DOCS=( "README.md" )
+
+src_configure() {
+	oasis_configure_opts='--exec-prefix '"${ED}/usr"''
+	oasis_src_configure
+}
+
+src_install() {
+	export OCAMLFIND_DESTDIR="${D}/$(ocamlfind printconf destdir)"
+	oasis_src_install
+	cp -a "${ED}/${ED}"/. "${ED}"/
+	rm -rf "${ED}/${ED}"
+	( cd "${ED}" && find . -mindepth 1 -maxdepth 1 -path "./usr" -prune -o \( -exec find '{}' -depth -type d -empty -delete \; \) )
+}
