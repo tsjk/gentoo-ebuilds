@@ -31,7 +31,7 @@ pkg_setup() {
 
 src_prepare() {
 	edos2unix src/http/pages/showfilepage.cpp
-	epatch "${FILESDIR}"/${PN}-use-system-libs2.patch
+	epatch "${FILESDIR}"/${P}-use-system-libs2.patch
 }
 
 src_configure() {

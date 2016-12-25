@@ -16,7 +16,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="frost"
 
 RDEPEND="virtual/libiconv
-	frost? ( <net-libs/mbedtls-2 )
+	frost? ( >=net-libs/mbedtls-2.2 <net-libs/mbedtls-2.3 )
 	>=dev-libs/poco-1.7.6
 	>=dev-db/sqlite-3.6.15"
 DEPEND="${RDEPEND}
@@ -31,7 +31,7 @@ pkg_setup() {
 
 src_prepare() {
 	edos2unix src/http/pages/showfilepage.cpp
-	epatch "${FILESDIR}"/${PN}-use-system-libs2.patch
+	epatch "${FILESDIR}"/${P}-use-system-libs2.patch
 }
 
 src_configure() {
