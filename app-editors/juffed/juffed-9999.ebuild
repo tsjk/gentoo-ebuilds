@@ -46,8 +46,10 @@ src_prepare() {
 		eapply "${FILESDIR}/${P}-use-qt5.patch"
 
 		# Fix a library name
-		sed -i -e 's/QtSolutions_/Qt5Solutions_/g' \
-			cmake/FindQtSingleApplication.cmake
+		sed -i -e 's/QtSolutions_/Qt5Solutions_/g' cmake/FindQtSingleApplication.cmake
+
+		# Fix another library name
+		sed -i -E '/^\s*SET\(QSCINTILLA_NAMES\ /s/\)$/\ qscintilla2\ libqscintilla2\)/' cmake/FindQScintilla2.cmake
 	else
 		# Explicitly select Qt4
 		eapply "${FILESDIR}/${P}-use-qt4.patch"
@@ -57,9 +59,12 @@ src_prepare() {
 }
 
 src_configure() {
-	local mycmakeargs=( -DUSE_SYSTEM_QTSINGLEAPPLICATION=ON -DUSE_ENCA=ON
-		-DUSE_QT5="$(usex qt5)"
-		-DQT_LIBRARY_DIR="/usr/$(get_libdir)$(usex qt5 / /qt4)" )
+	local mycmakeargs=( \
+		-DUSE_ENCA=ON \
+		-DUSE_QT5="$(usex qt5)" \
+		-DQT_INCLUDE_DIR="/usr/include/$(usex qt5 'qt5' 'qt4')" \
+		-DQT_LIBRARY_DIR="/usr/$(get_libdir)$(usex qt5 '' '/qt4')" \
+		-DUSE_SYSTEM_QTSINGLEAPPLICATION=ON )
 
 	cmake-utils_src_configure
 }
