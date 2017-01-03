@@ -56,30 +56,38 @@ src_prepare() {
 	python_convert_shebangs -r 2 .
 
 	# remove playonmac
-	rm etc/{playonmac.icns,terminal.applescript} || die
-	rm playonmac
+	rm playonmac etc/{playonmac.icns,terminal.applescript} || die
+
+	# remove playonfreebsd
+	rm playonfreebsd || die
 
 	# remove desktop integration
-	rm etc/{PlayOnLinux.desktop,PlayOnLinux.directory,playonlinux-Programmes.menu} || die
+	rm etc/{PlayOnLinux.appdata.xml,PlayOnLinux.desktop,PlayOnLinux.directory,playonlinux-Programs.menu} || die
 }
 
 src_install() {
 	# all things without exec permissions
 	insinto "${GAMES_DATADIR}/${PN}"
-	doins -r resources lang lib etc plugins
+	doins -r etc lang lib plugins resources tests
+
+	# bin/ install
+	exeinto "${GAMES_DATADIR}/${PN}/bin"
+	doexe bin/*
 
 	# bash/ install
-	exeinto "${GAMES_DATADIR}/${PN}/bash"
-	doexe bash/*
 	exeinto "${GAMES_DATADIR}/${PN}/bash/expert"
 	doexe bash/expert/*
+	rm -rf bash/expert || die
+	exeinto "${GAMES_DATADIR}/${PN}/bash"
+	doexe bash/*
 
-	# python/ install
-	exeinto "${GAMES_DATADIR}/${PN}/python"
-	doexe python/*
 	# sub dir without exec permissions
 	insinto "${GAMES_DATADIR}/${PN}/python"
 	doins -r python/lib
+	rm -rf python/lib || die
+	# python/ install
+	exeinto "${GAMES_DATADIR}/${PN}/python"
+	doexe python/*
 
 	# main executable files
 	exeinto "${GAMES_DATADIR}/${PN}"
@@ -91,7 +99,9 @@ src_install() {
 		newicon -s $size etc/${PN}$size.png ${PN}.png
 	done
 
-	dodoc CHANGELOG.md
+	dodoc CHANGELOG.md LICENCE README.md TRANSLATORS doc/copyright
+	doman doc/playonlinux.1
+	doman doc/playonlinux-pkg.1
 
 	games_make_wrapper ${PN} "./${PN}" "${GAMES_DATADIR}/${PN}"
 	make_desktop_entry ${PN} ${MY_PN} ${PN} Game
