@@ -85,9 +85,6 @@ pkg_setup() {
 
 src_prepare() {
 	append-cxxflags "-fPIE -DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT=1"
-	if use qt5; then
-		append-cxxflags "-std=c++11"
-	fi
 	if [[ ${PV} == "9999" ]]; then eautoreconf; fi
 	default
 }
@@ -106,6 +103,7 @@ src_configure() {
 		--with-gui=$(usex qt5 qt5 qt4) \
 		$(use_with qrcode qrencode)  \
 		--with-system-univalue
+	sed -i -E 's@^(QT_CFLAGS.*)$@\1\\\n\ \ -std=c++11@' "${S}/Makefile" || die "sed -i -E \"s@^(QT_CFLAGS.*)$@\1\\\ \ -std=c++11@\" \"${S}/Makefile\" failed."
 }
 
 src_install() {
