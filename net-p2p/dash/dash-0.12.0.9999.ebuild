@@ -10,6 +10,7 @@ inherit autotools db-use eutils fdo-mime flag-o-matic gnome2-utils kde4-function
 if [[ ${PV} == *9999* ]]; then
 	inherit git-r3
 	EGIT_REPO_URI=${EGIT_REPO_URI:-"git://github.com/dashpay/dash.git"}
+	EGIT_BRANCH="v0.12.0.x"
 	KEYWORDS=""
 	SRC_URI=""
 else
@@ -84,8 +85,12 @@ pkg_setup() {
 }
 
 src_prepare() {
-	append-cxxflags "-fPIE -DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT=1"
-	if [[ ${PV} == "9999" ]]; then eautoreconf; fi
+	if use qt5; then
+		append-cxxflags "-fPIE -DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT=1 -std=c++11"
+	else
+		append-cxxflags "-fPIE -DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT=1"
+	fi
+	if [[ ${PV} == *9999* ]]; then eautoreconf; fi
 	default
 }
 
@@ -103,7 +108,6 @@ src_configure() {
 		--with-gui=$(usex qt5 qt5 qt4) \
 		$(use_with qrcode qrencode)  \
 		--with-system-univalue
-	sed -i -E 's@^(QT_CFLAGS.*)$@\1\\\n\ \ -std=c++11@' "${S}/Makefile" || die "sed -i -E \"s@^(QT_CFLAGS.*)$@\1\\\ \ -std=c++11@\" \"${S}/Makefile\" failed."
 }
 
 src_install() {
