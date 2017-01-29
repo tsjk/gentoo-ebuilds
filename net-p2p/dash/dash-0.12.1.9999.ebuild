@@ -118,7 +118,6 @@ src_install() {
 	fowners dash:dash /etc/dash/dash.conf
 	fperms 600 /etc/dash/dash.conf
 
-	sed -i 's@BITCOIN@DASH@g;s@Bitcoin@DASH@g' "contrib/init/dashd.openrcconf" "contrib/init/dashd.openrc"
 	newconfd "contrib/init/dashd.openrcconf" "${PN}d"
 	newinitd "contrib/init/dashd.openrc" "${PN}d"
 	systemd_dounit "${FILESDIR}/dashd.service"
@@ -129,14 +128,14 @@ src_install() {
 	fowners dash:dash /var/lib/dash/.dash
 	dosym /etc/dash/dash.conf /var/lib/dash/.dash/dash.conf
 
-	dodoc COPYING
+	dodoc COPYING README.md
 	dodoc -r doc/*
-	doman contrib/debian/manpages/{dashd.1,dash.conf.5,dash-qt.1}
+	doman contrib/debian/manpages/{dash-cli.1,dash-qt.1,dash.conf.5,dashd.1}
 
 	insinto /etc/logrotate.d
 	newins "${FILESDIR}/dashd.logrotate-r1" dashd
 
-	for size in 16 32 64 128 256; do newicon -s ${size} "share/pixmaps/bitcoin${size}.png" "dash-qt.png"; done
+	for size in 16 32 64 128 256; do newicon -s ${size} "share/pixmaps/dash${size}.png" "dash-qt.png"; done
 	make_desktop_entry "${PN}-qt %u" "DASH-Qt" "${PN}-qt" "Qt;Network;P2P;Office;Finance;" "MimeType=x-scheme-handler/bitcoin;\nTerminal=false"
 
 	if use kde; then
