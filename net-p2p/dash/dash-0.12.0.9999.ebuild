@@ -42,6 +42,7 @@ COMMON_DEPEND="
 	)
 	qt4? ( dev-qt/qtcore:4[ssl] dev-qt/qtgui:4 )
 	qt5? (
+		!>dev-libs/boost-1.60
 		dev-qt/assistant:5
 		dev-qt/designer:5
 		dev-qt/qtgui:5
@@ -129,9 +130,9 @@ src_install() {
 	fowners dash:dash /var/lib/dash/.dash
 	dosym /etc/dash/dash.conf /var/lib/dash/.dash/dash.conf
 
-	dodoc COPYING
+	dodoc COPYING README.md
 	dodoc -r doc/*
-	doman contrib/debian/manpages/{dashd.1,dash.conf.5,dash-qt.1}
+	doman contrib/debian/manpages/{dash-qt.1,dash.conf.5,dashd.1}
 
 	insinto /etc/logrotate.d
 	newins "${FILESDIR}/dashd.logrotate-r1" dashd
