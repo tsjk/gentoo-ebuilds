@@ -14,7 +14,7 @@ fy-NL ga-IE gd gl gu-IN he hi-IN hr hsb hu hy-AM id is it ja kk km kn ko
 lt lv mai mk ml mr ms nb-NO nl nn-NO or pa-IN pl pt-BR pt-PT rm ro ru si
 sk sl son sq sr sv-SE ta te th tr uk uz vi xh zh-CN zh-TW )
 
-# Convert the ebuild version to the upstream mozilla version, used by mozlinguas
+# Convert the ebuild version to the upstream mozilla version, used by mozlinguas-v2
 MOZ_PV="${PV/_alpha/a}" # Handle alpha for SRC_URI
 MOZ_PV="${MOZ_PV/_beta/b}" # Handle beta for SRC_URI
 MOZ_PV="${MOZ_PV/_rc/rc}" # Handle rc for SRC_URI
@@ -124,7 +124,7 @@ src_unpack() {
 	unpack ${A}
 
 	# Unpack language packs
-	mozlinguas_src_unpack
+	mozlinguas-v2_src_unpack
 }
 
 src_prepare() {
@@ -296,7 +296,7 @@ src_install() {
 	emake DESTDIR="${D}" install
 
 	# Install language packs
-	mozlinguas_src_install
+	mozlinguas-v2_src_install
 
 	local size sizes icon_path icon name
 	if use bindist; then

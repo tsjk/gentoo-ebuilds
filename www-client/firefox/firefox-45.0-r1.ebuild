@@ -16,7 +16,7 @@ gl gu-IN he hi-IN hr hu hy-AM id is it ja kk km kn ko lt lv mai mk ml mr
 nb-NO nl nn-NO or pa-IN pl pt-BR pt-PT rm ro ru si sk sl son sq sr sv-SE ta te
 th tr uk vi xh zh-CN zh-TW )
 
-# Convert the ebuild version to the upstream mozilla version, used by mozlinguas
+# Convert the ebuild version to the upstream mozilla version, used by mozlinguas-v2
 MOZ_PV="${PV/_alpha/a}" # Handle alpha for SRC_URI
 MOZ_PV="${MOZ_PV/_beta/b}" # Handle beta for SRC_URI
 MOZ_PV="${MOZ_PV/_rc/rc}" # Handle rc for SRC_URI
@@ -34,7 +34,7 @@ MOZCONFIG_OPTIONAL_GTK3=1
 MOZCONFIG_OPTIONAL_WIFI=1
 MOZCONFIG_OPTIONAL_JIT="enabled"
 
-inherit check-reqs flag-o-matic toolchain-funcs eutils gnome2-utils mozconfig-v6.45 pax-utils fdo-mime autotools virtualx mozlinguas
+inherit check-reqs flag-o-matic toolchain-funcs eutils gnome2-utils mozconfig-v6.45 pax-utils fdo-mime autotools virtualx mozlinguas-v2
 
 DESCRIPTION="Firefox Web Browser"
 HOMEPAGE="http://www.mozilla.com/firefox"
@@ -125,7 +125,7 @@ src_unpack() {
 	unpack ${A}
 
 	# Unpack language packs
-	mozlinguas_src_unpack
+	mozlinguas-v2_src_unpack
 }
 
 src_prepare() {
@@ -309,7 +309,7 @@ src_install() {
 	emake DESTDIR="${D}" install
 
 	# Install language packs
-	mozlinguas_src_install
+	mozlinguas-v2_src_install
 
 	local size sizes icon_path icon name
 	if use bindist; then
