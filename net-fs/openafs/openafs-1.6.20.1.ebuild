@@ -1,6 +1,5 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI="6"
 
@@ -8,7 +7,7 @@ inherit autotools eutils flag-o-matic multilib pam systemd toolchain-funcs versi
 
 MY_PV=$(delete_version_separator '_')
 MY_P="${PN}-${MY_PV}"
-PVER="20160801-2"
+PVER="20170212"
 
 DESCRIPTION="The OpenAFS distributed file system"
 HOMEPAGE="https://www.openafs.org/"
@@ -22,7 +21,7 @@ SRC_URI="
 
 LICENSE="IBM BSD openafs-krb5-a APSL-2"
 SLOT="0"
-KEYWORDS="amd64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="~amd64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 
 IUSE="bitmap-later debug doc fuse kerberos +modules ncurses pam pthreaded-ubik +supergroups"
 
@@ -53,6 +52,8 @@ src_prepare() {
 	# fixing 2-nd level makefiles to honor flags
 	sed -i -r 's/\<CFLAGS[[:space:]]*=/CFLAGS+=/; s/\<LDFLAGS[[:space:]]*=/LDFLAGS+=/' \
 		src/*/Makefile.in || die '*/Makefile.in sed failed'
+
+	kernel_is ge 4 10 0 && epatch "${FILESDIR}/0001-Linux-4.10-have_submounts-is-gone.patch"
 
 	# packaging is f-ed up, so we can't run eautoreconf
 	# run autotools commands based on what is listed in regen.sh

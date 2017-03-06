@@ -1,6 +1,5 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI="6"
 
@@ -9,7 +8,7 @@ inherit autotools linux-mod multilib toolchain-funcs versionator
 MY_PV=$(delete_version_separator '_')
 MY_PN="${PN/-kernel}"
 MY_P="${MY_PN}-${MY_PV}"
-PVER="20160801-2"
+PVER="20170212"
 
 DESCRIPTION="The OpenAFS distributed file system kernel module"
 HOMEPAGE="https://www.openafs.org/"
@@ -22,7 +21,7 @@ SRC_URI="
 
 LICENSE="IBM BSD openafs-krb5-a APSL-2"
 SLOT="0"
-KEYWORDS="amd64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="~amd64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE="debug"
 
 S=${WORKDIR}/${MY_P}
@@ -37,9 +36,9 @@ QA_TEXTRELS_amd64_fbsd="/boot/modules/libafs.ko"
 PATCHES=( "${WORKDIR}/gentoo/patches" )
 
 pkg_pretend() {
-	if use kernel_linux && kernel_is ge 4 10 ; then
+	if use kernel_linux && kernel_is ge 4 11 ; then
 		ewarn "Gentoo supports kernels which are supported by OpenAFS"
-		ewarn "which are limited to the kernel versions: < 4.10"
+		ewarn "which are limited to the kernel versions: < 4.11"
 		ewarn ""
 		ewarn "You are free to utilize epatch_user to provide whatever"
 		ewarn "support you feel is appropriate, but will not receive"
@@ -57,6 +56,8 @@ pkg_setup() {
 
 src_prepare() {
 	default
+
+	kernel_is ge 4 10 0 && epatch "${FILESDIR}/0001-Linux-4.10-have_submounts-is-gone.patch"
 
 	# packaging is f-ed up, so we can't run eautoreconf
 	# run autotools commands based on what is listed in regen.sh
