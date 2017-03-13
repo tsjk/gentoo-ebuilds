@@ -35,7 +35,7 @@ src_unpack() {
 	unpack ./src.zip
 }
 
-java_prepare() {
+src_prepare() {
 	if ! use test; then
 		# There are too many files to delete so we won't be using JAVA_RM_FILES
 		# (it produces a lot of output).
@@ -49,6 +49,7 @@ java_prepare() {
 
 		rm -v "${RM_TEST_FILES[@]}" || die
 	fi
+	default
 }
 
 src_compile() {
