@@ -7,11 +7,11 @@ inherit eutils fdo-mime gnome2-utils pax-utils unpacker
 
 DESCRIPTION="Spotify is a social music platform"
 HOMEPAGE="https://www.spotify.com/ch-de/download/previews/"
-MY_PV="${PV}.gc83ea995"
+MY_PV="${PV}.g2f08534a"
 MY_P="${PN}-client_${MY_PV}"
 SRC_BASE="http://repository.spotify.com/pool/non-free/${PN:0:1}/${PN}-client/"
-SRC_URI="amd64? ( ${SRC_BASE}${MY_P}-42_amd64.deb )
-	x86? ( ${SRC_BASE}${MY_P}-42_i386.deb )"
+SRC_URI="amd64? ( ${SRC_BASE}${MY_P}-47_amd64.deb )
+	x86? ( ${SRC_BASE}${MY_P}-47_i386.deb )"
 LICENSE="Spotify"
 SLOT="1.0"
 KEYWORDS="~amd64 ~x86"
@@ -31,7 +31,7 @@ RDEPEND="
 	media-libs/harfbuzz
 	media-libs/fontconfig
 	media-libs/mesa
-	net-misc/curl
+	net-misc/curl[ssl]
 	net-print/cups[ssl]
 	x11-libs/gtk+:2
 	x11-libs/libXScrnSaver
