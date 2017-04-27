@@ -87,9 +87,9 @@ pkg_setup() {
 
 src_prepare() {
 	if use qt5; then
-		append-cxxflags "-fPIE -DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT=1 -std=c++11"
+		append-cxxflags "-fPIC -DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT=1 -std=c++11"
 	else
-		append-cxxflags "-fPIE -DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT=1"
+		append-cxxflags "-fPIC -DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT=1"
 	fi
 	if [[ ${PV} == *9999* ]]; then eautoreconf; fi
 	default
