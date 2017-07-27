@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <use>
+    <flag name='convtojpeg'>Use <pkg>media-libs/netpbm</pkg> and <pkg>media-libs/libjpeg-turbo</pkg> to convert screenshots to JPEG.</flag>
+    <flag name='figlet'>Use <pkg>app-misc/figlet</pkg> to print number of the last watched episode with big numbers in ASCII-art style.</flag>
+    <flag name='parallel'>Use <pkg>sys-process/parallel</pkg> to compress taken screenshots utilizing all available CPU cores.</flag>
+    <flag name='pngcrush'>Install <pkg>media-gfx/pngcrush</pkg> to compress PNG screenshots.</flag>
+    <flag name='remember-delays'>Pull dependencies required to remember sub-delay and audio-delay between episodes: <pkg>media-video/mpv</pkg>, <pkg>sys-fs/inotify-tools</pkg> and <pkg>sys-process/procps</pkg>.</flag>
+    <flag name='toilet'>Same as figlet, but output is colored.</flag>
+    <flag name='xdg-open'>Pull <pkg>x11-misc/xdg-utils</pkg> for the dialog suggesting to open RELEASE_NOTES of a newer version online.</flag>
+  </use>
+  <longdescription>
+watch.sh is written to simplify access to video files and play videos easily.
+It allows playing single files, DVD/BD folders and folders with episodes
+of TV series. For the former and the latter ones it can also find external
+subtitles and tracks, applying heuristic algorithms to include files with
+names that may strongly differ from the names of corresponding video files,
+and that frees you from the job of picking appropriate subtitles manually.
+
+This script can also help you deal with organization taken screenshots,
+placing them right into the folder named after video and compressing them
+after you stop watching it.
+
+For the folder with episodes watch.sh can track your watching progress,
+allowing to run episodes one after another without creating a playlist,
+but remembering the episode number you quit watching today, so you could
+easily resume watching the folder later.
+
+…and many other accompanying things that make life even lazier.
+  </longdescription>
+</pkgmetadata>
