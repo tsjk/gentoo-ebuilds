@@ -1,14 +1,12 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 inherit eutils fdo-mime gnome2-utils pax-utils unpacker
 
 DESCRIPTION="Spotify is a social music platform"
 HOMEPAGE="https://www.spotify.com/ch-de/download/previews/"
-MY_PV="${PV}.ge6ca9946"
-MY_P="${PN}-client_${MY_PV}"
+MY_PV="${PV}.ge6ca9946"; MY_P="${PN}-client_${MY_PV}"
 SRC_BASE="http://repository.spotify.com/pool/non-free/${PN:0:1}/${PN}-client/"
 SRC_URI="amd64? ( ${SRC_BASE}${MY_P}-18_amd64.deb )
 	x86? ( ${SRC_BASE}${MY_P}-18_i386.deb )"
@@ -31,7 +29,7 @@ RDEPEND="
 	media-libs/harfbuzz
 	media-libs/fontconfig
 	media-libs/mesa
-	net-misc/curl[ssl]
+	net-misc/curl[ssl,curl_ssl_openssl]
 	net-print/cups[ssl]
 	x11-libs/gtk+:2
 	x11-libs/libXScrnSaver
@@ -47,11 +45,10 @@ QA_PREBUILT="usr/share/spotify/spotify"
 src_prepare() {
 	# Fix desktop entry to launch spotify-dbus.py for GNOME integration
 	if use gnome ; then
-	sed -i \
-		-e 's/spotify \%U/spotify-dbus.py \%U/g' \
-		usr/share/spotify/spotify.desktop || die "sed failed"
+		sed -i \
+			-e 's/spotify \%U/spotify-dbus.py \%U/g' \
+			usr/share/spotify/spotify.desktop || die "sed failed"
 	fi
-
 	default
 }
 
@@ -75,10 +72,11 @@ src_install() {
 	EOF
 	fperms +x /usr/bin/spotify-client
 
+	local size
 	for size in 16 22 24 32 48 64 128 256; do
-			newicon -s ${size} "${FILESDIR}/icons/spotify-linux-${size}.png" \
-						"spotify_client.png"
-							done
+		newicon -s ${size} "${FILESDIR}/icons/spotify-linux-${size}.png" \
+			"spotify_client.png"
+	done
 
         make_desktop_entry "spotify-client" "Spotify Client (v${MY_PV})" "spotify_client"
         domenu "${S}${SPOTIFY_HOME}/spotify-client.desktop"
