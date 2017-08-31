@@ -24,6 +24,8 @@ SLOT="0"
 KEYWORDS="~amd64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE="debug"
 
+RESTRICT="mirror"
+
 S=${WORKDIR}/${MY_P}
 
 CONFIG_CHECK="~!AFS_FS KEYS"
@@ -36,9 +38,9 @@ QA_TEXTRELS_amd64_fbsd="/boot/modules/libafs.ko"
 PATCHES=( "${WORKDIR}/gentoo/patches" )
 
 pkg_pretend() {
-	if use kernel_linux && kernel_is ge 4 11 ; then
+	if use kernel_linux && kernel_is ge 4 13 ; then
 		ewarn "Gentoo supports kernels which are supported by OpenAFS"
-		ewarn "which are limited to the kernel versions: < 4.11"
+		ewarn "which are limited to the kernel versions: < 4.13"
 		ewarn ""
 		ewarn "You are free to utilize epatch_user to provide whatever"
 		ewarn "support you feel is appropriate, but will not receive"
@@ -56,8 +58,6 @@ pkg_setup() {
 
 src_prepare() {
 	default
-
-	kernel_is ge 4 10 0 && epatch "${FILESDIR}/0001-Linux-4.10-have_submounts-is-gone.patch"
 
 	# packaging is f-ed up, so we can't run eautoreconf
 	# run autotools commands based on what is listed in regen.sh
