@@ -15,6 +15,7 @@ LICENSE="MPL-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86 ~arm"
 IUSE="selinux tools"
+RESTRICT="mirror"
 
 RDEPEND="selinux? ( sec-policy/selinux-syncthing )"
 
