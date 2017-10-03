@@ -20,5 +20,12 @@ src_unpack() {
 src_install() {
 	insinto /usr
 	doins -r usr/{bin,sbin,share}
+	for arch in aarch64 alpha arm armeb cris hppa i386 m68k microblaze microblazeel \
+		mips mips64 mips64el mipsel mipsn32 mipsn32el nios2 or1k \
+		ppc ppc64 ppc64abi32 ppc64le s390x sh4 sh4eb sparc sparc32plus sparc64 \
+		tilegx x86_64; do
+		fperms 0755 /usr/bin/qemu-${arch}-static
+	done
+	fperms 0755 /usr/sbin/qemu-debootstrap
 }
 
