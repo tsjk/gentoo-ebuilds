@@ -12,8 +12,11 @@ SLOT="0"
 KEYWORDS=""
 IUSE=""
 
-RDEPEND="	net-misc/dropbear
+RDEPEND="	net-misc/dhcp[client]
+		net-misc/dropbear
 		net-misc/openssh
 		sys-apps/util-linux[static-libs]
 		sys-kernel/dracut"
 
+
+PATCHES=( "${FILESDIR}/00000000-flush_netifs_ipcfg_on_dropbear_stop.patch" )

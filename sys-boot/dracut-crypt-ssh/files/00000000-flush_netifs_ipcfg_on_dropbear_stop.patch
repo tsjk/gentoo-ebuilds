@@ -1,0 +1,23 @@
+From 24ad159d31ee3591f5fa10b791423e1f55cdfa49 Mon Sep 17 00:00:00 2001
+From: David Morgado <david@out750.cm-sintra.local>
+Date: Wed, 20 Sep 2017 16:36:38 +0100
+Subject: [PATCH] Flush network interfaces IP configuration on dropbear stop.
+
+---
+ modules/60crypt-ssh/dropbear-stop.sh | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/modules/60crypt-ssh/dropbear-stop.sh b/modules/60crypt-ssh/dropbear-stop.sh
+index 6e274a1..566e1d0 100644
+--- a/modules/60crypt-ssh/dropbear-stop.sh
++++ b/modules/60crypt-ssh/dropbear-stop.sh
+@@ -6,3 +6,9 @@ kill -STOP ${main_pid} 2>/dev/null
+ pkill -P ${main_pid}
+ kill ${main_pid} 2>/dev/null
+ kill -CONT ${main_pid} 2>/dev/null
++
++# Flush all IP Configuration on all Interfaces 
++# so not to interfere with NetworkManager
++for i in $(ls /sys/class/net/) ; do
++    /usr/sbin/ip addr flush $i &
++done
