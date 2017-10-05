@@ -3,11 +3,20 @@ inherit unpacker
 
 DESCRIPTION="QEMU + Kernel-based Virtual Machine userland tools (static build from Debian)"
 HOMEPAGE="http://www.qemu.org http://www.linux-kvm.org"
-SRC_URI="mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_amd64.deb"
+SRC_URI="amd64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_amd64.deb )
+	arm64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_arm64.deb )
+	armel? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_armel.deb )
+	armhf? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_armhf.deb )
+	mips? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_mips.deb )
+	mipsel? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_mipsel.deb )
+	powerpc? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_powerpc.deb )
+	ppc64el? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_ppc64el.deb )
+	s390x? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_s390x.deb )
+	x86? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.10.0+dfsg-1_i386.deb )"
 
 LICENSE="GPL-2 LGPL-2 BSD-2"
 SLOT="0"
-KEYWORDS="amd64"
+KEYWORDS="amd64 arm64 armel armhf mips mips64 mipsel powerpc ppc64el s390x x86"
 RESTRICT="mirror"
 DEPEND=""
 
