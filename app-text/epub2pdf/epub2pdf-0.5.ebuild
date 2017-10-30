@@ -18,15 +18,16 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 RESTRICT="mirror"
 
-DEPEND=">=virtual/jdk-1.6
-	app-arch/unzip"
-RDEPEND=">=virtual/jre-1.6
-	dev-java/batik:1.8
+RDEPEND="dev-java/batik:1.9
 	>=dev-java/itext-2.1.5:0
-	>=dev-java/sac-1.3
+	>=dev-java/sac-1.3:0
 	>=dev-java/saxon-6.5.5:6.5
-	>=dev-java/xml-commons-resolver-1.2
-	dev-java/xerces:2"
+	>=dev-java/xml-commons-resolver-1.2:0
+	dev-java/xerces:2
+	>=virtual/jre-1.6"
+DEPEND="app-arch/unzip
+	>=virtual/jdk-1.6
+	${RDEPEND}"
 
 S="${WORKDIR}"
 
@@ -40,7 +41,7 @@ src_compile() {
 	mkdir classes
 	ejavac -d classes -classpath \
 	$(java-pkg_getjars \
-	batik-1.8,itext,sac,saxon-6.5,xml-commons-resolver,xerces-2) \
+	batik-1.9,itext,sac,saxon-6.5,xml-commons-resolver,xerces-2) \
 	"@${T}/src.list"
 	cd classes
 	jar -cf ../$PN.jar *
