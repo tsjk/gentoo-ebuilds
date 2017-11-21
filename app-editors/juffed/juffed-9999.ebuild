@@ -48,6 +48,9 @@ src_prepare() {
 		# Fix a library name
 		sed -i -e 's/QtSolutions_/Qt5Solutions_/g' cmake/FindQtSingleApplication.cmake
 
+		# Fix for Qscintilla v2.10
+		has_version ">=x11-libs/qscintilla-2.10" && eapply "${FILESDIR}/${P}-with-qscintilla-2.10.patch"
+
 		# Fix another library name
 		sed -i -E '/^\s*SET\(QSCINTILLA_NAMES\ /s/\)$/\ qscintilla2\ libqscintilla2\)/' cmake/FindQScintilla2.cmake
 	else
