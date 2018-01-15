@@ -1,0 +1,11 @@
+DEFINED_PHASES=compile install postinst postrm prepare unpack
+DEPEND=dev-libs/glib:2 dev-libs/libbsd dev-libs/libgcrypt:0 net-libs/libsoup net-libs/gnutls net-libs/webkit-gtk:3 x11-libs/gdk-pixbuf x11-libs/gtk+:3 x11-libs/pango dev-lang/perl sys-apps/groff dev-libs/atk dev-libs/libxml2 media-libs/fontconfig media-libs/freetype media-libs/libpng:0 x11-libs/cairo x11-libs/libdrm x11-libs/pixman dev-vcs/git
+DESCRIPTION=A minimalist web browser with sophisticated security features designed-in
+EAPI=5
+HOMEPAGE=http://opensource.conformal.com/wiki/xombrero
+IUSE=examples
+LICENSE=ISC
+RDEPEND=dev-libs/glib:2 dev-libs/libbsd dev-libs/libgcrypt:0 net-libs/libsoup net-libs/gnutls net-libs/webkit-gtk:3 x11-libs/gdk-pixbuf x11-libs/gtk+:3 x11-libs/pango
+SLOT=0
+_eclasses_=desktop	2ccd1dd1dd7bfb8795eea024a4f91bb6	epatch	8233751dc5105a6ae8fcd86ce2bb0247	estack	43ddf5aaffa7a8d0482df54d25a66a1f	eutils	6e7258392d5eda499c1cfa94db650b61	fdo-mime	995b19d3f30e956b4e1bc5a91fdc4ea7	git-2	195a672bfaf52d868442171c9469bbb6	ltprune	2770eed66a9b8ef944714cd0e968182e	multilib	97f470f374f2e94ccab04a2fb21d811e	preserve-libs	ef207dc62baddfddfd39a164d9797648	toolchain-funcs	885c7d8dd70a58825f3d17e35a3cd1e9
+_md5_=ee20546a7c0806895296f5e7a7f0c75a
