@@ -1,4 +1,4 @@
-EAPI=5
+EAPI=6
 inherit eutils
 
 DESCRIPTION="Shell scripts for Linux/Unix/MacOSX convert FIG files to EPS and PDF (via Ghostscript), allowing you to easily embed TeX output in your pictures."
