@@ -1,0 +1,712 @@
+--- dmd/src/phobos/linux.mak.old	2010-12-17 19:11:16.000000000 +0100
++++ dmd/src/phobos/linux.mak	2011-12-22 22:33:20.388836783 +0100
+@@ -12,15 +12,17 @@
+ LIB=libphobos.a
+ 
+ MAKEFILE=linux.mak
+-MODEL=32
++MODEL?=32
+ 
+-CFLAGS=-O -m$(MODEL)
++CFLAGS+=-m$(MODEL)
++CXXFLAGS+=-m$(MODEL)
+ #CFLAGS=-g -m$(MODEL)
+ 
+ DFLAGS=-O -release -w -m$(MODEL)
+ #DFLAGS=-unittest -w -m$(MODEL)
+ 
+-CC=gcc
++CC?=gcc
++CXX?=g++
+ #DMD=/dmd/bin/dmd
+ DMD=dmd
+ 
+@@ -30,13 +32,13 @@
+ 	$(CC) -c $(CFLAGS) $*.c
+ 
+ .cpp.o:
+-	g++ -c $(CFLAGS) $*.cpp
++	$(CXX) -c $(CXXFLAGS) $*.cpp
+ 
+ .d.o:
+ 	$(DMD) -c $(DFLAGS) $*.d
+ 
+ .asm.o:
+-	$(CC) -c $*.asm
++	$(CC) $(CFLAGS) -c $*.asm
+ 
+ targets : $(LIB)
+ 
+@@ -44,7 +46,7 @@
+ 	$(DMD) -c test -g
+ 
+ test : test.o $(LIB)
+-	$(CC) -o $@ test.o $(LIB) -lpthread -lm -g
++	$(CC) $(CFLAGS) -o $@ test.o $(LIB) -lpthread -lm -g
+ 
+ OBJS = complex.o gcstats.o \
+ 	critical.o object.o monitor.o \
+--- dmd/src/phobos/internal/gc/linux.mak.old	2010-12-17 19:11:16.000000000 +0100
++++ dmd/src/phobos/internal/gc/linux.mak	2011-12-22 23:59:59.328158400 +0100
+@@ -1,14 +1,14 @@
+ 
+ # makefile to build linux D garbage collector
+ 
+-MODEL=32
++MODEL?=32
+ #DMD=../../../dmd
+ DMD=dmd
+-CFLAGS=-g -m$(MODEL)
++CFLAGS+=-g -m$(MODEL)
+ #DFLAGS=-unittest -g -release
+ DFLAGS=-release -O -inline -m$(MODEL) -I../..
+ #DFLAGS=-release -inline -O
+-CC=gcc
++CC?=gcc
+ MAKEFILE=linux.mak
+ 
+ OBJS= gc.o gcx.o gcbits.o gclinux.o gcold.o
+--- dmd/src/dmd/posix.mak.orig	2012-12-31 21:16:46.000000000 +0100
++++ dmd/src/dmd/posix.mak	2018-01-26 10:27:59.558112292 +0100
+@@ -49,7 +49,7 @@
+ TK=tk
+ ROOT=root
+ 
+-MODEL=32
++MODEL?=32
+ ifneq (x,x$(MODEL))
+     MODEL_FLAG=-m$(MODEL)
+ endif
+@@ -73,21 +73,24 @@
+     LDFLAGS=-lm -lstdc++ -lpthread
+ endif
+ 
+-HOST_CC=g++
+-CC=$(HOST_CC) $(MODEL_FLAG) $(TARGET_CFLAGS)
++HOST_CC?=gcc
++HOST_CXX?=g++
++CC?=$(HOST_CC)
++CXX?=$(HOST_CXX)
+ 
+ #OPT=-g -g3
+ #OPT=-O2
+ 
+ #COV=-fprofile-arcs -ftest-coverage
+ 
+-WARNINGS=-Wno-deprecated -Wstrict-aliasing
++WARNINGS=-Wno-deprecated -Wno-error -Wno-narrowing -Wstrict-aliasing
+ 
+-#GFLAGS = $(WARNINGS) -D__pascal= -fno-exceptions -g -DDEBUG=1 -DUNITTEST $(COV)
+-GFLAGS = $(WARNINGS) -D__pascal= -fno-exceptions -O2
+-
+-CFLAGS = $(GFLAGS) -I$(ROOT) -DMARS=1 -DTARGET_$(TARGET)=1 -DDM_TARGET_CPU_$(TARGET_CPU)=1
+-MFLAGS = $(GFLAGS) -I$C -I$(TK) -I$(ROOT) -DMARS=1 -DTARGET_$(TARGET)=1 -DDM_TARGET_CPU_$(TARGET_CPU)=1
++DMDFLAGS=$(WARNINGS) -D__near= -D__pascal= -fno-exceptions
++ROOTFLAG=$(DMDFLAGS) -I$(ROOT) -D__I86__=1 -DMARS=1 -D_M_I86=1 -DDM_TARGET_CPU_X86=1 -DTARGET_LINUX=1 -D_DH
++TKFLAG=$(DMDFLAGS) -I$C -I$(TK) -D__I86__=1 -DMARS=1 -D_M_I86=1 -DDM_TARGET_CPU_X86=1 -DTARGET_LINUX=1 -D_DH
++CFLAGS+=-m$(MODEL) $(TARGET_CFLAGS)
++CXXFLAGS+=-m$(MODEL) $(TARGET_CFLAGS)
++LDFLAGS+=-lm -lstdc++ -lpthread
+ 
+ CH= $C/cc.h $C/global.h $C/oper.h $C/code.h $C/type.h \
+ 	$C/dt.h $C/cgcv.h $C/el.h $C/obj.h $(TARGET_CH)
+@@ -175,7 +178,7 @@
+ all: dmd
+ 
+ dmd: $(DMD_OBJS)
+-	$(ENVP) $(HOST_CC) -o dmd $(MODEL_FLAG) $(COV) $(DMD_OBJS) $(LDFLAGS)
++	$(ENVP) $(CC) $(CFLAGS) $(LDFLAGS) $(COV) $(DMD_OBJS) -o dmd
+ 
+ clean:
+ 	rm -f $(DMD_OBJS) dmd optab.o id.o impcnvgen idgen id.c id.h \
+@@ -186,7 +189,7 @@
+ ######## optabgen generates some source
+ 
+ optabgen: $C/optabgen.c $C/cc.h $C/oper.h
+-	$(ENVP) $(CC) $(MFLAGS) $< -o optabgen
++	$(ENVP) $(CXX) $(CXXFLAGS) $(TKFLAG) $< -o optabgen
+ 	./optabgen
+ 
+ optabgen_output = debtab.c optab.c cdxxx.c elxxx.c fltables.c tytab.c
+@@ -198,7 +201,7 @@
+ $(idgen_output) : idgen
+ 
+ idgen : idgen.c
+-	$(ENVP) $(CC) idgen.c -o idgen
++	$(ENVP)  $(CXX) $(CXXFLAGS) idgen.c -o idgen
+ 	./idgen
+ 
+ ######### impcnvgen generates some source
+@@ -207,7 +210,7 @@
+ $(impcnvtab_output) : impcnvgen
+ 
+ impcnvgen : mtype.h impcnvgen.c
+-	$(ENVP) $(CC) $(CFLAGS) impcnvgen.c -o impcnvgen
++	$(ENVP) $(CXX) $(CXXFLAGS) $(ROOTFLAG) impcnvgen.c -o impcnvgen
+ 	./impcnvgen
+ 
+ #########
+@@ -215,424 +218,424 @@
+ $(DMD_OBJS) : $(idgen_output) $(optabgen_output) $(impcnvgen_output)
+ 
+ aa.o: $C/aa.c $C/aa.h $C/tinfo.h
+-	$(CC) -c $(MFLAGS) -I. $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) -I. $<
+ 
+ aav.o: $(ROOT)/aav.c
+-	$(CC) -c $(GFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) -I$(ROOT) $<
+ 
+ access.o: access.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ aliasthis.o: aliasthis.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ apply.o: apply.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ argtypes.o: argtypes.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ array.o: $(ROOT)/array.c
+-	$(CC) -c $(GFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) -I$(ROOT) $<
+ 
+ arrayop.o: arrayop.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ async.o: $(ROOT)/async.c
+-	$(CC) -c $(GFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) -I$(ROOT) $<
+ 
+ attrib.o: attrib.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ bcomplex.o: $C/bcomplex.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ blockopt.o: $C/blockopt.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ builtin.o: builtin.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ canthrow.o: canthrow.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ cast.o: cast.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ cg.o: $C/cg.c fltables.c
+-	$(CC) -c $(MFLAGS) -I. $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I. $<
+ 
+ cg87.o: $C/cg87.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cgcod.o: $C/cgcod.c
+-	$(CC) -c $(MFLAGS) -I. $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I. $<
+ 
+ cgcs.o: $C/cgcs.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cgcv.o: $C/cgcv.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cgelem.o: $C/cgelem.c $C/rtlsym.h
+-	$(CC) -c $(MFLAGS) -I. $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I. $<
+ 
+ cgen.o: $C/cgen.c $C/rtlsym.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cgobj.o: $C/cgobj.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cgreg.o: $C/cgreg.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cgsched.o: $C/cgsched.c $C/rtlsym.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cgxmm.o: $C/cgxmm.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ class.o: class.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ clone.o: clone.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ cod1.o: $C/cod1.c $C/rtlsym.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cod2.o: $C/cod2.c $C/rtlsym.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cod3.o: $C/cod3.c $C/rtlsym.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cod4.o: $C/cod4.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ cod5.o: $C/cod5.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ code.o: $C/code.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ constfold.o: constfold.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ ctfeexpr.o: ctfeexpr.c ctfe.h
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ irstate.o: irstate.c irstate.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ csymbol.o: $C/symbol.c
+-	$(CC) -c $(MFLAGS) $< -o $@
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $< -o $@
+ 
+ cond.o: cond.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ cppmangle.o: cppmangle.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ cv8.o: $C/cv8.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ debug.o: $C/debug.c
+-	$(CC) -c $(MFLAGS) -I. $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) -I. $<
+ 
+ declaration.o: declaration.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ delegatize.o: delegatize.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ doc.o: doc.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ dsymbol.o: dsymbol.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ dt.o: $C/dt.c $C/dt.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ dump.o: dump.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ dwarf.o: $C/dwarf.c $C/dwarf.h
+-	$(CC) -c $(MFLAGS) -I. $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $(TKFLAG) -I. $<
+ 
+ e2ir.o: e2ir.c $C/rtlsym.h expression.h toir.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ ee.o: $C/ee.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ eh.o: eh.c $C/cc.h $C/code.h $C/type.h $C/dt.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ el.o: $C/el.c $C/rtlsym.h $C/el.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ elfobj.o: $C/elfobj.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ entity.o: entity.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ enum.o: enum.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ evalu8.o: $C/evalu8.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ expression.o: expression.c expression.h
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ func.o: func.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ gdag.o: $C/gdag.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ gflow.o: $C/gflow.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ #globals.o: globals.c
+-#	$(CC) -c $(CFLAGS) $<
++#	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ glocal.o: $C/glocal.c $C/rtlsym.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ gloop.o: $C/gloop.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ glue.o: glue.c $(CH) $C/rtlsym.h mars.h module.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ gnuc.o: $(ROOT)/gnuc.c $(ROOT)/gnuc.h
+-	$(CC) -c $(GFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $<
+ 
+ go.o: $C/go.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ gother.o: $C/gother.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ hdrgen.o: hdrgen.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ html.o: $C/html.c $(CH) $C/html.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ iasm.o: iasm.c $(CH) $C/iasm.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ id.o: id.c id.h
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ identifier.o: identifier.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ impcnvtab.o: impcnvtab.c mtype.h
+-	$(CC) -c $(CFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) -I$(ROOT) $<
+ 
+ imphint.o: imphint.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ import.o: import.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ inifile.o: inifile.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ init.o: init.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ inline.o: inline.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ interpret.o: interpret.c ctfe.h
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ intrange.o: intrange.h intrange.c
+-	$(CC) -c $(CFLAGS) intrange.c
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) intrange.c
+ 
+ json.o: json.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ lexer.o: lexer.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ libelf.o: libelf.c $C/melf.h
+-	$(CC) -c $(CFLAGS) -I$C $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) -I$C $<
+ 
+ libmach.o: libmach.c $C/mach.h
+-	$(CC) -c $(CFLAGS) -I$C $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) -I$C $<
+ 
+ libmscoff.o: libmscoff.c $C/mscoff.h
+-	$(CC) -c $(CFLAGS) -I$C $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) -I$C $<
+ 
+ link.o: link.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ machobj.o: $C/machobj.c
+-	$(CC) -c $(MFLAGS) -I. $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) -I. $<
+ 
+ macro.o: macro.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ man.o: $(ROOT)/man.c
+-	$(CC) -c $(GFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) -I$(ROOT) $<
+ 
+ mangle.o: mangle.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ mars.o: mars.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ rmem.o: $(ROOT)/rmem.c
+-	$(CC) -c $(GFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) -I$(ROOT) $<
+ 
+ module.o: module.c $C/html.h
+-	$(CC) -c $(CFLAGS) -I$C $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) -I$C $<
+ 
+ mscoffobj.o: $C/mscoffobj.c $C/mscoff.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ msc.o: msc.c $(CH) mars.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $(TKFLAG) $<
+ 
+ mtype.o: mtype.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ nteh.o: $C/nteh.c $C/rtlsym.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ opover.o: opover.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ optimize.o: optimize.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ os.o: $C/os.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ out.o: $C/out.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ outbuf.o: $C/outbuf.c $C/outbuf.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ parse.o: parse.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ pdata.o: $C/pdata.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ ph.o: ph.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ platform_stub.o: $C/platform_stub.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ port.o: $(ROOT)/port.c
+-	$(CC) -c $(GFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) -I$(ROOT) $<
+ 
+ ptrntab.o: $C/ptrntab.c $C/iasm.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ response.o: $(ROOT)/response.c
+-	$(CC) -c $(GFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) -I$(ROOT) $<
+ 
+ root.o: $(ROOT)/root.c
+-	$(CC) -c $(GFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) -I$(ROOT) $<
+ 
+ rtlsym.o: $C/rtlsym.c $C/rtlsym.h
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ s2ir.o: s2ir.c $C/rtlsym.h statement.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ scope.o: scope.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ sideeffect.o: sideeffect.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ speller.o: $(ROOT)/speller.c
+-	$(CC) -c $(GFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) -I$(ROOT) $<
+ 
+ statement.o: statement.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ staticassert.o: staticassert.c staticassert.h
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ stringtable.o: $(ROOT)/stringtable.c
+-	$(CC) -c $(GFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) -I$(ROOT) $<
+ 
+ strtold.o: $C/strtold.c
+ 	gcc $(MODEL_FLAG) -I$(ROOT) -c $<
+ 
+ struct.o: struct.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ template.o: template.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ ti_achar.o: $C/ti_achar.c $C/tinfo.h
+-	$(CC) -c $(MFLAGS) -I. $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) -I. $<
+ 
+ ti_pvoid.o: $C/ti_pvoid.c $C/tinfo.h
+-	$(CC) -c $(MFLAGS) -I. $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) -I. $<
+ 
+ tk.o: tk.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ tocsym.o: tocsym.c $(CH) mars.h module.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ toctype.o: toctype.c $(CH) $C/rtlsym.h mars.h module.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ todt.o: todt.c mtype.h expression.h $C/dt.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ toelfdebug.o: toelfdebug.c $(CH) mars.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ toir.o: toir.c $C/rtlsym.h expression.h toir.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ toobj.o: toobj.c $(CH) mars.h module.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ traits.o: traits.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ type.o: $C/type.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ typinf.o: typinf.c $(CH) mars.h module.h mtype.h
+-	$(CC) -c $(MFLAGS) -I$(ROOT) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) -I$(ROOT) $<
+ 
+ util.o: util.c
+-	$(CC) -c $(MFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(TKFLAG) $<
+ 
+ utf.o: utf.c utf.h
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ unialpha.o: unialpha.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ unittests.o: unittests.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ var.o: $C/var.c optab.c
+-	$(CC) -c $(MFLAGS) -I. $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $(TKFLAG) -I. $<
+ 
+ version.o: version.c
+-	$(CC) -c $(CFLAGS) $<
++	$(CXX) -c $(CXXFLAGS) $(ROOTFLAG) $<
+ 
+ ######################################################
+ 

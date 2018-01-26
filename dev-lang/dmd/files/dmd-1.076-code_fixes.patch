@@ -1,0 +1,11 @@
+--- dmd/src/dmd/root/port.c.orig	2012-12-31 21:16:46.000000000 +0100
++++ dmd/src/dmd/root/port.c	2018-01-26 10:43:42.717609848 +0100
+@@ -335,7 +335,7 @@
+ #include <math.h>
+ #if linux
+ #include <bits/nan.h>
+-#include <bits/mathdef.h>
++#include <complex.h>
+ #endif
+ #if __FreeBSD__ && __i386__
+ #include <ieeefp.h>
