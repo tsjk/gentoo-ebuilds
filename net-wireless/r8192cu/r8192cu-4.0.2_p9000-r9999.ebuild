@@ -9,7 +9,7 @@ LICENSE="GPL-2"
 SLOT="0"
 IUSE=""
 
-KEYWORDS="~amd64 ~x86"
+KEYWORDS=""
 RESTRICT="mirror"
 
 S="${WORKDIR}/r8192cu-4.0.2_p9000"
