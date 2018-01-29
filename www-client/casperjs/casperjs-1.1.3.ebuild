@@ -23,8 +23,11 @@ RDEPEND="${DEPEND}"
 S="${WORKDIR}/${PN}-${MY_PV}"
 
 src_compile() {
-	#QT_QPA_PLATFORM="offscreen" emake || die "emake failed"
 	:
+}
+
+src_test() {
+	QT_QPA_PLATFORM="offscreen" emake || die "emake failed"
 }
 
 src_install() {
