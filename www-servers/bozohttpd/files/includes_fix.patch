@@ -1,0 +1,41 @@
+--- ./auth-bozo.c.orig	2017-02-01 05:21:23.000000000 +0100
++++ ./auth-bozo.c	2017-12-01 09:32:15.707428230 +0100
+@@ -36,6 +36,8 @@
+ 
+ #include <sys/param.h>
+ 
++#include <crypt.h>
++
+ #include <string.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+--- ./bozohttpd.c.orig	2017-12-01 09:23:26.527548318 +0100
++++ ./bozohttpd.c	2017-12-01 09:31:01.560259380 +0100
+@@ -148,6 +148,7 @@
+ #include <grp.h>
+ #include <signal.h>
+ #include <stdarg.h>
++#include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <syslog.h>
+--- ./lua-bozo.c.orig	2017-02-01 05:21:23.000000000 +0100
++++ ./lua-bozo.c	2017-12-01 09:31:20.139549896 +0100
+@@ -37,6 +37,7 @@
+ #include <lua.h>
+ #include <lauxlib.h>
+ #include <lualib.h>
++#include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+--- ./ssl-bozo.c.orig	2017-02-01 05:21:23.000000000 +0100
++++ ./ssl-bozo.c	2017-12-01 09:31:44.478620540 +0100
+@@ -34,6 +34,7 @@
+ 
+ #include <stdarg.h>
+ #include <stdio.h>
++#include <string.h>
+ #include <syslog.h>
+ #include <unistd.h>
+ 
