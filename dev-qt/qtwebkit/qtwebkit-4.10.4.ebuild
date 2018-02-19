@@ -56,8 +56,9 @@ DEPEND="${RDEPEND}
 S=${WORKDIR}
 
 PATCHES=(
-	"${FILESDIR}/${PV}-gcc5.patch"
-	"${FILESDIR}/${PV}-use-correct-icu-typedef.patch"
+	"${FILESDIR}/${PV}-0001-gcc5.patch"
+	"${FILESDIR}/${PV}-0002-use-correct-icu-typedef_UChar32.patch"
+	"${FILESDIR}/${PV}-0003-use-correct-icu-typedef_UChar.patch"
 )
 
 src_prepare() {

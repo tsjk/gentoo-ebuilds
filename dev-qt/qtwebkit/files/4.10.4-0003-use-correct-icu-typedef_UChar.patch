@@ -1,0 +1,109 @@
+--- ./Source/WebCore/icu/unicode/umachine.h.orig	2014-09-24 13:42:05.000000000 +0200
++++ ./Source/WebCore/icu/unicode/umachine.h	2018-02-06 07:38:20.623351036 +0100
+@@ -313,7 +313,7 @@
+ #endif
+     typedef char16_t UChar;
+ #else
+-    typedef uint16_t UChar;
++    typedef char16_t UChar;
+ #endif
+ 
+ /**
+--- ./Source/JavaScriptCore/icu/unicode/umachine.h.orig	2014-09-24 13:42:05.000000000 +0200
++++ ./Source/JavaScriptCore/icu/unicode/umachine.h	2018-02-06 07:38:20.632351107 +0100
+@@ -313,7 +313,7 @@
+ #endif
+     typedef char16_t UChar;
+ #else
+-    typedef uint16_t UChar;
++    typedef char16_t UChar;
+ #endif
+ 
+ /**
+--- ./Source/WebKit/mac/icu/unicode/umachine.h.orig	2014-09-24 13:42:05.000000000 +0200
++++ ./Source/WebKit/mac/icu/unicode/umachine.h	2018-02-06 07:38:20.641351177 +0100
+@@ -313,7 +313,7 @@
+ #endif
+     typedef char16_t UChar;
+ #else
+-    typedef uint16_t UChar;
++    typedef char16_t UChar;
+ #endif
+ 
+ /**
+--- ./Source/WTF/icu/unicode/umachine.h.orig	2014-09-24 13:42:05.000000000 +0200
++++ ./Source/WTF/icu/unicode/umachine.h	2018-02-06 07:38:20.653351270 +0100
+@@ -313,7 +313,7 @@
+ #endif
+     typedef char16_t UChar;
+ #else
+-    typedef uint16_t UChar;
++    typedef char16_t UChar;
+ #endif
+ 
+ /**
+--- ./Source/WTF/wtf/unicode/glib/UnicodeGLib.h.orig	2014-09-24 13:42:05.000000000 +0200
++++ ./Source/WTF/wtf/unicode/glib/UnicodeGLib.h	2018-02-06 07:38:20.662351340 +0100
+@@ -35,7 +35,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-typedef uint16_t UChar;
++typedef char16_t UChar;
+ typedef int32_t UChar32;
+ 
+ namespace WTF {
+--- ./Source/WTF/wtf/unicode/qt4/UnicodeQt4.h.orig	2018-02-06 07:37:53.495139524 +0100
++++ ./Source/WTF/wtf/unicode/qt4/UnicodeQt4.h	2018-02-06 07:38:20.670351403 +0100
+@@ -65,7 +65,7 @@
+ #if defined(Q_OS_WIN) || (COMPILER(RVCT) && !OS(LINUX))
+ typedef wchar_t UChar;
+ #else
+-typedef uint16_t UChar;
++typedef char16_t UChar;
+ #endif
+ 
+ #if !USE(ICU_UNICODE)
+--- ./Source/JavaScriptCore/API/JSStringRef.h.orig	2014-09-24 13:42:05.000000000 +0200
++++ ./Source/JavaScriptCore/API/JSStringRef.h	2018-02-06 08:05:15.519055354 +0100
+@@ -43,7 +43,7 @@
+ @typedef JSChar
+ @abstract A Unicode character.
+ */
+-    typedef unsigned short JSChar;
++    typedef char16_t JSChar;
+ #else
+     typedef wchar_t JSChar;
+ #endif
+--- ./Source/WebKit2/Shared/API/c/WKString.h.orig	2014-09-24 13:42:05.000000000 +0200
++++ ./Source/WebKit2/Shared/API/c/WKString.h	2018-02-06 08:23:15.389146479 +0100
+@@ -31,6 +31,7 @@
+ #ifndef __cplusplus
+ #include <stdbool.h>
+ #endif
++#include <uchar.h>
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -38,7 +38,7 @@
+ 
+ #if !defined(WIN32) && !defined(_WIN32) \
+     && !((defined(__CC_ARM) || defined(__ARMCC__)) && !defined(__linux__)) /* RVCT */
+-    typedef unsigned short WKChar;
++    typedef char16_t WKChar;
+ #else
+     typedef wchar_t WKChar;
+ #endif
+--- Source/WTF/wtf/TypeTraits.h.orig	2014-09-24 13:42:05.000000000 +0200
++++ Source/WTF/wtf/TypeTraits.h	2018-02-06 08:26:13.705652860 +0100
+@@ -75,6 +75,10 @@
+ #if !COMPILER(MSVC) || defined(_NATIVE_WCHAR_T_DEFINED)
+     template<> struct IsInteger<wchar_t>            { static const bool value = true; };
+ #endif
++#if COMPILER_SUPPORTS(CXX_NEW_CHAR_TYPES)
++    template<> struct IsInteger<char16_t>           { static const bool value = true; };
++    template<> struct IsInteger<char32_t>           { static const bool value = true; };
++#endif
+ 
+     template<typename T> struct IsFloatingPoint     { static const bool value = false; };
+     template<> struct IsFloatingPoint<float>        { static const bool value = true; };
