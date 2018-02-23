@@ -21,14 +21,14 @@ IUSE="debug qt5"
 DEPEND="app-i18n/enca
 	!qt5? ( >=dev-qt/qtcore-4.2:4
 		>=dev-qt/qtgui-4.2:4
-		dev-qt/qtsingleapplication[X,qt4]
+		=dev-qt/qtsingleapplication-2.6.1_p20150629[X,qt4]
 		>=x11-libs/qscintilla-2.1:=[qt4] )
 	qt5? ( dev-qt/linguist-tools:5
 		dev-qt/qtcore:5
 		dev-qt/qtgui:5
 		dev-qt/qtnetwork:5
 		dev-qt/qtprintsupport:5
-		dev-qt/qtsingleapplication[X,qt5]
+		( || =dev-qt/qtsingleapplication-2.6.1_p20150629[X,qt5] >=dev-qt/qtsingleapplication-2.6.1_p20171024[X] )
 		dev-qt/qtwidgets:5
 		dev-qt/qtxml:5
 		>=x11-libs/qscintilla-2.1:=[qt5] )"
