@@ -31,7 +31,7 @@ DEPEND="app-i18n/enca
 		|| ( =dev-qt/qtsingleapplication-2.6.1_p20150629[X,qt5] >=dev-qt/qtsingleapplication-2.6.1_p20171024[X] )
 		dev-qt/qtwidgets:5
 		dev-qt/qtxml:5
-		>=x11-libs/qscintilla-2.1:=[qt5] )"
+		|| (=x11-libs/qscintilla-2.10.1:=[qt5] || >=x11-libs/qscintilla-2.10.3:= ) )"
 RDEPEND=${DEPEND}
 
 DOCS=( ChangeLog README )
