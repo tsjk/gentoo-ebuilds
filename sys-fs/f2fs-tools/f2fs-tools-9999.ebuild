@@ -1,36 +1,43 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI=5
+EAPI=6
 
 inherit autotools eutils git-r3 multilib
 
 DESCRIPTION="Tools for Flash-Friendly File System (F2FS)"
-HOMEPAGE="http://sourceforge.net/projects/f2fs-tools/"
+HOMEPAGE="https://git.kernel.org/cgit/linux/kernel/git/jaegeuk/f2fs-tools.git/about/"
 SRC_URI=""
 
-EGIT_REPO_URI="git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-tools.git"
+EGIT_REPO_URI="https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-tools.git"
 
 LICENSE="GPL-2"
-SLOT="0"
-KEYWORDS="~amd64 ~x86"
-IUSE=""
+SLOT="0/4"
+KEYWORDS="~amd64 ~arm ~arm64 ~mips ~ppc ~ppc64 ~x86"
+IUSE="selinux"
 
-DEPEND="sys-libs/libselinux"
-RDEPEND="${DEPEND}"
+RDEPEND="
+	sys-apps/util-linux
+	selinux? ( sys-libs/libselinux )"
+DEPEND="$RDEPEND"
+
+PATCHES=( "${FILESDIR}"/${P}-fibmap-include-config_h.patch )
 
 src_prepare() {
+	default
 	echo 'mkfs_f2fs_LDFLAGS = ' >> mkfs/Makefile.am
 	eautoreconf
 }
 
-src_configure(){
-	econf --disable-static --includedir=/usr/include --prefix=/
+src_configure() {
+	#This is required to install to /sbin, bug #481110
+	econf \
+		--bindir="${EPREFIX}"/sbin \
+		--disable-static \
+		$(use_with selinux)
 }
 
 src_install() {
 	default
-	rm -f "${ED}"/$(get_libdir)/libf2fs.{,l}a
-	rm -f "${ED}"/$(get_libdir)/libf2fs_format.{,l}a
+	find "${D}" -name "*.la" -delete || die
 }
