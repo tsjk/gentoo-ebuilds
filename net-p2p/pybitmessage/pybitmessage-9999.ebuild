@@ -1,40 +1,42 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 
 PYTHON_COMPAT=( python2_7 )
+PYTHON_REQ_USE="sqlite"
 
-# See https://github.com/Bitmessage/PyBitmessage/pull/952 for
-# why ipv6 is needed at the moment.
-PYTHON_REQ_USE="ipv6,sqlite"
-
+COMMIT=30e211367003bafa67834ffff3f31e6b5a897f4b
 inherit distutils-r1 gnome2-utils git-r3
 
 MY_PN="PyBitmessage"
 
-
 DESCRIPTION="Reference client for Bitmessage: a P2P communications protocol"
-HOMEPAGE="https://bitmessage.org/"
+HOMEPAGE="https://bitmessage.org"
+#SRC_URI="https://github.com/g1itch/${MY_PN}/archive/${COMMIT}.tar.gz -> ${P}.tar.gz"
 EGIT_REPO_URI="https://github.com/Bitmessage/PyBitmessage.git"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS=""
-IUSE="libressl ncurses opencl qt4 sound"
+KEYWORDS="~amd64 ~x86"
+IUSE="debug libnotify libressl ncurses opencl qrcode qt5 sound"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 DEPEND="${PYTHON_DEPS}"
 
-# Some of these can be determined from src/depends.py.
-# The sound deps were found in src/bitmessageqt/__init__.py.
-# And src/openclpow.py imports numpy directly, so throw that in too.
-#
-# All of the dependencies that are behind USE flags are detected
-# and enabled automagically, so maybe it would be better if we
-# required them unconditionally?
 RDEPEND="${DEPEND}
-	dev-python/msgpack[${PYTHON_USEDEP}]
+	|| (
+		dev-python/msgpack[${PYTHON_USEDEP}]
+		dev-python/u-msgpack[${PYTHON_USEDEP}]
+	)
+	dev-python/PyQt5[${PYTHON_USEDEP}]
+	>=dev-python/QtPy-1.3.1[gui,pyqt5(+),${PYTHON_USEDEP}]
+	debug? ( dev-python/python-prctl[${PYTHON_USEDEP}] )
+	libnotify? (
+		dev-python/pygobject[${PYTHON_USEDEP}]
+		dev-python/notify2[${PYTHON_USEDEP}]
+		x11-themes/hicolor-icon-theme
+	)
 	!libressl? ( dev-libs/openssl:0[-bindist] )
 	libressl? ( dev-libs/libressl )
 	ncurses? ( dev-python/pythondialog[${PYTHON_USEDEP}] )
@@ -42,12 +44,15 @@ RDEPEND="${DEPEND}
 		dev-python/numpy[${PYTHON_USEDEP}]
 		dev-python/pyopencl[${PYTHON_USEDEP}]
 	)
-	qt4? ( dev-python/PyQt4[${PYTHON_USEDEP}] )
-	sound? (
-		media-sound/alsa-utils
+	qrcode? ( dev-python/qrcode[${PYTHON_USEDEP}] )
+	sound? ( || (
+		dev-python/gst-python:1.0[${PYTHON_USEDEP}]
 		media-sound/gst123
+		media-libs/gst-plugins-base:1.0
 		media-sound/mpg123
-	)"
+		media-sound/alsa-utils
+	) )
+"
 
 src_compile() { :; }
 
@@ -61,7 +66,7 @@ src_install () {
 	os.execl('@PYTHON@', '@EPYTHON@', '@SITEDIR@/bitmessagemain.py')
 	EOF
 
-	use qt4 || rm -rf src/bitmessageqt
+	use qt5 || rm -rf src/bitmessageqt
 	use ncurses || rm -rf src/bitmessagecurses
 	touch src/__init__.py || die
 
@@ -81,7 +86,7 @@ src_install () {
 	dodoc README.md
 	doman man/*
 
-	if use qt4; then
+	if use qt5; then
 		newicon -s 24 desktop/icon24.png ${PN}.png
 		newicon -s scalable desktop/can-icon.svg ${PN}.svg
 		domenu desktop/${PN}.desktop
