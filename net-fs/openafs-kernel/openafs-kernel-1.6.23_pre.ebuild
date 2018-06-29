@@ -13,9 +13,8 @@ PVER="20170822"
 DESCRIPTION="The OpenAFS distributed file system kernel module"
 HOMEPAGE="https://www.openafs.org/"
 # We always d/l the doc tarball as man pages are not USE=doc material
-[[ ${PV} == *_pre* ]] && MY_PRE="candidate/" || MY_PRE=""
 SRC_URI="
-	https://openafs.org/dl/openafs/${MY_PRE}${MY_PV}/${MY_P}-src.tar.bz2
+	http://git.openafs.org/?p=openafs.git;a=snapshot;h=38f6a2243c6832d6174aa63d59b051b8b0a6a04e;sf=tgz -> ${MY_P}-src.tar.gz
 	https://dev.gentoo.org/~bircoph/afs/${MY_PN}-patches-${PVER}.tar.xz
 "
 
@@ -24,7 +23,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE="debug"
 
-S=${WORKDIR}/${MY_P}
+S="${WORKDIR}/${PN}-1.6.22.3"
 
 CONFIG_CHECK="~!AFS_FS KEYS"
 ERROR_AFS_FS="OpenAFS conflicts with the in-kernel AFS-support. Make sure not to load both at the same time!"
@@ -33,7 +32,10 @@ ERROR_KEYS="OpenAFS needs CONFIG_KEYS option enabled"
 QA_TEXTRELS_x86_fbsd="/boot/modules/libafs.ko"
 QA_TEXTRELS_amd64_fbsd="/boot/modules/libafs.ko"
 
-PATCHES=( "${WORKDIR}/gentoo/patches" )
+EPATCH_SOURCE="${WORKDIR}/gentoo/patches"
+EPATCH_SUFFIX="patch"
+EPATCH_EXCLUDE+=" 007_all_fbsd.patch"
+EPATCH_EXCLUDE+=" 010_all_uname.patch"
 
 pkg_pretend() {
 	if use kernel_linux && kernel_is ge 4 16 ; then
@@ -54,8 +56,14 @@ pkg_setup() {
 	fi
 }
 
-src_prepare() {
+src_unpack() {
 	default
+	mv "${WORKDIR}/openafs-38f6a22" "${S}"
+}
+
+src_prepare() {
+	epatch
+	eapply_user
 
 	# packaging is f-ed up, so we can't run eautoreconf
 	# run autotools commands based on what is listed in regen.sh

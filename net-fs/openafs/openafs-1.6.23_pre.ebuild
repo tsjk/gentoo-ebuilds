@@ -12,10 +12,9 @@ PVER="20170822"
 DESCRIPTION="The OpenAFS distributed file system"
 HOMEPAGE="https://www.openafs.org/"
 # We always d/l the doc tarball as man pages are not USE=doc material
-[[ ${PV} == *_pre* ]] && MY_PRE="candidate/" || MY_PRE=""
 SRC_URI="
-	https://openafs.org/dl/openafs/${MY_PRE}${MY_PV}/${MY_P}-src.tar.bz2
-	https://openafs.org/dl/openafs/${MY_PRE}${MY_PV}/${MY_P}-doc.tar.bz2
+	http://git.openafs.org/?p=openafs.git;a=snapshot;h=38f6a2243c6832d6174aa63d59b051b8b0a6a04e;sf=tgz -> ${MY_P}-src.tar.gz
+	https://openafs.org/dl/openafs/1.6.22.3/${PN}-1.6.22.3-doc.tar.bz2 -> ${MY_P}-doc.tar.bz2
 	https://dev.gentoo.org/~bircoph/afs/${PN}-patches-${PVER}.tar.xz
 "
 
@@ -42,12 +41,24 @@ DEPEND="${CDEPEND}
 RDEPEND="${CDEPEND}
 	modules? ( ~net-fs/openafs-kernel-${PV} )"
 
-S="${WORKDIR}/${MY_P}"
+RESTRICT="mirror"
 
-PATCHES=( "${WORKDIR}/gentoo/patches" )
+S="${WORKDIR}/openafs-1.6.22.3"
+
+EPATCH_SOURCE="${WORKDIR}/gentoo/patches"
+EPATCH_SUFFIX="patch"
+EPATCH_EXCLUDE+=" 007_all_fbsd.patch"
+EPATCH_EXCLUDE+=" 010_all_uname.patch"
+
+src_unpack() {
+	default
+	cp -a "${WORKDIR}/openafs-38f6a22"/* "${S}"/
+	rm -rf "${WORKDIR}/openafs-38f6a22"
+}
 
 src_prepare() {
-	default
+	epatch
+	eapply_user
 
 	# fixing 2-nd level makefiles to honor flags
 	sed -i -r 's/\<CFLAGS[[:space:]]*=/CFLAGS+=/; s/\<LDFLAGS[[:space:]]*=/LDFLAGS+=/' \
