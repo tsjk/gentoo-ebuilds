@@ -3,7 +3,7 @@
 
 EAPI=6
 
-inherit cmake-utils readme.gentoo-r1
+inherit cmake-utils readme.gentoo-r1 systemd
 
 DESCRIPTION="The minimalist fan control program -- rewritten in clean C++11"
 HOMEPAGE="https://github.com/vmatare/thinkfan"
@@ -36,6 +36,9 @@ src_configure() {
 
 src_install() {
 	cmake-utils_src_install
+
+	newinitd ${FILESDIR}/${PN}.gentoo ${PN}
+	systemd_dounit rcscripts/systemd/${PN}.service
 
 	readme.gentoo_create_doc
 }
