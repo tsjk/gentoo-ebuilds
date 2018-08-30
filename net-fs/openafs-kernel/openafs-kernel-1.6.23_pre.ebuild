@@ -14,7 +14,7 @@ DESCRIPTION="The OpenAFS distributed file system kernel module"
 HOMEPAGE="https://www.openafs.org/"
 # We always d/l the doc tarball as man pages are not USE=doc material
 SRC_URI="
-	http://git.openafs.org/?p=openafs.git;a=snapshot;h=38f6a2243c6832d6174aa63d59b051b8b0a6a04e;sf=tgz -> ${MY_P}-src.tar.gz
+	http://git.openafs.org/?p=openafs.git;a=snapshot;h=bac61e749944de12eed804f466a233256c6e798a;sf=tgz -> ${MY_P}-src.tar.gz
 	https://dev.gentoo.org/~bircoph/afs/${MY_PN}-patches-${PVER}.tar.xz
 "
 
@@ -58,7 +58,7 @@ pkg_setup() {
 
 src_unpack() {
 	default
-	mv "${WORKDIR}/openafs-38f6a22" "${S}"
+	mv "${WORKDIR}/openafs-bac61e7" "${S}"
 }
 
 src_prepare() {

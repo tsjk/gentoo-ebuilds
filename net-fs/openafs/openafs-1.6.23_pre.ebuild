@@ -13,7 +13,7 @@ DESCRIPTION="The OpenAFS distributed file system"
 HOMEPAGE="https://www.openafs.org/"
 # We always d/l the doc tarball as man pages are not USE=doc material
 SRC_URI="
-	http://git.openafs.org/?p=openafs.git;a=snapshot;h=38f6a2243c6832d6174aa63d59b051b8b0a6a04e;sf=tgz -> ${MY_P}-src.tar.gz
+	http://git.openafs.org/?p=openafs.git;a=snapshot;h=bac61e749944de12eed804f466a233256c6e798a;sf=tgz -> ${MY_P}-src.tar.gz
 	https://openafs.org/dl/openafs/1.6.22.3/${PN}-1.6.22.3-doc.tar.bz2 -> ${MY_P}-doc.tar.bz2
 	https://dev.gentoo.org/~bircoph/afs/${PN}-patches-${PVER}.tar.xz
 "
@@ -52,8 +52,8 @@ EPATCH_EXCLUDE+=" 010_all_uname.patch"
 
 src_unpack() {
 	default
-	cp -a "${WORKDIR}/openafs-38f6a22"/* "${S}"/
-	rm -rf "${WORKDIR}/openafs-38f6a22"
+	cp -a  "${WORKDIR}/openafs-bac61e7"/* "${S}"/
+	rm -rf "${WORKDIR}/openafs-bac61e7"
 }
 
 src_prepare() {
