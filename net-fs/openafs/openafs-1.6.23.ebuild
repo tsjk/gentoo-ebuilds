@@ -44,7 +44,10 @@ RDEPEND="${CDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-PATCHES=( "${WORKDIR}/gentoo/patches" )
+EPATCH_SOURCE="${WORKDIR}/gentoo/patches"
+EPATCH_SUFFIX="patch"
+EPATCH_EXCLUDE+=" 007_all_fbsd.patch"
+EPATCH_EXCLUDE+=" 010_all_uname.patch"
 
 src_prepare() {
 	default
@@ -52,6 +55,10 @@ src_prepare() {
 	# fixing 2-nd level makefiles to honor flags
 	sed -i -r 's/\<CFLAGS[[:space:]]*=/CFLAGS+=/; s/\<LDFLAGS[[:space:]]*=/LDFLAGS+=/' \
 		src/*/Makefile.in || die '*/Makefile.in sed failed'
+
+	# fixing <rpc/types.h> includes
+	sed -i '\@#include <rpc/types.h>@d' "${S}/src/bucoord/ttest.c"
+	sed -i '\@#include "rpc/types.h"@d' "${S}/src/afs/AIX/osi_misc.c" "${S}/src/afs/AIX/osi_vnodeops.c" "${S}/src/afs/afs_fetchstore.c" "${S}/src/afs/afs_memcache.c" "${S}/src/afs/afs_nfsdisp.c" "${S}/src/rxkad/rxkad_common.c" "${S}/src/rxkad/rxkad_client.c"
 
 	# packaging is f-ed up, so we can't run eautoreconf
 	# run autotools commands based on what is listed in regen.sh
