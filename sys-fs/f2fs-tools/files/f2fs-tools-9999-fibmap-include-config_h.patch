@@ -1,15 +1,10 @@
-See https://bugs.gentoo.org/649168
-
-Patch by: Matt Whitlock <gentoo@mattwhitlock.name>
-
-diff -Naur a/tools/fibmap.c b/tools/fibmap.c
---- a/tools/fibmap.c	2018-03-01 00:09:24.861919778 +0000
-+++ b/tools/fibmap.c	2018-03-01 17:31:48.854604556 +0000
+--- ./tools/fibmap.c.orig	2018-09-28 13:25:25.520611379 +0200
++++ ./tools/fibmap.c	2018-09-28 13:27:09.815386981 +0200
 @@ -15,6 +15,7 @@
  #ifndef O_LARGEFILE
  #define O_LARGEFILE 0
  #endif
 +#include "config.h"
+ #include <f2fs_fs.h>
  #include <unistd.h>
  #include <string.h>
- #include <stdlib.h>
