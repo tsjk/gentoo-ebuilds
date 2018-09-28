@@ -33,7 +33,10 @@ ERROR_KEYS="OpenAFS needs CONFIG_KEYS option enabled"
 QA_TEXTRELS_x86_fbsd="/boot/modules/libafs.ko"
 QA_TEXTRELS_amd64_fbsd="/boot/modules/libafs.ko"
 
-PATCHES=( "${WORKDIR}/gentoo/patches" )
+EPATCH_SOURCE="${WORKDIR}/gentoo/patches"
+EPATCH_SUFFIX="patch"
+EPATCH_EXCLUDE+=" 007_all_fbsd.patch"
+EPATCH_EXCLUDE+=" 010_all_uname.patch"
 
 pkg_pretend() {
 	if use kernel_linux && kernel_is ge 4 18 ; then
