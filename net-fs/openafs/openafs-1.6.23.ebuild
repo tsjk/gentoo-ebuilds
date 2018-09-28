@@ -12,9 +12,10 @@ PVER="20170822"
 DESCRIPTION="The OpenAFS distributed file system"
 HOMEPAGE="https://www.openafs.org/"
 # We always d/l the doc tarball as man pages are not USE=doc material
+[[ ${PV} == *_pre* ]] && MY_PRE="candidate/" || MY_PRE=""
 SRC_URI="
-	http://git.openafs.org/?p=openafs.git;a=snapshot;h=bac61e749944de12eed804f466a233256c6e798a;sf=tgz -> ${MY_P}-src.tar.gz
-	https://openafs.org/dl/openafs/1.6.22.3/${PN}-1.6.22.3-doc.tar.bz2 -> ${MY_P}-doc.tar.bz2
+	https://openafs.org/dl/openafs/${MY_PRE}${MY_PV}/${MY_P}-src.tar.bz2
+	https://openafs.org/dl/openafs/${MY_PRE}${MY_PV}/${MY_P}-doc.tar.bz2
 	https://dev.gentoo.org/~bircoph/afs/${PN}-patches-${PVER}.tar.xz
 "
 
@@ -41,27 +42,12 @@ DEPEND="${CDEPEND}
 RDEPEND="${CDEPEND}
 	modules? ( ~net-fs/openafs-kernel-${PV} )"
 
-RESTRICT="mirror"
+S="${WORKDIR}/${MY_P}"
 
-S="${WORKDIR}/openafs-1.6.22.3"
-
-EPATCH_SOURCE="${WORKDIR}/gentoo/patches"
-EPATCH_SUFFIX="patch"
-EPATCH_EXCLUDE+=" 007_all_fbsd.patch"
-EPATCH_EXCLUDE+=" 010_all_uname.patch"
-
-src_unpack() {
-	default
-	cp -a  "${WORKDIR}/openafs-bac61e7"/* "${S}"/
-	rm -rf "${WORKDIR}/openafs-bac61e7"
-}
+PATCHES=( "${WORKDIR}/gentoo/patches" )
 
 src_prepare() {
-	epatch
-	eapply_user
-
-	sed -i '\@#include <rpc/types.h>@d' "${S}/src/bucoord/ttest.c"
-	sed -i '\@#include "rpc/types.h"@d' "${S}/src/afs/AIX/osi_misc.c" "${S}/src/afs/AIX/osi_vnodeops.c" "${S}/src/afs/afs_nfsdisp.c" "${S}/src/rxkad/rxkad_common.c" "${S}/src/rxkad/rxkad_client.c"
+	default
 
 	# fixing 2-nd level makefiles to honor flags
 	sed -i -r 's/\<CFLAGS[[:space:]]*=/CFLAGS+=/; s/\<LDFLAGS[[:space:]]*=/LDFLAGS+=/' \
