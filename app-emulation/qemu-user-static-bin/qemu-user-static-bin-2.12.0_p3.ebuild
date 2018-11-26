@@ -3,7 +3,7 @@ inherit unpacker
 
 DESCRIPTION="QEMU + Kernel-based Virtual Machine userland tools (static build from Debian)"
 HOMEPAGE="http://www.qemu.org http://www.linux-kvm.org"
-SRC_URI="amd64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3_amd64.deb )
+SRC_URI="amd64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3+b1_amd64.deb )
 	arm64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3_arm64.deb )
 	armel? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3_armel.deb )
 	armhf? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3_armhf.deb )
@@ -11,7 +11,7 @@ SRC_URI="amd64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3_
 	mipsel? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3_mipsel.deb )
 	ppc64el? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3_ppc64el.deb )
 	s390x? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3_s390x.deb )
-	x86? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3_i386.deb )"
+	x86? ( mirror://debian/pool/main/q/qemu/qemu-user-static_2.12+dfsg-3+b1_i386.deb )"
 
 LICENSE="GPL-2 LGPL-2 BSD-2"
 SLOT="0"
