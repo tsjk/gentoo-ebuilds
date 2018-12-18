@@ -39,6 +39,7 @@ src_prepare() {
 	epatch "${FILESDIR}/${P}-makefile.patch"
 
 	epatch "${FILESDIR}/${P}-code_fixes.patch"
+	epatch "${FILESDIR}/${P}-no_bits_slash_nan_h.patch"
 
 	append-ldflags $(no-as-needed)
 }
