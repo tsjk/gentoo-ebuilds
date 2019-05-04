@@ -18,10 +18,10 @@ PATCHES="${FILESDIR}/0001-sysctl.patch ${FILESDIR}/0002-mmap.patch"
 COMPRESSTYPE=".xz"
 
 CKV="$(ver_cut 1-2)"
+KV_PATCH="38"
 ETYPE="sources"
-K_NOSETEXTRAVERSION="don't_set_it"
+K_PREPATCHED="1"
 K_SECURITY_UNSUPPORTED="1"
-K_USEPV="yes"
 
 inherit kernel-2
 
@@ -69,6 +69,8 @@ src_prepare() {
 		( cd "${S}" && xzcat "${DISTDIR}"/"${i}" | patch -Nsp1 | \
 		  egrep -v 'Makefile\.rej$|Skipping\ patch.$|\ hunks\ ignored\ --\ saving\ rejects\ to\ file\ ' ); done
 	for i in ${PATCHES}; do ( cd "${S}" && patch -Np1 -i "${i}"); done
+
+	( cd "${S}" && sed -i -e "s:^\(SUBLEVEL =\).*:\1 ${KV_PATCH}:" Makefile )
 }
 
 src_install() {
