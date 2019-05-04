@@ -1,0 +1,10 @@
+--- ./mm/mmap.c.orig	2019-05-04 19:12:52.576113867 +0200
++++ ./mm/mmap.c	2019-05-04 19:36:50.955087760 +0200
+@@ -45,6 +45,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/pkeys.h>
+ #include <linux/oom.h>
++#include <linux/sched/mm.h>
+ #include <linux/ksm.h>
+ 
+ #include <linux/uaccess.h>
