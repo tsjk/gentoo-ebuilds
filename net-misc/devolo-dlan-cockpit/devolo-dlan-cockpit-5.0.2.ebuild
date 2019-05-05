@@ -38,7 +38,7 @@ src_install(){
 	ln -s "/opt/Adobe/AirSDK/runtimes/air/linux/Adobe AIR" "${ED}/opt/Adobe AIR"
   	systemd_dounit "${FILESDIR}/devolonetsvc.service"
 	printf "<?xml version="1.0" encoding="utf-8"?>\n<data_collection><allowed>2</allowed></data_collection>" > "${S}/config.xml"
-	newinitd "${S}/etc/init.d/devolonetsvc" devolonetsvc
+	newinitd "${FILESDIR}/devolonetsvc.initd" devolonetsvc
 	insinto "/var/lib/devolonetsvc"
 	newins "${S}/config.xml" config.xml
 }

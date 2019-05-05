@@ -1,0 +1,15 @@
+#!/sbin/openrc-run
+
+depend() {
+	use logger
+}
+
+description="develo Network Service"
+pidfile=/run/${RC_SVCNAME}.pid
+command=/usr/bin/devolonetsvc
+command_background=yes
+command_progress=yes
+start_stop_daemon_args='--chdir /var/lib/devolonetsvc'
+retry=SIGKILL/60
+stopsig=HUP
+
