@@ -14,6 +14,7 @@ RESTRICT="strip"
 
 RDEPEND="
 	app-arch/unzip
+	app-arch/xz-utils
 	dev-libs/libxml2
 	dev-libs/nspr
 	dev-libs/nss
