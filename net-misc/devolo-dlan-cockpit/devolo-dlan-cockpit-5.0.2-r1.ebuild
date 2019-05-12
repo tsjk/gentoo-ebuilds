@@ -12,8 +12,15 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="systemd"
 
-DEPEND="	=dev-util/adobe-air-sdk-bin-2.6
-		gnome-base/libgnome-keyring"
+DEPEND="	app-arch/bzip2[abi_x86_32]
+		app-arch/xz-utils
+		>=dev-libs/nss-3[abi_x86_32]
+		dev-libs/libxml2[abi_x86_32]
+		>=dev-libs/libxslt-1.1[abi_x86_32]
+		=dev-util/adobe-air-sdk-bin-2.6
+		gnome-base/libgnome-keyring
+		x11-libs/gtk+:2[abi_x86_32]
+		x11-libs/libXaw[abi_x86_32]"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}"
@@ -41,4 +48,7 @@ src_install(){
 	newinitd "${FILESDIR}/devolonetsvc.initd" devolonetsvc
 	insinto "/var/lib/devolonetsvc"
 	newins "${S}/config.xml" config.xml
+	insinto /etc/revdep-rebuild
+        echo "SEARCH_DIRS_MASK=\"/opt/devolo/dlancockpit\"" >> ${T}/10${PN}
+	doins "${T}"/10${PN} || die
 }
