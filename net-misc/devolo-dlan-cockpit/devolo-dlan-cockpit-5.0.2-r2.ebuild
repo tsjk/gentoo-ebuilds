@@ -50,5 +50,6 @@ src_install(){
 	newins "${S}/config.xml" config.xml
 	insinto /etc/revdep-rebuild
         echo "SEARCH_DIRS_MASK=\"/opt/devolo/dlancockpit\"" >> ${T}/10${PN}
+        echo "SEARCH_DIRS_MASK=\"/usr/bin/devolonetsvc\"" >> ${T}/10${PN}
 	doins "${T}"/10${PN} || die
 }
