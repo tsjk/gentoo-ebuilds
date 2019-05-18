@@ -66,12 +66,20 @@ pkg_setup(){
 }
 
 src_prepare() {
+	local _EXPECTED_REJECTS=( 	'Makefile.rej' \
+					'drivers/memstick/core/memstick.c.rej' \
+					'fs/cifs/smb2pdu.c.rej' \
+					'kernel/sysctl.c.rej' \
+					'mm/mmap.c.rej' )
 	for i in ${INCR_FILES}; do
 		( cd "${S}" && xzcat "${DISTDIR}"/"${i}" | patch -Nsp1 | \
 		  egrep -v 'Makefile\.rej$|Skipping\ patch.$|\ hunks\ ignored\ --\ saving\ rejects\ to\ file\ ' ); done
 	for i in ${PATCHES}; do ( cd "${S}" && patch -Np1 -i "${i}"); done
 
 	( cd "${S}" && sed -i -e "s:^\(SUBLEVEL =\).*:\1 ${K_SUBLEVEL}:" Makefile )
+	( cd "${S}" && for i in "${_EXPECTED_REJECTS[@]}"; do rm -f "${i}"; done )
+	[[ -z $(find "${S}" -name '*.rej' 2> /dev/null) ]] || \
+		{ echo "Unexpected rejects:"; find "${S}" -name '*.rej' 2> /dev/null; die "Unexpected rejects found!"; }
 }
 
 src_install() {
