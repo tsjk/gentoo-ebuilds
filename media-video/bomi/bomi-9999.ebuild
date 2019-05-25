@@ -1,14 +1,11 @@
-# Copyright 1999-2014 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Header: $
-
-EAPI=5
+EAPI=7
 
 inherit eutils git-r3 qmake-utils
 
 DESCRIPTION="Powerful and easy-to-use multimedia player"
-HOMEPAGE="http://bomi.github.io/"
-EGIT_REPO_URI="git://github.com/xylosper/bomi.git"
+HOMEPAGE="http://bomi-player.github.io/"
+#EGIT_REPO_URI="https://github.com/xylosper/bomi.git"
+EGIT_REPO_URI="https://github.com/demokritos/bomi.git"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -30,9 +27,9 @@ RDEPEND="dev-libs/fribidi
 	>=dev-qt/qtx11extras-5.3
 	>=dev-qt/qtxml-5.3
 	media-libs/alsa-lib
-	>=media-video/ffmpeg-2.4
+	>=media-video/ffmpeg-3.2
 	media-libs/glew
-	>=media-libs/libass-0.12.1
+	>=media-libs/libass-0.14
 	media-libs/libbluray
 	>=media-libs/libquvi-0.9
 	media-libs/libdvdread
@@ -51,14 +48,10 @@ DEPEND="${RDEPEND}
 	dev-lang/python
 	media-libs/mesa
 	sys-apps/sed
-	>=sys-devel/gcc-4.9"
+	>=sys-devel/gcc-6.4"
 
-src_prepare() {
-	#( cd "${S}/src/mpv"; python ./bootstrap.py )
-	epatch "${FILESDIR}/gets_declaration.patch"
-	epatch "${FILESDIR}/20160819.patch"
-	sed -i -E 's#^WAFURL\ \ \ \ \ =\ "http://ftp\.waf\.io/pub/release/"\ \+\ WAFRELEASE$#WAFURL\ \ \ \ \ =\ "http://www\.freehackers\.org/~tnagy/release/"\ \+\ WAFRELEASE#' "${S}/src/mpv/bootstrap.py"
-}
+DOCS=(	"CHANGES.txt" "COPYING.txt" "CREDITS.txt" "GPL.txt" \
+	"ICON-AUTHORS.txt" "ICON-COPYING.txt" "MPL.txt" "README.md" )
 
 src_configure() {
 	./configure \
@@ -75,5 +68,5 @@ src_configure() {
 
 src_install() {
 	emake DEST_DIR="${D}" install
-	dodoc CHANGES.txt README.md
+	for doc in "${DOCS[@]}"; do dodoc "${doc}"; done
 }
