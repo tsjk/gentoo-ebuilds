@@ -1,1 +1,1 @@
-dktools-4.10.0.ebuild
+dktools-4.20.0.ebuild
