@@ -3,8 +3,6 @@
 
 EAPI=6
 
-JAVA_PKG_IUSE="doc source"
-
 inherit java-pkg-2 java-pkg-simple
 
 DESCRIPTION="Mantissa (Mathematical Algorithms for Numerical Tasks In Space System Applications)"
