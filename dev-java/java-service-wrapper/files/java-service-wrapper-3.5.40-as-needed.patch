@@ -1,0 +1,197 @@
+--- ./src/c/Makefile-linux-armel-32.make.orig	2019-07-03 10:26:06.000000000 +0200
++++ ./src/c/Makefile-linux-armel-32.make	2019-07-21 09:34:05.505719627 +0200
+@@ -35,14 +35,14 @@
+ 	if test ! -d .deps; then mkdir .deps; fi
+ 
+ wrapper: $(wrapper_SOURCE)
+-	$(COMPILE) $(WRAPPER_LINK_OPTS) -pthread $(wrapper_SOURCE) -lm -o $(BIN)/wrapper
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) $(WRAPPER_LINK_OPTS) -pthread $(wrapper_SOURCE) -lm -o $(BIN)/wrapper
+ 
+ libwrapper.so: $(libwrapper_so_OBJECTS)
+-	${COMPILE} -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
++	${COMPILE} $(LDFLAGS) -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
+ 
+ %.o: %.c
+-	@echo '$(COMPILE) -c $<'; \
+-	$(COMPILE) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
++	@echo '$(COMPILE) $(CFLAGS) -c $<'; \
++	$(COMPILE) $(CFLAGS) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
+ 	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+ 	tr ' ' '\012' < .deps/$(*F).pp \
+ 	| sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+--- ./src/c/Makefile-linux-ppcbe-64.make.orig	2019-07-03 10:26:06.000000000 +0200
++++ ./src/c/Makefile-linux-ppcbe-64.make	2019-07-21 09:34:05.517720170 +0200
+@@ -35,14 +35,14 @@
+ 	if test ! -d .deps; then mkdir .deps; fi
+ 
+ wrapper: $(wrapper_SOURCE)
+-	$(COMPILE) $(WRAPPER_LINK_OPTS) -lm -pthread $(wrapper_SOURCE) -o $(BIN)/wrapper
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) $(WRAPPER_LINK_OPTS) -lm -pthread $(wrapper_SOURCE) -o $(BIN)/wrapper
+ 
+ libwrapper.so: $(libwrapper_so_OBJECTS)
+-	${COMPILE} -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
++	${COMPILE} $(LDFLAGS) -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
+ 
+ %.o: %.c
+-	@echo '$(COMPILE) -c $<'; \
+-	$(COMPILE) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
++	@echo '$(COMPILE) $(CFLAGS) -c $<'; \
++	$(COMPILE) $(CFLAGS) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
+ 	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+ 	tr ' ' '\012' < .deps/$(*F).pp \
+ 	| sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+--- ./src/c/Makefile-linux-armhf-32.make.orig	2019-07-03 10:26:06.000000000 +0200
++++ ./src/c/Makefile-linux-armhf-32.make	2019-07-21 09:34:05.508719763 +0200
+@@ -35,14 +35,14 @@
+ 	if test ! -d .deps; then mkdir .deps; fi
+ 
+ wrapper: $(wrapper_SOURCE)
+-	$(COMPILE) $(WRAPPER_LINK_OPTS) -pthread $(wrapper_SOURCE) -lm -o $(BIN)/wrapper
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) $(WRAPPER_LINK_OPTS) -pthread $(wrapper_SOURCE) -lm -o $(BIN)/wrapper
+ 
+ libwrapper.so: $(libwrapper_so_OBJECTS)
+-	${COMPILE} -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
++	${COMPILE} $(LDFLAGS) -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
+ 
+ %.o: %.c
+-	@echo '$(COMPILE) -c $<'; \
+-	$(COMPILE) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
++	@echo '$(COMPILE) $(CFLAGS) -c $<'; \
++	$(COMPILE) $(CFLAGS) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
+ 	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+ 	tr ' ' '\012' < .deps/$(*F).pp \
+ 	| sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+--- ./src/c/Makefile-linux-x86-32.make.orig	2019-07-03 10:26:06.000000000 +0200
++++ ./src/c/Makefile-linux-x86-32.make	2019-07-21 09:34:05.522720397 +0200
+@@ -38,17 +38,17 @@
+ 	if test ! -d .deps; then mkdir .deps; fi
+ 
+ wrapper: $(wrapper_SOURCE)
+-	$(COMPILE) $(WRAPPER_LINK_OPTS) -pthread $(wrapper_SOURCE) -lm -o $(BIN)/wrapper
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) $(WRAPPER_LINK_OPTS) -pthread $(wrapper_SOURCE) -lm -o $(BIN)/wrapper
+ 
+ testsuite: $(testsuite_SOURCE)
+-	$(COMPILE) -DCUNIT $(testsuite_SOURCE) -lm -pthread -L/usr/local/lib -lncurses -lcunit -o $(TEST)/testsuite
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) -DCUNIT $(testsuite_SOURCE) -lm -pthread -L/usr/local/lib -lncurses -lcunit -o $(TEST)/testsuite
+ 
+ libwrapper.so: $(libwrapper_so_OBJECTS)
+-	${COMPILE} -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
++	${COMPILE} $(LDFLAGS) -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
+ 
+ %.o: %.c
+-	@echo '$(COMPILE) -c $<'; \
+-	$(COMPILE) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
++	@echo '$(COMPILE) $(CFLAGS) -c $<'; \
++	$(COMPILE) $(CFLAGS) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
+ 	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+ 	tr ' ' '\012' < .deps/$(*F).pp \
+ 	| sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+--- ./src/c/Makefile-linux-armhf-64.make.orig	2019-07-03 10:26:06.000000000 +0200
++++ ./src/c/Makefile-linux-armhf-64.make	2019-07-21 09:34:05.510719854 +0200
+@@ -35,14 +35,14 @@
+ 	if test ! -d .deps; then mkdir .deps; fi
+ 
+ wrapper: $(wrapper_SOURCE)
+-	$(COMPILE) $(WRAPPER_LINK_OPTS) -pthread $(wrapper_SOURCE) -lm -o $(BIN)/wrapper
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) $(WRAPPER_LINK_OPTS) -pthread $(wrapper_SOURCE) -lm -o $(BIN)/wrapper
+ 
+ libwrapper.so: $(libwrapper_so_OBJECTS)
+-	${COMPILE} -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
++	${COMPILE} $(LDFLAGS) -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
+ 
+ %.o: %.c
+-	@echo '$(COMPILE) -c $<'; \
+-	$(COMPILE) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
++	@echo '$(COMPILE) $(CFLAGS) -c $<'; \
++	$(COMPILE) $(CFLAGS) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
+ 	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+ 	tr ' ' '\012' < .deps/$(*F).pp \
+ 	| sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+--- ./src/c/Makefile-linux-x86-64.make.orig	2019-07-03 10:26:06.000000000 +0200
++++ ./src/c/Makefile-linux-x86-64.make	2019-07-21 09:34:05.525720533 +0200
+@@ -38,17 +38,17 @@
+ 	if test ! -d .deps; then mkdir .deps; fi
+ 
+ wrapper: $(wrapper_SOURCE)
+-	$(COMPILE) $(WRAPPER_LINK_OPTS) -pthread $(wrapper_SOURCE) -lm -o $(BIN)/wrapper
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) $(WRAPPER_LINK_OPTS) -pthread $(wrapper_SOURCE) -lm -o $(BIN)/wrapper
+ 
+ testsuite: $(testsuite_SOURCE)
+-	$(COMPILE) -DCUNIT $(testsuite_SOURCE) -lm -pthread -L/usr/local/lib -lncurses -lcunit -o $(TEST)/testsuite
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) -DCUNIT $(testsuite_SOURCE) -lm -pthread -L/usr/local/lib -lncurses -lcunit -o $(TEST)/testsuite
+ 
+ libwrapper.so: $(libwrapper_so_OBJECTS)
+-	${COMPILE} -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
++	${COMPILE} $(LDFLAGS) -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
+ 
+ %.o: %.c 
+-	@echo '$(COMPILE) -c $<'; \
+-	$(COMPILE) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
++	@echo '$(COMPILE) $(CFLAGS) -c $<'; \
++	$(COMPILE) $(CFLAGS) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
+ 	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+ 	tr ' ' '\012' < .deps/$(*F).pp \
+ 	| sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+--- ./src/c/Makefile-linux-ppcle-64.make.orig	2019-07-03 10:26:06.000000000 +0200
++++ ./src/c/Makefile-linux-ppcle-64.make	2019-07-21 09:34:05.519720261 +0200
+@@ -35,14 +35,14 @@
+ 	if test ! -d .deps; then mkdir .deps; fi
+ 
+ wrapper: $(wrapper_SOURCE)
+-	$(COMPILE) $(WRAPPER_LINK_OPTS) -lm -pthread $(wrapper_SOURCE) -o $(BIN)/wrapper
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) $(WRAPPER_LINK_OPTS) -lm -pthread $(wrapper_SOURCE) -o $(BIN)/wrapper
+ 
+ libwrapper.so: $(libwrapper_so_OBJECTS)
+-	${COMPILE} -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
++	${COMPILE} $(LDFLAGS) -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
+ 
+ %.o: %.c
+-	@echo '$(COMPILE) -c $<'; \
+-	$(COMPILE) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
++	@echo '$(COMPILE) $(CFLAGS) -c $<'; \
++	$(COMPILE) $(CFLAGS) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
+ 	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+ 	tr ' ' '\012' < .deps/$(*F).pp \
+ 	| sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+--- ./src/c/Makefile-linux-ppcbe-32.make.orig	2019-07-03 10:26:06.000000000 +0200
++++ ./src/c/Makefile-linux-ppcbe-32.make	2019-07-21 09:34:05.515720080 +0200
+@@ -35,14 +35,14 @@
+ 	if test ! -d .deps; then mkdir .deps; fi
+ 
+ wrapper: $(wrapper_SOURCE)
+-	$(COMPILE) $(WRAPPER_LINK_OPTS) -lm -pthread $(wrapper_SOURCE) -o $(BIN)/wrapper
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) $(WRAPPER_LINK_OPTS) -lm -pthread $(wrapper_SOURCE) -o $(BIN)/wrapper
+ 
+ libwrapper.so: $(libwrapper_so_OBJECTS)
+-	${COMPILE} -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
++	${COMPILE} $(LDFLAGS) -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
+ 
+ %.o: %.c
+-	@echo '$(COMPILE) -c $<'; \
+-	$(COMPILE) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
++	@echo '$(COMPILE) $(CFLAGS) -c $<'; \
++	$(COMPILE) $(CFLAGS) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
+ 	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+ 	tr ' ' '\012' < .deps/$(*F).pp \
+ 	| sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+--- ./src/c/Makefile-linux-ia-64.make.orig	2019-07-03 10:26:06.000000000 +0200
++++ ./src/c/Makefile-linux-ia-64.make	2019-07-21 09:34:05.512719944 +0200
+@@ -35,14 +35,14 @@
+ 	if test ! -d .deps; then mkdir .deps; fi
+ 
+ wrapper: $(wrapper_SOURCE)
+-	$(COMPILE) $(WRAPPER_LINK_OPTS) -lm -pthread $(wrapper_SOURCE) -o $(BIN)/wrapper
++	$(COMPILE) $(CFLAGS) $(LDFLAGS) $(WRAPPER_LINK_OPTS) -lm -pthread $(wrapper_SOURCE) -o $(BIN)/wrapper
+ 
+ libwrapper.so: $(libwrapper_so_OBJECTS)
+-	${COMPILE} -lm -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
++	${COMPILE} $(LDFLAGS) -shared $(libwrapper_so_OBJECTS) -o $(LIB)/libwrapper.so
+ 
+ %.o: %.c
+-	@echo '$(COMPILE) -c $<'; \
+-	$(COMPILE) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
++	@echo '$(COMPILE) $(CFLAGS) -c $<'; \
++	$(COMPILE) $(CFLAGS) $(DEFS) -Wp,-MD,.deps/$(*F).pp -c $<
+ 	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+ 	tr ' ' '\012' < .deps/$(*F).pp \
+ 	| sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
