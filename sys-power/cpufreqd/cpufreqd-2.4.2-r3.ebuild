@@ -1,6 +1,6 @@
 # $Id$
 
-EAPI="5"
+EAPI="6"
 
 inherit autotools eutils
 
@@ -15,10 +15,10 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~sparc ~x86"
 
-IUSE="acpi apm lm_sensors nforce2 nvidia pmu"
+IUSE="acpi apm lm-sensors nforce2 nvidia pmu"
 RDEPEND="	sys-fs/sysfsutils
 		sys-power/cpufrequtils
-		lm_sensors? ( >sys-apps/lm_sensors-3 )"
+		lm-sensors? ( >sys-apps/lm-sensors-3 )"
 DEPEND="sys-apps/sed
 	${RDEPEND}"
 RESTRICT="mirror"
