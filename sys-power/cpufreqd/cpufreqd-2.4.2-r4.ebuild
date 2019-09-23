@@ -36,7 +36,7 @@ src_prepare() {
 		epatch "${FILESDIR}/nvclock${NVCLOCK_VERSION}-fpic.patch"
 	fi
 
-	epatch_user
+	eapply_user
 
 	eautoreconf
 }
