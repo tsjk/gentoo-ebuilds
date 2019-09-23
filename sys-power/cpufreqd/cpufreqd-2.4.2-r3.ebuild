@@ -57,7 +57,7 @@ src_configure() {
 	econf \
 		$(use_enable acpi) \
 		$(use_enable apm) \
-		$(use_enable lm_sensors sensors) \
+		$(use_enable lm-sensors sensors) \
 		$(use_enable nforce2) \
 		$(use_enable pmu) \
 		${config}
