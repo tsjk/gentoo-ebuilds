@@ -1,4 +1,4 @@
-EAPI=6
+EAPI=7
 
 inherit autotools eutils git-r3
 
@@ -17,6 +17,5 @@ RDEPEND="	net-misc/dhcp[client]
 		net-misc/openssh
 		sys-apps/util-linux[static-libs]
 		sys-kernel/dracut"
-
 
 PATCHES=( "${FILESDIR}/00000000-flush_netifs_ipcfg_on_dropbear_stop.patch" )
