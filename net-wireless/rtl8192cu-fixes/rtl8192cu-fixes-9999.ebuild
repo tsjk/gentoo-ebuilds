@@ -1,11 +1,11 @@
 EAPI=6
 
-EGIT_REPO_URI="https://github.com/Outernet-Project/rtl8192cu-fixes.git"
+EGIT_REPO_URI="https://github.com/pvaret/rtl8192cu-fixes.git"
 
 inherit git-r3 linux-mod
 
 DESCRIPTION="Realtek 8192 chipset driver, ported to kernel 3.11+"
-HOMEPAGE="https://github.com/Outernet-Project/rtl8192cu-fixes"
+HOMEPAGE="https://github.com/pvaret/rtl8192cu-fixes"
 SRC_URI=""
 
 LICENSE=""
