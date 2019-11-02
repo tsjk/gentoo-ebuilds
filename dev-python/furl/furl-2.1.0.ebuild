@@ -17,7 +17,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 RESTRICT="mirror"
 
-RDEPEND=">=dev-python/orederedmultidict-1.0.1[${PYTHON_USEDEP}]
+RDEPEND=">=dev-python/orderedmultidict-1.0.1[${PYTHON_USEDEP}]
 	>=dev-python/six-1.8[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}
 	dev-python/setuptools[${PYTHON_USEDEP}]
