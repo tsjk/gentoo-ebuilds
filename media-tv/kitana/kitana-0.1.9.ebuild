@@ -16,7 +16,8 @@ REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 DOCS=('CHANGELOG' 'Dockerfile' 'Dockerfile.armhf' 'LICENSE' 'README.md')
 
-DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]
+DEPEND=">=app-admin/supervisor-4.0.4[${PYTHON_USEDEP}]
+	dev-python/setuptools[${PYTHON_USEDEP}]
 	>=dev-python/PyGithub-1.43.8[${PYTHON_USEDEP}]
 	>=dev-python/cherrypy-18.3.0[${PYTHON_USEDEP}]
 	>=dev-python/furl-2.1.0[${PYTHON_USEDEP}]
@@ -51,5 +52,17 @@ src_install() {
 	ln -s $(realpath --relative-to="${D}/$(python_get_sitedir)/${PN}" "${D}/var/lib/kitana/static") "${D}/$(python_get_sitedir)/${PN}/static"
 	python_optimize "${D}/$(python_get_sitedir)/${PN}"
 	fperms 755 "$(python_get_sitedir)/${PN}/${PN}.py"
-	dosym "$(python_get_sitedir)/${PN}/${PN}.py" "/usr/bin/${PN}"
+
+	mkdir -p "${D}/etc/supervisord.d"
+	echo "[program:kitana]" > "${D}/etc/supervisord.d/kitana.conf"
+	echo "command=$(python_get_sitedir)/${PN}/${PN}.py -B 127.0.0.1:31337 -p /kitana" >> "${D}/etc/supervisord.d/kitana.conf"
+	echo "numprocs=1" >> "${D}/etc/supervisord.d/kitana.conf"
+	echo "directory=$(python_get_sitedir)/${PN}" >> "${D}/etc/supervisord.d/kitana.conf"
+	echo "autostart=false" >> "${D}/etc/supervisord.d/kitana.conf"
+	echo "autorestart=true" >> "${D}/etc/supervisord.d/kitana.conf"
+	echo "startsecs=10" >> "${D}/etc/supervisord.d/kitana.conf"
+	echo "startretries=12" >> "${D}/etc/supervisord.d/kitana.conf"
+	echo "stopsignal=QUIT" >> "${D}/etc/supervisord.d/kitana.conf"
+	echo "user=nobody" >> "${D}/etc/supervisord.d/kitana.conf"
+	echo "group=nobody" >> "${D}/etc/supervisord.d/kitana.conf"
 }
