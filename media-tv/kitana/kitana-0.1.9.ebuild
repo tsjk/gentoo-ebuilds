@@ -50,5 +50,6 @@ src_install() {
 	ln -s $(realpath --relative-to="${D}/$(python_get_sitedir)/${PN}" "${D}/var/lib/kitana/data") "${D}/$(python_get_sitedir)/${PN}/data"
 	ln -s $(realpath --relative-to="${D}/$(python_get_sitedir)/${PN}" "${D}/var/lib/kitana/static") "${D}/$(python_get_sitedir)/${PN}/static"
 	python_optimize "${D}/$(python_get_sitedir)/${PN}"
+	fperms 755 "$(python_get_sitedir)/${PN}/${PN}.py"
 	dosym "$(python_get_sitedir)/${PN}/${PN}.py" "/usr/bin/${PN}"
 }
