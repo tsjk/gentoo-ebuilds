@@ -33,6 +33,7 @@ pkg_setup() {
 src_install() {
 	dodoc "${DOCS[@]}"; dodoc -r "deployment"
 	local d; for d in "${DOCS[@]}"; do rm -f "${S}/${d}"; done; rm -rf "${S}/deployment"
+	echo '# coding=utf-8' > "${S}/plugins/__init__.py"
 	python_moduleinto ${PN}
 	python_domodule *
 	rm -rf "${D}/$(python_get_sitedir)/${PN}/data"
