@@ -55,7 +55,7 @@ src_install() {
 
 	mkdir -p "${D}/etc/supervisord.d"
 	echo "[program:kitana]" > "${D}/etc/supervisord.d/kitana.conf"
-	echo "command=$(python_get_sitedir)/${PN}/${PN}.py -B 127.0.0.1:31337 -p /kitana" >> "${D}/etc/supervisord.d/kitana.conf"
+	echo "command=$(python_get_sitedir)/${PN}/${PN}.py -B 127.0.0.1:31337" >> "${D}/etc/supervisord.d/kitana.conf"
 	echo "numprocs=1" >> "${D}/etc/supervisord.d/kitana.conf"
 	echo "directory=$(python_get_sitedir)/${PN}" >> "${D}/etc/supervisord.d/kitana.conf"
 	echo "autostart=false" >> "${D}/etc/supervisord.d/kitana.conf"
