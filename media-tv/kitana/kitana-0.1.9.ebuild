@@ -31,17 +31,24 @@ pkg_setup() {
 }
 
 src_install() {
+	local d
+
+	for d in kitana kitana/data kitana/data/sessions kitana/static; do mkdir -p "${D}/var/lib/${d}"; done
+        fowners nobody:nobody /var/lib/kitana /var/lib/kitana/data /var/lib/kitana/data/sessions /var/lib/kitana/static
+        fperms 755 /var/lib/kitana /var/lib/kitana/data /var/lib/kitana/data/sessions /var/lib/kitana/static
+
 	dodoc "${DOCS[@]}"; dodoc -r "deployment"
-	local d; for d in "${DOCS[@]}"; do rm -f "${S}/${d}"; done; rm -rf "${S}/deployment"
+	for d in "${DOCS[@]}"; do rm -f "${S}/${d}"; done; rm -rf "${S}/deployment"
+
+	mv "${S}/static"/* "${D}/var/lib/kitana/static"/; rmdir "${S}/static" || die; rm -rf "${S}/data"
+        fowners -R nobody:nobody /var/lib/kitana/data /var/lib/kitana/static
+
+	for d in kitana kitana/data kitana/data/sessions kitana/static; do keepdir /var/lib/${d}; done
+
 	echo '# coding=utf-8' > "${S}/plugins/__init__.py"
-	python_moduleinto ${PN}
-	python_domodule *
-	rm -rf "${D}/$(python_get_sitedir)/${PN}/data"
-	keepdir /var/lib/kitana
-	keepdir /var/lib/kitana/sessions
-        fowners nobody:nobody /var/lib/kitana /var/lib/kitana/sessions
-        fperms 755 /var/lib/kitana /var/lib/kitana/sessions
-	ln -s $(realpath --relative-to="${D}/$(python_get_sitedir)/${PN}" "${D}/var/lib/kitana") "${D}/$(python_get_sitedir)/${PN}/data"
+	python_moduleinto ${PN}; python_domodule *
+	ln -s $(realpath --relative-to="${D}/$(python_get_sitedir)/${PN}" "${D}/var/lib/kitana/data") "${D}/$(python_get_sitedir)/${PN}/data"
+	ln -s $(realpath --relative-to="${D}/$(python_get_sitedir)/${PN}" "${D}/var/lib/kitana/static") "${D}/$(python_get_sitedir)/${PN}/static"
 	python_optimize "${D}/$(python_get_sitedir)/${PN}"
-	python_newscript "${PN}.py" "${PN}"
+	python_newexe "${PN}.py" "${PN}"
 }
