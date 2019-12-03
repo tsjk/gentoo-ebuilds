@@ -1,21 +1,25 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI=5
+EAPI=7
+
 inherit git-r3 qmake-utils
 
 DESCRIPTION="Cross-platform libmpv-based multimedia player with uncluttered design"
-DESCRIPTION="MPV front end"
 HOMEPAGE="https://github.com/u8sand/Baka-MPlayer"
 EGIT_REPO_URI="https://github.com/u8sand/Baka-MPlayer.git"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~x86 ~amd64"
+KEYWORDS=""
 IUSE=""
 
-RDEPEND="dev-qt/qtcore:5
+BDEPEND="
+	dev-qt/linguist-tools:5
+	virtual/pkgconfig
+"
+RDEPEND="
+	dev-qt/qtcore:5
 	dev-qt/qtgui:5
 	dev-qt/qtnetwork:5
 	dev-qt/qtsvg:5
@@ -23,8 +27,7 @@ RDEPEND="dev-qt/qtcore:5
 	dev-qt/qtx11extras:5
 	media-video/mpv[libmpv]
 	x11-libs/libX11"
-DEPEND="${RDEPEND}
-	virtual/pkgconfig"
+DEPEND="${RDEPEND}"
 
 src_prepare() {
 	# no need to install license
