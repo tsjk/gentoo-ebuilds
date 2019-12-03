@@ -6,7 +6,7 @@ EAPI=7
 inherit git-r3 qmake-utils
 
 DESCRIPTION="Cross-platform libmpv-based multimedia player with uncluttered design"
-HOMEPAGE="https://github.com/u8sand/Baka-MPlayer"
+HOMEPAGE="http://bakamplayer.u8sand.net/"
 EGIT_REPO_URI="https://github.com/u8sand/Baka-MPlayer.git"
 
 LICENSE="GPL-2"
@@ -30,6 +30,7 @@ RDEPEND="
 DEPEND="${RDEPEND}"
 
 src_prepare() {
+	default
 	# no need to install license
 	sed -e '/^INSTALLS/s:license::' -i src/Baka-MPlayer.pro || die
 	# put manual in our docdir
