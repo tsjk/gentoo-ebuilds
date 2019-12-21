@@ -34,6 +34,9 @@ src_install() {
 		tilegx x86_64; do
 		fperms 0755 /usr/bin/qemu-${arch}-static
 	done
+	cd "${D}/usr/share/man/man1" && for i in *.gz; do
+		[[ ! -L "${i}" ]] || { j=$(readlink "${i}"); rm "${i}"; \
+					ln -sv $(echo "${j}" | sed 's@\.gz@\.bz2@') $(echo "${i}" | sed 's@\.gz@\.bz2@'); }; done
 	fperms 0755 /usr/sbin/qemu-debootstrap
 }
 
