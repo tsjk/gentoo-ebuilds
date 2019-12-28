@@ -8,7 +8,7 @@ inherit autotools linux-mod flag-o-matic pam systemd toolchain-funcs
 MY_PV=${PV/_/}
 MY_P="${PN}-${MY_PV}"
 PVER=20190106
-KERNEL_LIMIT=5.1
+KERNEL_LIMIT=5.3
 
 DESCRIPTION="The OpenAFS distributed file system"
 HOMEPAGE="https://www.openafs.org/"
@@ -94,6 +94,7 @@ pkg_setup() {
 
 src_prepare() {
 	rm -f "${WORKDIR}/gentoo/patches/000_all_p20181001.patch"
+	rm -f "${WORKDIR}/gentoo/patches/001_all_compiler-settings.patch"
 	default
 
 	# fixing 2-nd level makefiles to honor flags
