@@ -1,3 +1,15 @@
+From 5315aee51213a68f946b1c387d513bc2a5e67560 Mon Sep 17 00:00:00 2001
+From: Andreas Sturmlechner <asturm@gentoo.org>
+Date: Tue, 10 Apr 2018 20:31:38 +0200
+Subject: [PATCH] Fix build with QScintilla-2.10.3 (?)
+
+---
+ src/app/qsci/lexers/qscilexerada.h     | 3 ---
+ src/app/qsci/lexers/qscilexerhaskell.h | 3 ---
+ src/app/qsci/lexers/qscilexerlisp.h    | 3 ---
+ src/app/qsci/lexers/qscilexernsis.h    | 3 ---
+ 4 files changed, 12 deletions(-)
+
 diff --git a/src/app/qsci/lexers/qscilexerada.h b/src/app/qsci/lexers/qscilexerada.h
 index 984f97e..30c6646 100644
 --- a/src/app/qsci/lexers/qscilexerada.h
