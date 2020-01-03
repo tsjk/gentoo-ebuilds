@@ -52,7 +52,7 @@ src_prepare() {
 		# Fix for Qscintilla v2.10
 		has_version ">=x11-libs/qscintilla-2.10" && eapply "${FILESDIR}/${P}-with-qscintilla-2.10.patch"
 		# Fix for Qscintilla v2.13
-		has_version ">=x11-libs/qscintilla-2.10.3" && eapply "${FILESDIR}/${P}-with-qscintilla-2.10.3.patch"
+		has_version "<x11-libs/qscintilla-2.10.3" && eapply "${FILESDIR}/${P}-less-than-qscintilla-2.10.3.patch"
 
 		# Fix another library name
 		sed -i -E '/^\s*SET\(QSCINTILLA_NAMES\ /s/\)$/\ qscintilla2\ libqscintilla2\)/' cmake/FindQScintilla2.cmake
