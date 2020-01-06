@@ -15,7 +15,7 @@ SRC_URI="https://github.com/g1itch/${MY_PN}/archive/${COMMIT}.tar.gz -> ${P}.tar
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="debug libnotify libressl ncurses opencl qrcode sound"
+IUSE="debug libnotify libressl ncurses opencl pyqt qrcode sound"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 DEPEND="${PYTHON_DEPS}"
@@ -25,8 +25,10 @@ RDEPEND="${DEPEND}
 		dev-python/msgpack[${PYTHON_USEDEP}]
 		dev-python/u-msgpack[${PYTHON_USEDEP}]
 	)
-	dev-python/PyQt5[${PYTHON_USEDEP}]
-	>=dev-python/QtPy-1.3.1[gui,pyqt5(+),${PYTHON_USEDEP}]
+	pyqt? (
+		dev-python/PyQt5[${PYTHON_USEDEP}]
+		>=dev-python/QtPy-1.9.0[gui,pyqt5(+),${PYTHON_USEDEP}]
+	)
 	debug? ( dev-python/python-prctl[${PYTHON_USEDEP}] )
 	libnotify? (
 		dev-python/pygobject[${PYTHON_USEDEP}]
