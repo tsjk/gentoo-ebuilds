@@ -16,7 +16,8 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="debug libnotify libressl ncurses opencl pyqt qrcode sound"
-REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+REQUIRED_USE="${PYTHON_REQUIRED_USE}
+		|| ( ncurses pyqt )"
 
 DEPEND="${PYTHON_DEPS}"
 
