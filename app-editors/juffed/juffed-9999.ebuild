@@ -19,7 +19,6 @@ KEYWORDS=""
 IUSE="debug qt5"
 
 DEPEND="app-i18n/enca
-	<x11-libs/qscintilla-2.11
 	!qt5? ( >=dev-qt/qtcore-4.2:4
 		>=dev-qt/qtgui-4.2:4
 		=dev-qt/qtsingleapplication-2.6.1_p20150629[X,qt4]
