@@ -1,0 +1,52 @@
+diff --git a/src/ftp_listener.c b/src/ftp_listener.c
+index 0ac630d..3977078 100644
+--- a/src/ftp_listener.c
++++ b/src/ftp_listener.c
+@@ -148,7 +148,7 @@ int ftp_listener_init(ftp_listener_t *f,
+ 		return 0;
+ 	}
+ 		
+-	assert(hp->h_length <= sizeof(sock_addr));
++	daemon_assert(hp->h_length <= sizeof(sock_addr));
+ 	memcpy(&sock_addr, hp->h_addr, hp->h_length);
+     }
+ #endif
+@@ -489,7 +489,6 @@ static char *addr2string(const struct sockaddr *s)
+ 
+     daemon_assert(s != NULL);
+ 
+-#ifdef INET6
+     error = getnameinfo((struct sockaddr *)s, 
+                          sizeof(struct sockaddr_storage),
+                          addr, 
+@@ -503,9 +502,6 @@ static char *addr2string(const struct sockaddr *s)
+     } else {
+         ret_val = addr;
+     }
+-#else
+-    ret_val = inet_ntoa(s->sin_addr);
+-#endif
+ 
+     return ret_val;
+ }
+diff --git a/src/ftp_session.c b/src/ftp_session.c
+index 81e9c8e..7a1cbb1 100644
+--- a/src/ftp_session.c
++++ b/src/ftp_session.c
+@@ -1957,11 +1957,16 @@ static int ip_equal(const struct sockaddr *a, const struct sockaddr *b)
+ 
+ static int ip_equal(const struct sockaddr *a, const struct sockaddr *b)
+ {
++    struct sockaddr *aa, *bb;
++
+     daemon_assert(a != NULL);
+     daemon_assert(b != NULL);
+     daemon_assert(a->sa_family == AF_INET);
+     daemon_assert(b->sa_family == AF_INET);
+ 
++    aa = (struct sockaddr *)a;
++    bb = (struct sockaddr *)b;
++
+     if (((struct sockaddr_in *)aa)->sin_addr.s_addr != 
+ 	((struct sockaddr_in *)bb)->sin_addr.s_addr) return 0;
+     
