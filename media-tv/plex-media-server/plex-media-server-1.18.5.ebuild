@@ -50,7 +50,7 @@ BINS_TO_PAX_MARK=(
 
 S="${WORKDIR}"
 PATCHES=(
-	"${FILESDIR}/virtualenv_start_pms_2019.patch"
+	"${FILESDIR}/virtualenv_start_pms_2020.patch"
 	"${FILESDIR}/plexmediamanager.desktop.new.patch"
 	"${FILESDIR}/add_gentoo_profile_as_platform_version.patch"
 )
