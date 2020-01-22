@@ -61,11 +61,11 @@ src_unpack() {
 
 src_install() {
 	# Move the config to the correct place
-	local config_vanilla="/etc/default/plexmediaserver"
+	local config_vanilla="/usr/lib/plexmediaserver/lib/plexmediaserver.default"
 	local config_path="/etc/${_SHORTNAME}"
 	dodir "${config_path}"
 	insinto "${config_path}"
-	doins "${config_vanilla#/}"
+	newins "${config_vanilla#/}" plexmediaserver
 	sed -e "s#${config_vanilla}#${config_path}/${_APPNAME}#g" -i "${S}"/usr/sbin/start_pms || die
 
 	# Remove Debian specific files
