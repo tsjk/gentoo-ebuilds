@@ -1,8 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Id$
-
-EAPI=5
+EAPI=7
 
 PYTHON_COMPAT=( python{2_7,3_3,3_4,3_5} )
 
@@ -20,7 +16,9 @@ SLOT="0"
 KEYWORDS=""
 IUSE=""
 
-DEPEND="dev-python/pyyaml[${PYTHON_USEDEP}]
+DEPEND="$(python_gen_cond_dep '
+		dev-python/pyyaml[${PYTHON_MULTI_USEDEP}]
+        ')
 	dev-util/ctags
 	dev-util/ninja
 	sys-libs/libtermcap-compat
