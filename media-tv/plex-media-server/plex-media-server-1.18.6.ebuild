@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
@@ -6,7 +6,7 @@ EAPI=7
 PYTHON_COMPAT=( python2_7 )
 inherit eutils systemd unpacker pax-utils python-single-r1
 
-MINOR_VERSION="2260-056ab4be9"
+MINOR_VERSION="2368-97add474d"
 
 _APPNAME="plexmediaserver"
 _USERNAME="plex"
@@ -27,7 +27,10 @@ RESTRICT="bindist strip"
 KEYWORDS="-* ~amd64 ~x86"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
-DEPEND="dev-python/virtualenv[${PYTHON_USEDEP}]"
+DEPEND="
+	$(python_gen_cond_dep '
+		dev-python/virtualenv[${PYTHON_MULTI_USEDEP}]
+	')"
 BDEPEND="dev-util/patchelf"
 
 RDEPEND="
