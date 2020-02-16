@@ -37,14 +37,18 @@ src_compile() {
 }
 
 src_install() {
+	dobin src/proot
+	newman doc/proot/man.1 proot.1
+	dodoc HACKING.rst
+	dodoc README.rst
+	dodoc doc/proot/*.txt
+	dodoc doc/security.rst
 	if use care; then
 		dobin src/care
 		dodoc doc/care/*.txt
+		insinto /usr/share/${P}
+		doins -r contrib
 	fi
-	dobin src/proot
-	newman doc/proot/man.1 proot.1
-	dodoc doc/proot/*.txt
-	dodoc -r doc/articles
 }
 
 src_test() {
