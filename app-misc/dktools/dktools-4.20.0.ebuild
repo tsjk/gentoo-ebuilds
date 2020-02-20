@@ -43,6 +43,10 @@ src_configure() {
 }
 
 src_install() {
-	mkdir -m0755 -p "${ED}/usr/include"
 	default
+	mkdir -m0755 -p "${ED}/usr/include"
+	keepdir /var/lib/lib
+	keepdir /var/lib/log
+	keepdir /var/lib/run
+	export QA_DT_NEEDED=$(find "${ED}" -type f -name 'libdk4m*.so.*' -printf '/%P\n')
 }
