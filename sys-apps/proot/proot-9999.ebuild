@@ -1,7 +1,7 @@
 EAPI=7
 MY_PN="PRoot"
 
-inherit autotools eutils git-r3 toolchain-funcs
+inherit autotools eutils flag-o-matic git-r3 toolchain-funcs
 
 DESCRIPTION="User-space implementation of chroot, mount --bind, and binfmt_misc"
 HOMEPAGE="https://proot-me.github.io/"
@@ -13,14 +13,28 @@ SLOT="0"
 KEYWORDS=""
 IUSE="care static test"
 
-RDEPEND="care? ( app-arch/libarchive:0= )
-	 sys-libs/talloc"
-DEPEND="${RDEPEND}
-	care? ( dev-libs/uthash )
-	test? ( dev-util/valgrind )"
+LIB_DEPEND="
+	care? ( app-arch/libarchive:0=[static-libs(+)] )
+	dev-lang/python[static-libs(+)]
+	dev-libs/libbsd[static-libs(+)]
+	sys-libs/talloc[static-libs(+)]
+"
 
-# Breaks sandbox
-RESTRICT="test"
+RDEPEND="
+!static? ( ${LIB_DEPEND//\[static-libs(+)]} )
+"
+
+DEPEND="
+	${RDEPEND}
+        static? ( ${LIB_DEPEND} )
+	care? ( dev-libs/uthash )
+	test? ( dev-util/valgrind )
+"
+
+# test breaks sandbox
+RESTRICT="
+	!test? ( test )
+"
 
 PATCHES=(
 		"${FILESDIR}/${PN}-lib-paths-fix.patch" \

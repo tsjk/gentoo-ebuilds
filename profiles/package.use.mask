@@ -1,0 +1,2 @@
+# static requires static libs not in portage
+sys-apps/proot static
