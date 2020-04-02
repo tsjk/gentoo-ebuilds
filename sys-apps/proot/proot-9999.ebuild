@@ -1,4 +1,4 @@
-EAPI=6
+EAPI=7
 MY_PN="PRoot"
 
 inherit autotools eutils git-r3 toolchain-funcs
@@ -11,7 +11,7 @@ SRC_URI=""
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS=""
-IUSE="care test"
+IUSE="care static test"
 
 RDEPEND="care? ( app-arch/libarchive:0= )
 	 sys-libs/talloc"
@@ -22,10 +22,17 @@ DEPEND="${RDEPEND}
 # Breaks sandbox
 RESTRICT="test"
 
-PATCHES=(	"${FILESDIR}/${PN}-makefile.patch" \
-		"${FILESDIR}/${PN}-lib-paths-fix.patch" )
+PATCHES=(
+		"${FILESDIR}/${PN}-lib-paths-fix.patch" \
+		"${FILESDIR}/${PN}-makefile.patch" \
+)
 
 S="${WORKDIR}/${MY_PN,,}-${PV}"
+
+src_prepare() {
+	default
+	use static && append-ldflags -static
+}
 
 src_compile() {
 	# build the proot and care targets
@@ -55,7 +62,13 @@ src_test() {
 	emake -C tests -j1 CC="$(tc-getCC)"
 }
 
+
 pkg_postinst() {
+	elog "If you have segfaults on recent (>4.8) kernels"
+	elog "try to disable seccomp support like so:"
+	elog "'export PROOT_NO_SECCOMP=1'"
+	elog "prior to running proot"
+
 	if use care; then
 		elog "You have enabled 'care' USE flag, that builds and installs"
 		elog "dynamically linked care binary."

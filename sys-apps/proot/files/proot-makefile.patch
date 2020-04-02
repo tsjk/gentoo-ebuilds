@@ -1,11 +1,11 @@
---- ./src/GNUmakefile	2017-09-25 10:20:11.950068576 +0200
-+++ ./src/GNUmakefile	2017-09-25 10:22:06.201990205 +0200
-@@ -15,7 +15,7 @@
- OBJDUMP  = $(CROSS_COMPILE)objdump
+--- ./src/GNUmakefile.unpatched	2020-04-02 16:19:24.299033597 +0200
++++ ./src/GNUmakefile	2020-04-02 16:20:33.401081038 +0200
+@@ -20,7 +20,7 @@
+ HAS_PYTHON_CONFIG := $(shell ${PYTHON}-config --ldflags 2>/dev/null)
  
  CPPFLAGS += -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I. -I$(VPATH)
--CFLAGS   += -Wall -Wextra -O2
-+CFLAGS   += -Wall -Wextra
- LDFLAGS  += -ltalloc -Wl,-z,noexecstack
- 
- CARE_LDFLAGS = -larchive
+-CFLAGS   += -g -Wall -Wextra -O2
++CFLAGS   += -g -Wall -Wextra
+ CFLAGS   += $(shell pkg-config --cflags talloc libarchive)
+ LDFLAGS  += -Wl,-z,noexecstack
+ LDFLAGS  += $(shell pkg-config --libs talloc libarchive)
