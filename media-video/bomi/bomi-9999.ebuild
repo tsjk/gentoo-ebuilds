@@ -17,13 +17,13 @@ RDEPEND="dev-libs/fribidi
 	dev-libs/libchardet
 	>=dev-qt/qtcore-5.3
 	>=dev-qt/qtdbus-5.3
-	>=dev-qt/qtdeclarative-5.3[-gles2]
-	>=dev-qt/qtgui-5.3[-gles2]
+	|| ( >=dev-qt/qtdeclarative-5.3[-gles2] >=dev-qt/qtdeclarative-5.14[-gles2-only] )
+	|| ( >=dev-qt/qtgui-5.3[-gles2] >=dev-qt/qtgui-5.3[-gles2-only] )
 	>=dev-qt/qtnetwork-5.3
-	>=dev-qt/qtopengl-5.3[-gles2]
+	|| ( >=dev-qt/qtopengl-5.3[-gles2] >=dev-qt/qtopengl-5.14[-gles2-only] )
 	>=dev-qt/qtquickcontrols-5.3
 	>=dev-qt/qtsql-5.3
-	>=dev-qt/qtwidgets-5.3[-gles2]
+	|| ( >=dev-qt/qtwidgets-5.3[-gles2] >=dev-qt/qtwidgets-5.14[-gles2-only] )
 	>=dev-qt/qtx11extras-5.3
 	>=dev-qt/qtxml-5.3
 	media-libs/alsa-lib
