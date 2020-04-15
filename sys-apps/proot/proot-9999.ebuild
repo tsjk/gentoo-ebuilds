@@ -50,11 +50,22 @@ src_prepare() {
 
 src_compile() {
 	# build the proot and care targets
-	emake -C src V=1 \
+	emake -C src \
+		V=1 \
+		CC="$(tc-getCC)" \
+		CHECK_VERSION="true" \
+		CAREBUILDENV="ok" \
+		loader.elf loader-m32.elf build.h
+	emake -C src \
+		V=1 \
 		CC="$(tc-getCC)" \
 		CHECK_VERSION="true" \
 		CAREBUILDENV="ok" \
 		proot $(use care && echo "care")
+	emake -C doc \
+		V=1 \
+		CC="$(tc-getCC)" \
+		SUFFIX=".py"
 }
 
 src_install() {
@@ -62,11 +73,11 @@ src_install() {
 	newman doc/proot/man.1 proot.1
 	dodoc HACKING.rst
 	dodoc README.rst
-	dodoc doc/proot/*.txt
+	dodoc doc/proot/*.rst
 	dodoc doc/security.rst
 	if use care; then
 		dobin src/care
-		dodoc doc/care/*.txt
+		dodoc doc/care/*.rst
 		insinto /usr/share/${P}
 		doins -r contrib
 	fi
