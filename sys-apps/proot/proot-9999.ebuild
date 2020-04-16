@@ -26,6 +26,7 @@ RDEPEND="
 
 DEPEND="
 	${RDEPEND}
+	app-doc/doxygen
         static? ( ${LIB_DEPEND} )
 	care? ( dev-libs/uthash )
 	test? ( dev-util/valgrind )
