@@ -5,12 +5,13 @@ inherit systemd
 MY_PKG="devolo-cockpit-v${PV//./-}-linux.run"
 DESCRIPTION="Display and configure settings of your devolo device"
 HOMEPAGE="https://www.devolo.com/support/downloads/download/devolo-cockpit.html"
-SRC_URI="https://www.devolo.fr/fileadmin/Web-Content/DE/Contentseiten/Downloads/Cockpit/${MY_PKG}"
+SRC_URI="https://www.devolo.com/fileadmin/Web-Content/DE/products/hnw/devolo-cockpit/software/${MY_PKG}"
 
 LICENSE="EULA"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="systemd"
+RESTRICT="mirror"
 
 DEPEND="	app-arch/bzip2[abi_x86_32]
 		app-arch/xz-utils
