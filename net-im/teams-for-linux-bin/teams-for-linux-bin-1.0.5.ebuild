@@ -46,3 +46,15 @@ src_install() {
 	mv "${S}/usr/share/doc/teams-for-linux" "${S}/usr/share/doc/${P}"
 	cp -ar "${S}/usr/share"/* "${ED}"/usr/share/
 }
+
+pkg_postinst() {
+	xdg_desktop_database_update
+	xdg_icon_cache_update
+	xdg_mimeinfo_database_update
+}
+
+pkg_postrm() {
+	xdg_desktop_database_update
+	xdg_icon_cache_update
+	xdg_mimeinfo_database_update
+}
