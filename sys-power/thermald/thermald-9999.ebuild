@@ -1,4 +1,6 @@
-# $Id$
+# Copyright 1999-2020 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
 EAPI=7
 
 AUTOTOOLS_AUTORECONF=1
@@ -8,7 +10,7 @@ inherit autotools flag-o-matic git-r3 out-of-source systemd
 
 DESCRIPTION="Thermal daemon for Intel architectures"
 HOMEPAGE="https://01.org/linux-thermal-daemon"
-EGIT_REPO_URI="https://github.com/01org/thermal_daemon.git"
+EGIT_REPO_URI="https://github.com/intel/thermal_daemon.git"
 
 LICENSE="GPL-2+"
 SLOT="0"
@@ -21,11 +23,13 @@ RDEPEND="
 	dev-libs/dbus-glib:=
 	dev-libs/glib:=
 	dev-libs/libxml2:=
+	dev-libs/libevdev
+	sys-power/upower
 	sys-apps/dbus:="
 DEPEND="${RDEPEND}
-	dev-util/glib-utils
 	dev-util/gtk-doc
 	dev-util/gtk-doc-am
+	dev-util/glib-utils
 	sys-power/upower"
 
 DOCS=( thermal_daemon_usage.txt README.txt )
