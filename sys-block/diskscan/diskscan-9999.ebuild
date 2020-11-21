@@ -1,6 +1,6 @@
 EAPI=7
 
-PYTHON_COMPAT=( python{2_7,3_3,3_4,3_5} )
+PYTHON_COMPAT=( python{2_7,3_6,3_7,3_8} )
 
 CMAKE_MAKEFILE_GENERATOR=ninja
 
