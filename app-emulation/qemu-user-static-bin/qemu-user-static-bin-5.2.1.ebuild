@@ -15,7 +15,7 @@ SRC_URI="amd64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_5.2+dfsg-1_a
 
 LICENSE="GPL-2 LGPL-2 BSD-2"
 SLOT="0"
-KEYWORDS="amd64 arm64 armel armhf mips64 mipsel ppc64el s390x x86"
+KEYWORDS="amd64 arm64 armel armhf mips64 mips64el ppc64el s390x x86"
 RESTRICT="mirror"
 DEPEND=""
 
@@ -28,11 +28,8 @@ src_unpack() {
 src_install() {
 	insinto /usr
 	doins -r usr/{bin,sbin,share}
-	for arch in aarch64 alpha arm armeb cris hppa i386 m68k microblaze microblazeel \
-		mips mips64 mips64el mipsel mipsn32 mipsn32el nios2 or1k \
-		ppc ppc64 ppc64abi32 ppc64le s390x sh4 sh4eb sparc sparc32plus sparc64 \
-		tilegx x86_64; do
-		fperms 0755 /usr/bin/qemu-${arch}-static
+	for f in "${ED}/usr/bin"/qemu-*-static; do
+		fperms 0755 /usr/bin/$(basename "${f}")
 	done
 	cd "${D}/usr/share/man/man1" && for i in *.gz; do
 		[[ ! -L "${i}" ]] || { j=$(readlink "${i}"); rm "${i}"; \
