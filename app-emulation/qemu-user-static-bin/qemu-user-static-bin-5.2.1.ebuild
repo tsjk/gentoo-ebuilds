@@ -3,15 +3,15 @@ inherit unpacker
 
 DESCRIPTION="QEMU + Kernel-based Virtual Machine userland tools (static build from Debian)"
 HOMEPAGE="http://www.qemu.org http://www.linux-kvm.org"
-SRC_URI="amd64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_4.2-1_amd64.deb )
-	arm64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_4.2-1_arm64.deb )
-	armel? ( mirror://debian/pool/main/q/qemu/qemu-user-static_4.2-1_armel.deb )
-	armhf? ( mirror://debian/pool/main/q/qemu/qemu-user-static_4.2-1_armhf.deb )
-	mipsel? ( mirror://debian/pool/main/q/qemu/qemu-user-static_4.2-1_mipsel.deb )
-	mips64el? ( mirror://debian/pool/main/q/qemu/qemu-user-static_4.2-1_mips64el.deb )
-	ppc64el? ( mirror://debian/pool/main/q/qemu/qemu-user-static_4.2-1_ppc64el.deb )
-	s390x? ( mirror://debian/pool/main/q/qemu/qemu-user-static_4.2-1_s390x.deb )
-	x86? ( mirror://debian/pool/main/q/qemu/qemu-user-static_4.2-1_i386.deb )"
+SRC_URI="amd64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_5.2+dfsg-1_amd64.deb )
+	arm64? ( mirror://debian/pool/main/q/qemu/qemu-user-static_5.2+dfsg-1_arm64.deb )
+	armel? ( mirror://debian/pool/main/q/qemu/qemu-user-static_5.2+dfsg-1_armel.deb )
+	armhf? ( mirror://debian/pool/main/q/qemu/qemu-user-static_5.2+dfsg-1_armhf.deb )
+	mips64el? ( mirror://debian/pool/main/q/qemu/qemu-user-static_5.2+dfsg-1_mips64el.deb )
+	ppc64el? ( mirror://debian/pool/main/q/qemu/qemu-user-static_5.2+dfsg-1_ppc64el.deb )
+	s390x? ( mirror://debian/pool/main/q/qemu/qemu-user-static_5.2+dfsg-1_s390x.deb )
+	x86? ( mirror://debian/pool/main/q/qemu/qemu-user-static_5.2+dfsg-1_i386.deb )"
+#	mipsel? ( mirror://debian/pool/main/q/qemu/qemu-user-static_5.2+dfsg-1_mipsel.deb )
 
 LICENSE="GPL-2 LGPL-2 BSD-2"
 SLOT="0"
