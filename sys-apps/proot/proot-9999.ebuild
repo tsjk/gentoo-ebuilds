@@ -1,7 +1,9 @@
 EAPI=7
+
 MY_PN="PRoot"
 
-inherit autotools eutils flag-o-matic git-r3 toolchain-funcs
+PYTHON_COMPAT=( python3_{6,7} )
+inherit autotools eutils flag-o-matic git-r3 python-single-r1 toolchain-funcs
 
 DESCRIPTION="User-space implementation of chroot, mount --bind, and binfmt_misc"
 HOMEPAGE="https://proot-me.github.io/"
@@ -12,6 +14,7 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS=""
 IUSE="care static test"
+REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 LIB_DEPEND="
 	care? ( app-arch/libarchive:0=[static-libs(+)] )
