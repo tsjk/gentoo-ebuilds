@@ -1,6 +1,6 @@
-EAPI=6
+EAPI=7
 
-inherit eutils fdo-mime multilib
+inherit eutils multilib xdg-utils
 
 DESCRIPTION="Adobe AIR SDK"
 HOMEPAGE="http://www.adobe.com/products/air/tools/sdk/"
@@ -72,11 +72,11 @@ src_install() {
 }
 
 pkg_postinst() {
-	fdo-mime_desktop_database_update
-	fdo-mime_mime_database_update
+	xdg_desktop_database_update
+	xdg_mimeinfo_database_update
 }
 
 pkg_postrm() {
-	fdo-mime_desktop_database_update
-	fdo-mime_mime_database_update
+	xdg_desktop_database_update
+	xdg_mimeinfo_database_update
 }
