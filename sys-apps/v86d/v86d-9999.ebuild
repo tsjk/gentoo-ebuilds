@@ -43,6 +43,7 @@ src_configure() {
 src_compile() {
 	# Disable stack protector, as it does not work with klibc (bug #346397).
 	filter-flags -fstack-protector -fstack-protector-all
+	sed -i -E 's@^(#include\ <sys\/mman\.h>)$@#include\ <linux\/mman\.h>\n\1@' "${S}/v86_mem.c" || die
 	#append-cflags "-nostdinc -I/usr/include -I/usr/local/include"
 	emake KDIR="${KV_DIR}" || die
 }
