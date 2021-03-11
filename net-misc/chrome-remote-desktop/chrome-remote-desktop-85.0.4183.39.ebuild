@@ -1,1 +1,1 @@
-chrome-remote-desktop-87.0.4280.51.ebuild
+chrome-remote-desktop-89.0.4389.45.ebuild
