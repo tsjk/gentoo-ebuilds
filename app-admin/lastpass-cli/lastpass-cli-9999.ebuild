@@ -6,7 +6,7 @@ EAPI=7
 CMAKE_WARN_UNUSED_CLI=no
 inherit git-r3 cmake-utils bash-completion-r1
 
-DESCRIPTION="Fork of the LogMeIn Lastpass CLI client. (c) 2014-2019 LastPass. (c) 2020-present Contributers. Command line interface to LastPass.com."
+DESCRIPTION="Command line interface to LastPass.com. [Fork of the LogMeIn Lastpass CLI client. (c) 2014-2019 LastPass. (c) 2020-present Contributers.]"
 HOMEPAGE="https://github.com/lastpass-cli-fork/lastpass-cli"
 EGIT_REPO_URI="https://github.com/lastpass-cli-fork/lastpass-cli"
 
