@@ -43,6 +43,7 @@ RESTRICT="
 PATCHES=(
 		"${FILESDIR}/${PN}-lib-paths-fix.patch" \
 		"${FILESDIR}/${PN}-makefile.patch" \
+		"${FILESDIR}/${PN}-extern_py_size.patch" \
 )
 
 S="${WORKDIR}/${MY_PN,,}-${PV}"
@@ -57,18 +58,27 @@ src_compile() {
 	emake -C src \
 		V=1 \
 		CC="$(tc-getCC)" \
+		OBJCOPY="$(tc-getOBJCOPY)" \
+		OBJDUMP="$(tc-getOBJDUMP)" \
+		STRIP="$(tc-getSTRIP)" \
 		CHECK_VERSION="true" \
 		CAREBUILDENV="ok" \
 		loader.elf loader-m32.elf build.h
 	emake -C src \
 		V=1 \
 		CC="$(tc-getCC)" \
+		OBJCOPY="$(tc-getOBJCOPY)" \
+		OBJDUMP="$(tc-getOBJDUMP)" \
+		STRIP="$(tc-getSTRIP)" \
 		CHECK_VERSION="true" \
 		CAREBUILDENV="ok" \
 		proot $(use care && echo "care")
 	emake -C doc \
 		V=1 \
 		CC="$(tc-getCC)" \
+		OBJCOPY="$(tc-getOBJCOPY)" \
+		OBJDUMP="$(tc-getOBJDUMP)" \
+		STRIP="$(tc-getSTRIP)" \
 		SUFFIX=".py"
 }
 
