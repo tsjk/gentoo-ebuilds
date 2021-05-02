@@ -1,4 +1,4 @@
-EAPI=6
+EAPI=7
 
 WX_GTK_VER=3.0
 
@@ -34,11 +34,11 @@ DEPEND="${RDEPEND}"
 
 src_prepare() {
 	default
-	need-wxwidgets unicode
 	sed -i -E "s@MYSQLLIB='-lmariadbclient'@MYSQLLIB='-lmariadb'@" "${S}/configure.ac" "${S}/configure" || die
 }
 
 src_configure() {
+	setup-wxwidgets
 	CC="gcc" econf --enable-shared=yes --enable-packaging=yes
 }
 
