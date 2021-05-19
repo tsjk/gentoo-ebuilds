@@ -94,8 +94,8 @@
  #else
      typedef wchar_t WKChar;
  #endif
---- Source/WTF/wtf/TypeTraits.h.orig	2014-09-24 13:42:05.000000000 +0200
-+++ Source/WTF/wtf/TypeTraits.h	2018-02-06 08:26:13.705652860 +0100
+--- ./Source/WTF/wtf/TypeTraits.h.orig	2014-09-24 13:42:05.000000000 +0200
++++ ./Source/WTF/wtf/TypeTraits.h	2018-02-06 08:26:13.705652860 +0100
 @@ -75,6 +75,10 @@
  #if !COMPILER(MSVC) || defined(_NATIVE_WCHAR_T_DEFINED)
      template<> struct IsInteger<wchar_t>            { static const bool value = true; };

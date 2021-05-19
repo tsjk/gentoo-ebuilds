@@ -1,4 +1,4 @@
-EAPI=6
+EAPI=7
 PYTHON_COMPAT=( python2_7 )
 inherit eutils multilib python-any-r1 qmake-utils toolchain-funcs multilib-minimal
 
@@ -68,8 +68,8 @@ src_prepare() {
 		Source/JavaScriptCore/Target.pri || die
 
 	# apply patches
-	[[ ${PATCHES[@]} ]] && epatch "${PATCHES[@]}"
-	epatch_user
+	[[ ${PATCHES[@]} ]] && eapply "${PATCHES[@]}"
+	eapply_user
 }
 
 multilib_src_compile() {
