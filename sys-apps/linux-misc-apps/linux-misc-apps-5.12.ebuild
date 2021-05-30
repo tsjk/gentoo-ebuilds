@@ -1,9 +1,9 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=7
 
-inherit versionator eutils toolchain-funcs linux-info autotools flag-o-matic
+inherit autotools flag-o-matic linux-info toolchain-funcs
 
 DESCRIPTION="Misc tools bundled with kernel sources"
 HOMEPAGE="https://kernel.org/"
@@ -16,17 +16,22 @@ IUSE="static-libs tcpd usbip"
 MY_PV="${PV/_/-}"
 MY_PV="${MY_PV/-pre/-git}"
 
-LINUX_V=$(get_version_component_range 1-2)
+LINUX_V=$(ver_cut 1-2)
+
+_get_version_component_count() {
+	local cnt=( $(ver_rs 1- ' ') )
+	echo ${#cnt[@]} || die
+}
 
 if [ ${PV/_rc} != ${PV} ]; then
-	LINUX_VER=$(get_version_component_range 1-2).$(($(get_version_component_range 3)-1))
-	PATCH_VERSION=$(get_version_component_range 1-3)
+	LINUX_VER=$(ver_cut 1-2).$(($(ver_cut 3)-1))
+	PATCH_VERSION=$(ver_cut 1-3)
 	LINUX_PATCH=patch-${PV//_/-}.xz
 	SRC_URI="https://www.kernel.org/pub/linux/kernel/v3.x/testing/${LINUX_PATCH}
 		https://www.kernel.org/pub/linux/kernel/v3.x/testing/v${PATCH_VERSION}/${LINUX_PATCH}"
-elif [ $(get_version_component_count) == 4 ]; then
+elif [ $(_get_version_component_count) == 4 ]; then
 	# stable-release series
-	LINUX_VER=$(get_version_component_range 1-3)
+	LINUX_VER=$(ver_cut 1-3)
 	LINUX_PATCH=patch-${PV}.xz
 	SRC_URI="https://www.kernel.org/pub/linux/kernel/v3.x/${LINUX_PATCH}"
 else
@@ -40,7 +45,7 @@ SRC_URI="${SRC_URI} https://www.kernel.org/pub/linux/kernel/v3.x/${LINUX_SOURCES
 # usbip available in seperate package now
 RDEPEND="sys-apps/hwids
 		>=dev-libs/glib-2.6
-		>=sys-kernel/linux-headers-$(get_version_component_range 1-2)
+		>=sys-kernel/linux-headers-${LINUX_V}
 		usbip? (
 			!net-misc/usbip
 			tcpd? ( sys-apps/tcp-wrappers )
@@ -59,7 +64,7 @@ TARGETS_SIMPLE=(
 	tools/accounting/getdelays.c
 	tools/cgroup/cgroup_event_listener.c
 	tools/laptop/freefall/freefall.c
-	tools/testing/selftests/networking/timestamping/timestamping.c
+	tools/testing/selftests/net/timestamping.c
 	tools/vm/slabinfo.c
 	usr/gen_init_cpio.c
 	# Broken:
@@ -103,7 +108,7 @@ src_unpack() {
 
 src_prepare() {
 	if [[ -n ${LINUX_PATCH} ]]; then
-		epatch "${DISTDIR}"/${LINUX_PATCH}
+		eapply "${DISTDIR}"/${LINUX_PATCH}
 	fi
 
 	pushd tools/usb/usbip/ >/dev/null &&
@@ -116,6 +121,8 @@ src_prepare() {
 		-e '/^nosy-dump.*CFLAGS/d' \
 		-e '/^nosy-dump.*CPPFLAGS/s,CPPFLAGS =,CPPFLAGS +=,g' \
 		"${S}"/tools/firewire/Makefile
+
+	eapply_user
 }
 
 kernel_asm_arch() {
@@ -131,6 +138,7 @@ kernel_asm_arch() {
 }
 
 src_configure() {
+	append-cflags -fcommon
 	if use usbip; then
 		pushd tools/usb/usbip/ || die
 		econf \
