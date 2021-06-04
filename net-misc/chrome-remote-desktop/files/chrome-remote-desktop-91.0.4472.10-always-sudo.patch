@@ -1,0 +1,16 @@
+--- ./opt/google/chrome-remote-desktop/chrome-remote-desktop.orig	2021-04-15 03:28:41.000000000 +0200
++++ ./opt/google/chrome-remote-desktop/chrome-remote-desktop	2021-06-04 10:08:28.357798891 +0200
+@@ -1194,12 +1194,7 @@
+ 
+ 
+ def run_command_as_root(command):
+-  if os.getenv("DISPLAY"):
+-    # TODO(rickyz): Add a Polkit policy that includes a more friendly
+-    # message about what this command does.
+-    command = ["/usr/bin/pkexec"] + command
+-  else:
+-    command = ["/usr/bin/sudo", "-k", "--"] + command
++  command = ["/usr/bin/sudo", "-k", "--"] + command
+ 
+   return subprocess.call(command)
+ 
