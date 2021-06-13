@@ -35,8 +35,21 @@ src_compile() {
 
 src_install() {
 	dodir /opt
-	cp -ar "${S}"/opt/Bisq "${ED}"/opt/
-	dosym ../Bisq/Bisq /opt/bin/Bisq
-	domenu opt/Bisq/Bisq.desktop
-        doicon opt/Bisq/Bisq.png
+	sed -i -E 's@^Categories=Network$@Categories=Office\;Finance\;P2P\;Network\;@' "${S}"/opt/bisq/lib/bisq-Bisq.desktop
+	cp -ar "${S}"/opt/bisq "${ED}"/opt/
+	dosym ../bisq/bin/Bisq /opt/bin/Bisq
+	domenu opt/bisq/lib/bisq-Bisq.desktop
+        doicon opt/bisq/lib/Bisq.png
+}
+
+pkg_postinst() {
+	xdg_desktop_database_update
+	xdg_icon_cache_update
+	xdg_mimeinfo_database_update
+}
+
+pkg_postrm() {
+	xdg_desktop_database_update
+	xdg_icon_cache_update
+	xdg_mimeinfo_database_update
 }
