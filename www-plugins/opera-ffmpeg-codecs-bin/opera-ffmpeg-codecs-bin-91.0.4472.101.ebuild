@@ -2,9 +2,9 @@ EAPI=7
 
 inherit eutils unpacker
 
-DESCRIPTION="Additional proprietary codecs for vivaldi"
+DESCRIPTION="Additional proprietary codecs for opera"
 HOMEPAGE="http://ffmpeg.org/"
-SRC_URI="http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-codecs-ffmpeg-extra_89.0.4389.90-0ubuntu0.18.04.2_amd64.deb"
+SRC_URI="http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-codecs-ffmpeg-extra_91.0.4472.101-0ubuntu0.18.04.1_amd64.deb"
 
 LICENSE="LGPL2.1"
 SLOT="0"
@@ -13,8 +13,8 @@ IUSE=""
 
 DEPEND=""
 RDEPEND="
-	!www-plugins/vivaldi-ffmpeg-codecs
-	www-client/vivaldi"
+	!www-plugins/opera-ffmpeg-codecs
+	www-client/opera"
 
 RESTRICT="mirror strip"
 
@@ -29,8 +29,8 @@ src_compile() {
 }
 
 src_install() {
-	dodir opt/vivaldi
-	insinto opt/vivaldi
+	dodir usr/$(get_libdir)/opera/lib_extra
+	insinto usr/$(get_libdir)/opera/lib_extra
 	doins ${S}/usr/lib/chromium-browser/libffmpeg.so
 }
 
