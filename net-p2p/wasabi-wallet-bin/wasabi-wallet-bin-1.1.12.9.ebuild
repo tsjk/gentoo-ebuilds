@@ -6,7 +6,7 @@ DESCRIPTION="Wasabi is an open-source, non-custodial, privacy-focused Bitcoin wa
 HOMEPAGE="https://wasabiwallet.io/ https://github.com/zkSNACKs/WalletWasabi/"
 SRC_URI="https://github.com/zkSNACKs/WalletWasabi/releases/download/v${PV}/Wasabi-${PV}.deb"
 
-LICENSE="GPLv3"
+LICENSE="MIT"
 SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE=""
