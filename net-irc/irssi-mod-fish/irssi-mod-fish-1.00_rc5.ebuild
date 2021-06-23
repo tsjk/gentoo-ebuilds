@@ -1,8 +1,4 @@
-# Copyright 1999-2010 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Header: $
-
-EAPI="2"
+EAPI="7"
 
 inherit multilib toolchain-funcs
 
@@ -17,8 +13,8 @@ KEYWORDS="~amd64"
 IUSE=""
 
 DEPEND="app-crypt/miracl
-		net-irc/irssi
-		dev-libs/glib"
+	net-irc/irssi
+	dev-libs/glib"
 RDEPEND="net-irc/irssi"
 
 S="${WORKDIR}/FiSH-irssi.v${MY_PV}-source"
@@ -35,6 +31,7 @@ src_prepare() {
 		-e "s:gcc -fPIC -shared:$(tc-getCC) -fPIC -shared ${CFLAGS}:" \
 		-e "s:gcc -I\. -I\$(glib_dir) -I\$(glib_dir)/include -I\$(glib_dir)/glib -I\$(irssi_dir) -I\$(irssi_dir)/src -I\$(irssi_dir)/src/core -I\$(irssi_dir)/src/fe-common/core -static -O2 -Wall:$(tc-getCC) -static ${CFLAGS} -Wall -I. -I\$(glib_inc) -I\$(glib_inc)/glib -I\$(glib_dir) -I\$(glib_dir)/include -I\$(glib_dir)/glib -I\$(irssi_dir) -I\$(irssi_dir)/src -I\$(irssi_dir)/src/core -I\$(irssi_dir)/src/fe-common/core:" \
 		Makefile || die "Failed to update Makefile"
+	default
 }
 
 src_compile() {
@@ -49,4 +46,4 @@ src_install() {
 	insinto /usr/$(get_libdir)/irssi/modules
 	doins libfish.so || die "install failed"
 	dodoc FiSH-irssi.txt FiSH-irssi_History.txt blow.ini-EXAMPLE || die "doc failed"
-}	
+}
