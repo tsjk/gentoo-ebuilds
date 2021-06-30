@@ -13,23 +13,21 @@ EGIT_BRANCH="openssl"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS=""
-IUSE="cpu_flags_x86_aes cpu_flags_x86_avx i2p-hardening libressl static +upnp"
+IUSE="cpu_flags_x86_aes cpu_flags_x86_avx i2p-hardening static +upnp"
 
 RDEPEND="
 	acct-user/i2pd
 	acct-group/i2pd
 	!static? (
-		dev-libs/boost:=[threads]
-		!libressl? ( dev-libs/openssl:0=[-bindist] )
-		libressl? ( dev-libs/libressl:0= )
+		dev-libs/boost:=[threads(+)]
+		dev-libs/openssl:0=[-bindist(-)]
 		upnp? ( net-libs/miniupnpc:= )
 	)"
 DEPEND="${RDEPEND}
 	static? (
-		dev-libs/boost:=[static-libs,threads]
+		dev-libs/boost:=[static-libs,threads(+)]
 		sys-libs/zlib[static-libs]
-		!libressl? ( dev-libs/openssl:0=[static-libs] )
-		libressl? ( dev-libs/libressl:0=[static-libs] )
+		dev-libs/openssl:0=[static-libs]
 		upnp? ( net-libs/miniupnpc:=[static-libs] )
 	)"
 
@@ -78,11 +76,11 @@ src_install() {
 	# openrc and systemd daemon routines
 	newconfd "${FILESDIR}/i2pd-2.6.0-r3.confd" i2pd
 	newinitd "${FILESDIR}/i2pd-2.6.0-r3.initd" i2pd
-	systemd_newunit "${FILESDIR}/i2pd-2.6.0-r3.service" i2pd.service
+	systemd_newunit "${FILESDIR}/i2pd-2.38.0.service" i2pd.service
 
 	# logrotate
 	insinto /etc/logrotate.d
-	newins "${FILESDIR}/i2pd-2.6.0-r3.logrotate" i2pd
+	newins "${FILESDIR}/i2pd-2.38.0-r1.logrotate" i2pd
 }
 
 pkg_postinst() {
