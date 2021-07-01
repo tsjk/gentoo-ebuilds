@@ -1,0 +1,29 @@
+--- ./build/CMakeLists.txt.orig	2021-07-01 20:49:24.927573351 +0200
++++ ./build/CMakeLists.txt	2021-07-01 20:50:14.651086126 +0200
+@@ -48,8 +48,6 @@
+ if(WITH_LIBRARY)
+   install(TARGETS libi2pd
+     EXPORT libi2pd
+-    ARCHIVE DESTINATION lib
+-    LIBRARY DESTINATION lib
+     COMPONENT Libraries)
+ # TODO Make libi2pd available to 3rd party projects via CMake as imported target
+ # FIXME This pulls stdafx
+@@ -63,8 +61,6 @@
+ if(WITH_LIBRARY)
+   install(TARGETS libi2pdclient
+     EXPORT libi2pdclient
+-    ARCHIVE DESTINATION lib
+-    LIBRARY DESTINATION lib
+     COMPONENT Libraries)
+ endif()
+ 
+@@ -75,8 +71,6 @@
+ if(WITH_LIBRARY)
+   install(TARGETS libi2pdlang
+     EXPORT libi2pdlang
+-    ARCHIVE DESTINATION lib
+-    LIBRARY DESTINATION lib
+     COMPONENT Libraries)
+ endif()
+ 
