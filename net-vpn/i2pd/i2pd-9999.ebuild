@@ -35,10 +35,6 @@ CMAKE_USE_DIR="${S}/build"
 
 DOCS=( README.md contrib/i2pd.conf contrib/tunnels.conf )
 
-PATCHES=(
-	"${FILESDIR}/i2pd-2.39.0-lib-path.patch"
-)
-
 pkg_pretend() {
 	if use i2p-hardening && ! tc-is-gcc; then
 		die "i2p-hardening requires gcc"
