@@ -71,7 +71,7 @@ S=${WORKDIR}
 QA_PREBUILT="/opt/google/chrome-remote-desktop/*"
 
 PATCHES=(
-	"${FILESDIR}"/${PN}-44.0.2403.44-always-sudo.patch #541708
+	"${FILESDIR}"/${PN}-91.0.4472.10-always-sudo.patch #541708
 )
 
 src_prepare() {
@@ -79,11 +79,9 @@ src_prepare() {
 
 	gunzip usr/share/doc/${PN}/*.gz || die
 
-	cd opt/google/chrome-remote-desktop
-	python_fix_shebang chrome-remote-desktop
+	( cd opt/google/chrome-remote-desktop && python_fix_shebang chrome-remote-desktop )
 
-	cd remoting_locales
-	rm fake-bidi* || die
+	#( cd opt/google/chrome-remote-desktop/remoting_locales && rm fake-bidi* ) || die
 	PLOCALES=${PLOCALES//_/-} plocale_find_changes "${PWD}" '' '.pak'
 }
 
