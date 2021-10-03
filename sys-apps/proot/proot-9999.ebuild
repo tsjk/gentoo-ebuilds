@@ -43,7 +43,6 @@ RESTRICT="
 PATCHES=(
 		"${FILESDIR}/${PN}-lib-paths-fix.patch" \
 		"${FILESDIR}/${PN}-makefile.patch" \
-		"${FILESDIR}/${PN}-extern_py_size.patch" \
 		"${FILESDIR}/${PN}-python-flags.patch" \
 )
 
