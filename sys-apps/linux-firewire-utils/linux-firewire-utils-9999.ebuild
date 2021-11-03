@@ -1,14 +1,10 @@
-# Copyright 1999-2012 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Header: $
-
-EAPI=5
+EAPI=7
 
 inherit autotools eutils flag-o-matic git-r3 linux-info
 
 DESCRIPTION="Linux FireWire bus inspection and configuration tools"
 HOMEPAGE="https://github.com/cladisch/linux-firewire-utils"
-EGIT_REPO_URI="git://github.com/cladisch/linux-firewire-utils.git"
+EGIT_REPO_URI="https://github.com/cladisch/linux-firewire-utils.git"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -29,5 +25,6 @@ in your kernel configuration.
 "
 
 src_prepare() {
+	default
 	eautoreconf
 }
