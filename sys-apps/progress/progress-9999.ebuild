@@ -1,13 +1,9 @@
-# Copyright 1999-2014 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Id$
-
-EAPI=5
+EAPI=7
 inherit git-r3 toolchain-funcs
 
 DESCRIPTION="Coreutils Viewer: show progress for cp, rm, dd, and so forth"
 HOMEPAGE="https://github.com/Xfennec/progress"
-EGIT_REPO_URI="git://github.com/Xfennec/progress.git"
+EGIT_REPO_URI="https://github.com/Xfennec/progress.git"
 
 LICENSE="GPL-3"
 SLOT="0"
@@ -20,6 +16,7 @@ DEPEND="
 "
 
 src_prepare() {
+	default
 	sed -i \
 		-e '/LDFLAGS/s:-lncurses:$(shell $(PKG_CONFIG) --libs ncurses):' \
 		-e 's:CFLAGS=-g:CFLAGS+=:' \
