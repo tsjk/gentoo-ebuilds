@@ -22,7 +22,7 @@ DEPEND="$(python_gen_cond_dep '
 	dev-util/ctags
 	dev-util/ninja
 	sys-libs/libtermcap-compat
-	sys-libs/ncurses[unicode]
+	sys-libs/ncurses
 	sys-libs/zlib"
 RDEPEND="${DEPEND}"
 
