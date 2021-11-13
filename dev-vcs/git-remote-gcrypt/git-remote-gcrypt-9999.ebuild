@@ -19,6 +19,6 @@ src_install()
 {
 	DESTDIR="${ED}" prefix="${EPREFIX}/usr" ./install.sh && \
 		gunzip "${ED}/usr/share/man/man1/git-remote-gcrypt.1.gz" || die "Install failed."
-	dodoc CHANGELOG || die "dodoc CHANGELOG failed."
+	dodoc debian/changelog || die "dodoc debian/changelog failed."
 	dodoc README.rst || die "dodoc README.rst failed."
 }
