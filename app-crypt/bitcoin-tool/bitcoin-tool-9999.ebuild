@@ -13,8 +13,8 @@ LICENSE="GPL-2"
 KEYWORDS=""
 IUSE=""
 
-DEPEND="dev-libs/openssl[-bindist]
-	net-misc/openssh[-bindist]"
+DEPEND="|| ( <dev-libs/openssl-1.1.1l-r1[-bindist] >=dev-libs/openssl-1.1.1l-r1 )
+	|| ( <net-misc/openssh-8.7_p1-r3[-bindist] >=net-misc/openssh-8.7_p1-r3 )"
 
 src_install() {
 	dobin bitcoin-tool
