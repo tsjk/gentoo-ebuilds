@@ -1,11 +1,13 @@
---- ./src/GNUmakefile.unpatched	2020-04-02 16:19:24.299033597 +0200
-+++ ./src/GNUmakefile	2020-04-02 16:20:33.401081038 +0200
-@@ -20,7 +20,7 @@
- HAS_PYTHON_CONFIG := $(shell ${PYTHON}-config --ldflags 2>/dev/null)
+diff --git a/src/GNUmakefile b/src/GNUmakefile
+index 38d89a9..b848a3b 100644
+--- a/src/GNUmakefile
++++ b/src/GNUmakefile
+@@ -21,7 +21,7 @@ PYTHON_EMBED = $(shell ${PYTHON} -c "import sys; print('--embed' if sys.hexversi
+ HAS_PYTHON_CONFIG := $(shell ${PYTHON}-config --ldflags ${PYTHON_EMBED} 2>/dev/null)
  
  CPPFLAGS += -D_FILE_OFFSET_BITS=64 -D_GNU_SOURCE -I. -I$(VPATH)
 -CFLAGS   += -g -Wall -Wextra -O2
-+CFLAGS   += -g -Wall -Wextra
- CFLAGS   += $(shell pkg-config --cflags talloc libarchive)
++CFLAGS   += -Wall -Wextra
+ CFLAGS   += $(shell pkg-config --cflags talloc)
  LDFLAGS  += -Wl,-z,noexecstack
- LDFLAGS  += $(shell pkg-config --libs talloc libarchive)
+ LDFLAGS  += $(shell pkg-config --libs talloc)
