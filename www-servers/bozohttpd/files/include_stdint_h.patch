@@ -1,0 +1,12 @@
+diff --git a/bozohttpd.h.orig b/bozohttpd.h
+index 86403e9..ad8ca00 100644
+--- a/bozohttpd.h.orig
++++ b/bozohttpd.h
+@@ -35,6 +35,7 @@
+ #include "netbsd_queue.h"
+ 
+ #include <stdbool.h>
++#include <stdint.h>
+ #include <stdio.h>
+ #include <signal.h>
+ 
