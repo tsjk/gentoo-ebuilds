@@ -11,14 +11,14 @@ SRC_URI="http://www.eterna.com.au/bozohttpd/${P}.tar.bz2"
 LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~x86"
-IUSE="lua"
+IUSE="+htpasswd lua +ssl"
 RESTRICT="mirror"
 
 REQUIRED_USE="lua? ( ${LUA_REQUIRED_USE} )"
 DEPEND="
 	lua? ( ${LUA_DEPS} )
-	dev-libs/openssl:0=
-	virtual/libcrypt"
+	htpasswd? ( virtual/libcrypt )
+	ssl? ( dev-libs/openssl:0= )"
 BDEPEND="
 	virtual/pkgconfig"
 RDEPEND="
@@ -37,15 +37,25 @@ src_prepare() {
 }
 
 src_compile() {
-	append-cppflags -DNO_BLOCKLIST_SUPPORT -D_GNU_SOURCE
+	append-cppflags -D_GNU_SOURCE -DNO_BLOCKLIST_SUPPORT
 	append-ldflags $(no-as-needed)
+	local CRYPTOLIBS
+	if use htpasswd; then
+		CRYPTOLIBS+=" -lcrypt"
+		append-cppflags -DDO_HTPASSWD
+	fi
 	if use lua; then
 		append-cflags $(lua_get_CFLAGS)
 		append-libs $(lua_get_LIBS)
 	else
 		append-cppflags -DNO_LUA_SUPPORT
 	fi
-	emake V=1 CC="$(tc-getCC)" OPT="${CFLAGS}" LARGE_CFLAGS="" LOCAL_CFLAGS="" CPPFLAGS="${CPPFLAGS}" CRYPTOLIBS="-lcrypto -lssl -lcrypt" EXTRALIBS="${LIBS}" LDFLAGS="${LDFLAGS}" || die "emake failed!"
+	if use ssl; then
+		CRYPTOLIBS+=" -lcrypto -lssl"
+	else
+		append-cppflags -DNO_SSL_SUPPORT
+	fi
+	emake V=1 CC="$(tc-getCC)" OPT="${CFLAGS}" LARGE_CFLAGS="" LOCAL_CFLAGS="" CPPFLAGS="${CPPFLAGS}" CRYPTOLIBS="${CRYPTOLIBS}" EXTRALIBS="${LIBS}" LDFLAGS="${LDFLAGS}" || die "emake failed!"
 }
 
 src_install() {
