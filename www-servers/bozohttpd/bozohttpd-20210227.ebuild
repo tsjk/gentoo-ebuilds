@@ -55,7 +55,9 @@ src_compile() {
 	else
 		append-cppflags -DNO_SSL_SUPPORT
 	fi
-	emake V=1 CC="$(tc-getCC)" OPT="${CFLAGS}" LARGE_CFLAGS="" LOCAL_CFLAGS="" CPPFLAGS="${CPPFLAGS}" CRYPTOLIBS="${CRYPTOLIBS}" EXTRALIBS="${LIBS}" LDFLAGS="${LDFLAGS}" || die "emake failed!"
+	emake V=1 CC="$(tc-getCC)" OPT="${CFLAGS}" LARGE_CFLAGS="" LOCAL_CFLAGS="" \
+		CPPFLAGS="${CPPFLAGS}" CRYPTOLIBS="${CRYPTOLIBS}" EXTRALIBS="${LIBS}" \
+		LDFLAGS="${LDFLAGS}" || die "emake failed!"
 }
 
 src_install() {
@@ -66,8 +68,10 @@ src_install() {
 	newconfd "${FILESDIR}"/${PN}.conffile   bozohttpd
 	newinitd "${FILESDIR}"/${PN}.initscript bozohttpd
 
-	exeinto /usr/lib/${PN}/cgi-bin
-	doexe *.lua
+	if use lua; then
+		exeinto /usr/lib/${PN}/cgi-bin
+		doexe *.lua
+	fi
 
 	insinto /usr/share/${PN}
 	doins testsuite/*.*
