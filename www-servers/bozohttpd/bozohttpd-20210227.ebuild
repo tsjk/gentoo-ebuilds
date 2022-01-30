@@ -37,7 +37,7 @@ src_prepare() {
 }
 
 src_compile() {
-	append-cppflags -D_GNU_SOURCE -DNO_BLOCKLIST_SUPPORT
+	append-cppflags -D_GNU_SOURCE -D_DEFAULT_SOURCE -DNO_BLOCKLIST_SUPPORT
 	append-ldflags $(no-as-needed)
 	local CRYPTOLIBS
 	if use htpasswd; then
