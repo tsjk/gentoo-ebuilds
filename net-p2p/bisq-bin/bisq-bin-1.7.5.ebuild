@@ -1,6 +1,6 @@
-EAPI=7
+EAPI=8
 
-inherit desktop eutils unpacker xdg-utils
+inherit desktop unpacker xdg-utils
 
 DESCRIPTION="The decentralized bitcoin exchange (non-atomic, with arbitration)"
 HOMEPAGE="https://bisq.network/ https://github.com/bisq-network/exchange/"
@@ -15,7 +15,7 @@ DEPEND="
 	dev-java/openjfx
 	net-libs/libnet
 	virtual/jre
-	x11-libs/gtk+:2"
+	x11-libs/gtk+:3"
 
 RESTRICT="mirror strip"
 
