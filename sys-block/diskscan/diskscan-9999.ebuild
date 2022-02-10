@@ -17,7 +17,7 @@ KEYWORDS=""
 IUSE=""
 
 DEPEND="$(python_gen_cond_dep '
-		dev-python/pyyaml[${PYTHON_SINGLE_USEDEP}]
+		dev-python/pyyaml[${PYTHON_USEDEP}]
         ')
 	dev-util/ctags
 	dev-util/ninja
