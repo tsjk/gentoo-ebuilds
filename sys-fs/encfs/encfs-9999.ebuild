@@ -1,45 +1,43 @@
-# Copyright 1999-2008 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-
-EAPI=5
-inherit autotools eutils multilib subversion
+EAPI=7
+inherit cmake git-r3
 
 DESCRIPTION="An implementation of encrypted filesystem in user-space using FUSE"
-ESVN_REPO_URI="http://encfs.googlecode.com/svn/branches/1.x/"
-ESVN_PROJECT="encfs"
-ESVN_BOOTSTRAP="eautoreconf"
-HOMEPAGE="http://arg0.net/encfs"
+EGIT_REPO_URI="https://github.com/vgough/encfs.git"
+HOMEPAGE="https://vgough.github.io/encfs/"
 LICENSE="GPL-3"
 KEYWORDS=""
 SLOT="0"
-IUSE="xattr"
+IUSE="nls"
 
-RDEPEND=">=dev-libs/boost-1.34
-        >=dev-libs/openssl-0.9.7
-        >=dev-libs/rlog-1.4
-        >=sys-fs/fuse-2.7.0
-        sys-libs/zlib"
-DEPEND="${RDEPEND}
-        dev-lang/perl
-        virtual/pkgconfig
-        xattr? ( sys-apps/attr )
-        sys-devel/gettext"
+LICENSE="GPL-3 LGPL-3"
+SLOT="0"
+KEYWORDS="~amd64 ~arm ~ppc64 ~sparc ~x86"
+IUSE="nls"
 
-src_prepare() {
-        epatch "${FILESDIR}"/pod2man.patch
+RDEPEND="dev-libs/openssl:=
+	dev-libs/tinyxml2:=
+	sys-fs/fuse:0=
+	sys-libs/zlib"
+DEPEND="${RDEPEND}"
+BDEPEND="dev-lang/perl
+	sys-devel/gettext
+	virtual/pkgconfig"
 
-	eautoreconf
-}
+# Build dir is hardcoded in test suite, but we restrict them
+# because they can lead to false negatives, bug #630486
+RESTRICT="test"
+
+BUILD_DIR="${S}/build"
 
 src_configure() {
-        use xattr || export ac_cv_header_attr_xattr_h=no
-
-        econf \
-                --disable-dependency-tracking
-}
-
-src_install() {
-        emake DESTDIR="${D}" install || die
-        dodoc AUTHORS ChangeLog README
-        find "${D}" -name '*.la' -delete
+        local mycmakeargs=(
+                -DENABLE_NLS="$(usex nls)"
+                -DUSE_INTERNAL_TINYXML=OFF
+                -DBUILD_UNIT_TESTS=OFF
+                -DBUILD_SHARED_LIBS=ON
+                # Needed with BUILD_SHARED_LIBS=ON
+                -DINSTALL_LIBENCFS=ON
+                -DLIB_INSTALL_DIR="$(get_libdir)"
+        )
+        cmake_src_configure
 }
