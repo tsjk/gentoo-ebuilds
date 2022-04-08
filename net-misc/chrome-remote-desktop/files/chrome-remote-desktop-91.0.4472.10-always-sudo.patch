@@ -1,6 +1,10 @@
---- ./opt/google/chrome-remote-desktop/chrome-remote-desktop.orig	2021-04-15 03:28:41.000000000 +0200
-+++ ./opt/google/chrome-remote-desktop/chrome-remote-desktop	2021-06-04 10:08:28.357798891 +0200
-@@ -1194,12 +1194,7 @@
+https://bugs.gentoo.org/541708
+
+just use `sudo` for everything
+
+--- a/opt/google/chrome-remote-desktop/chrome-remote-desktop
++++ b/opt/google/chrome-remote-desktop/chrome-remote-desktop
+@@ -1092,12 +1092,7 @@
  
  
  def run_command_as_root(command):
