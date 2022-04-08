@@ -9,7 +9,7 @@ SRC_URI="https://github.com/ARMmbed/mbedtls/archive/${P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0/8"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~mips ~ppc ~ppc64 ~s390 ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
-IUSE="cpu_flags_x86_sse2 doc havege programs static-libs test threads zlib"
+IUSE="cpu_flags_x86_sse2 doc havege programs test threads zlib"
 
 RDEPEND="
 	!net-libs/polarssl
@@ -44,11 +44,10 @@ src_prepare() {
 multilib_src_configure() {
 	local mycmakeargs
 	multilib_is_native_abi && \
-		mycmakeargs+=( -DPROGRAMS=$(usex programs) ) || \
+		mycmakeargs+=( -DENABLE_PROGRAMS=$(usex programs) ) || \
 		mycmakeargs+=( -DENABLE_PROGRAMS=OFF )
-	mycmakeargs+=( -DZLIB_SUPPORT=$(usex zlib) \
-			-DSTATIC_MBEDTLS_LIBRARY=$(usex static-libs) \
-			-DTESTING=$(usex test) \
+	mycmakeargs+=( -DENABLE_ZLIB_SUPPORT=$(usex zlib) \
+			-DENABLE_TESTING=$(usex test) \
 			-DUSE_SHARED_MBEDTLS_LIBRARY=ON \
 			-DINSTALL_MBEDTLS_HEADERS=ON \
 			-DLIB_INSTALL_DIR="/usr/$(get_libdir)" )
