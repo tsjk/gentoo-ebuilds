@@ -11,12 +11,11 @@ SLOT="0"
 KEYWORDS=""
 IUSE=""
 
-RDEPEND="
+DEPEND="
 	app-shells/bash
 	sys-apps/coreutils
 	sys-apps/pacman
 	sys-apps/util-linux"
-DEPEND=""
 RDEPEND="${DEPEND}"
 BDEPEND="
 	app-text/asciidoc
