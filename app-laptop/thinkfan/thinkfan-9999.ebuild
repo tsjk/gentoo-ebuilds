@@ -1,19 +1,23 @@
+# Copyright 1999-2021 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
 EAPI=7
 
-inherit cmake-utils git-r3 readme.gentoo-r1
+inherit cmake git-r3 readme.gentoo-r1
 
-DESCRIPTION="The minimalist fan control program -- rewritten in clean C++11"
+DESCRIPTION="Simple fan control program for thinkpads"
 HOMEPAGE="https://github.com/vmatare/thinkfan"
 EGIT_REPO_URI="https://github.com/vmatare/thinkfan.git"
 EGIT_BRANCH="master"
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS=""
 IUSE="atasmart nvidia +yaml"
 
 DEPEND="atasmart? ( dev-libs/libatasmart )
 	yaml? ( dev-cpp/yaml-cpp )"
+
 RDEPEND="${DEPEND}
 	nvidia? ( x11-drivers/nvidia-drivers )"
 
@@ -29,13 +33,11 @@ src_configure() {
 		-DUSE_ATASMART="$(usex atasmart)"
 		-DUSE_YAML="$(usex yaml)"
 	)
-
-	cmake-utils_src_configure
+	cmake_src_configure
 }
 
 src_install() {
-	cmake-utils_src_install
-
+	cmake_src_install
 	readme.gentoo_create_doc
 
 	sed -i  's@ebegin "Reloading "@ebegin "Reloading thinkfan"@' "${ED}/etc/init.d/thinkfan"
