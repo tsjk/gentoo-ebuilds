@@ -1,19 +1,15 @@
-# $Id$
-
-EAPI=6
+EAPI=7
 
 inherit eutils git-r3
 
 DESCRIPTION="nvramtool is a utility for reading/writing/displaying LinuxBIOS parameters."
 HOMEPAGE="http://www.coreboot.org/nvramtool"
+EGIT_REPO_URI="https://github.com/coreboot/coreboot.git"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS=""
 IUSE=""
-
-SRC_URI=""
-EGIT_REPO_URI="git://github.com/coreboot/coreboot.git"
 
 S="${S}/util/${PN}"
 
