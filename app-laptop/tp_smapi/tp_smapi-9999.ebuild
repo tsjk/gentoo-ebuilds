@@ -1,7 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
-# Distributed under the terms of the GNU General Public License v2
-
-EAPI=6
+EAPI=7
 
 inherit flag-o-matic linux-mod
 
@@ -10,7 +7,7 @@ HOMEPAGE="https://github.com/evgeni/tp_smapi"
 
 if [ "${PV}" = "9999" ]; then
         inherit git-r3
-        EGIT_REPO_URI="git://github.com/evgeni/tp_smapi.git https://github.com/evgeni/tp_smapi.git"
+        EGIT_REPO_URI="https://github.com/evgeni/tp_smapi.git"
         KEYWORDS=""
 else
 	SRC_URI="https://github.com/evgeni/tp_smapi/releases/download/tp-smapi/${PV}/${P}.tgz"
