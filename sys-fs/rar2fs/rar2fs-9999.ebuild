@@ -3,15 +3,15 @@
 
 EAPI=7
 
-inherit autotools
+inherit autotools git-r3
 
 DESCRIPTION="A FUSE based filesystem that can mount one or multiple RAR archive(s)"
 HOMEPAGE="https://hasse69.github.io/rar2fs/ https://github.com/hasse69/rar2fs"
-SRC_URI="https://github.com/hasse69/${PN}/releases/download/v${PV}/${P}.tar.gz"
+EGIT_REPO_URI="https://github.com/hasse69/${PN}.git"
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS=""
 IUSE="debug"
 
 # Note that upstream unrar sometimes breaks ABI without updating the SONAME
