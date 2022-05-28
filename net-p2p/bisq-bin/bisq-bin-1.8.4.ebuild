@@ -8,13 +8,13 @@ SRC_URI="https://bisq.network/downloads/v${PV}/Bisq-64bit-${PV}.deb"
 
 LICENSE="GPLv3"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="amd64"
 IUSE=""
 
 DEPEND="
 	dev-java/openjfx
 	net-libs/libnet
-	virtual/jre
+	virtual/jre:*
 	x11-libs/gtk+:3"
 
 RESTRICT="mirror strip"
