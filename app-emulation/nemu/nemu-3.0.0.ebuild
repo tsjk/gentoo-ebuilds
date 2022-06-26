@@ -59,9 +59,11 @@ pkg_pretend() {
 }
 
 src_configure() {
-	# -DNM_WITH_QEMU: Do not use embbed qemu.
+	# -DNM_WITH_NCURSES: Don't build the embbeded ncurses.
+	# -DNM_WITH_QEMU: Don't build the embbeded qemu.
 	local mycmakeargs=(
 		-DNM_WITH_DBUS=$(usex dbus)
+		-DNM_WITH_NCURSES=off
 		-DNM_WITH_NETWORK_MAP=$(usex svg)
 		-DNM_WITH_REMOTE=$(usex remote-api)
 		-DNM_WITH_OVF_SUPPORT=$(usex ovf)

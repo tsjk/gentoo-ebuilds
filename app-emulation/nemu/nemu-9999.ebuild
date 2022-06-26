@@ -58,6 +58,7 @@ pkg_pretend() {
 src_configure() {
 	local mycmakeargs=(
 		-DNM_WITH_DBUS=$(usex dbus)
+		-DNM_WITH_NCURSES=off
 		-DNM_WITH_NETWORK_MAP=$(usex svg)
 		-DNM_WITH_REMOTE=$(usex remote-api)
 		-DNM_WITH_OVF_SUPPORT=$(usex ovf)
