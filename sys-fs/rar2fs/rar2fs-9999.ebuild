@@ -17,7 +17,8 @@ IUSE="debug"
 # Note that upstream unrar sometimes breaks ABI without updating the SONAME
 # version so try rebuilding rar2fs if it doesn't work following an unrar
 # upgrade.
-RDEPEND="app-arch/unrar:0/5
+RDEPEND=">=app-arch/unrar-5.0
+	<app-arch/unrar-6.0.4
 	sys-fs/fuse:0"
 DEPEND="${RDEPEND}"
 
