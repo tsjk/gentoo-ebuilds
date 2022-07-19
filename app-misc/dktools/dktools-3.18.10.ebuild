@@ -1,5 +1,5 @@
-EAPI=5
-inherit autotools eutils flag-o-matic
+EAPI=8
+inherit autotools flag-o-matic
 
 DESCRIPTION="A collection of several tools by Dirk Krause. dktools includes graphic converters, text converters, some daemons, Perl modules, some development tools, administration tools and printing tools."
 HOMEPAGE="http://dktools.sourceforge.net"
