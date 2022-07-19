@@ -1,11 +1,8 @@
-# Copyright (c) 2012 The Chromium OS Authors. All rights reserved.
-# Distributed under the terms of the GNU General Public License v2
-
 # build with
 # ACCEPT=~arm emerge-$BOARD flashbench
-EAPI="5"
+EAPI="8"
 
-inherit eutils
+inherit toolchain-funcs
 
 if [[ ${PV} == "9999" ]] ; then
 	SRC_URI=""
@@ -26,9 +23,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~arm ~x86"
 IUSE=""
 
-src_prepare() {
-	epatch "${FILESDIR}"/flashbench-20160801-Makefile-install.patch
-}
+PATCHES=("${FILESDIR}"/flashbench-20160801-Makefile-install.patch)
 
 src_configure() {
 	tc-export CC

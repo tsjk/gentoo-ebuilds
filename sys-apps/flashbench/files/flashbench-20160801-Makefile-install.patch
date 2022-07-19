@@ -1,5 +1,5 @@
---- Makefile.orig	2016-08-01 07:51:03.205597457 +0200
-+++ Makefile	2016-08-01 10:40:14.710293381 +0200
+--- ./Makefile.orig	2016-08-01 07:51:03.205597457 +0200
++++ ./Makefile	2016-08-01 10:40:14.710293381 +0200
 @@ -1,6 +1,8 @@
  CC	?= gcc
 -CFLAGS	?= -O2 -Wall -Wextra -Wno-missing-field-initializers -Wno-unused-parameter -g2
