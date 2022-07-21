@@ -1,5 +1,5 @@
-EAPI=5
-inherit autotools eutils flag-o-matic linux-info
+EAPI=8
+inherit autotools flag-o-matic linux-info
 
 DESCRIPTION="Tool for simple access to the IEEE 1394 (FireWire) bus using the Linux 1394 subsystem. It supports read, write, lock, force bus reset, send phy packets, bus reset notification."
 HOMEPAGE="http://firecontrol.sourceforge.net"
@@ -20,7 +20,7 @@ DEPEND="${RDEPEND}"
 CONFIG_CHECK="~FIREWIRE"
 
 ERROR_FIREWIRE="
-firecontrol works with the (juju) firewire 
-stack. You don't seem to have this enabled 
+firecontrol works with the (juju) firewire
+stack. You don't seem to have this enabled
 in your kernel configuration.
 "
