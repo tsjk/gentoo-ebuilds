@@ -1,8 +1,4 @@
-# Copyright 1999-2012 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Header: $
-
-EAPI=5
+EAPI=6
 
 inherit eutils multilib flag-o-matic
 
@@ -26,6 +22,7 @@ RDEPEND=""
 S="${WORKDIR}/dmd"
 
 src_prepare() {
+	default
 	# remove unnecessary files
 	rm -r freebsd html osx linux/lib32/* linux/lib64/* \
 	linux/bin32/{README.TXT,dmd,dmd.conf} linux/bin64/{README.TXT,dmd,dmd.conf} \
