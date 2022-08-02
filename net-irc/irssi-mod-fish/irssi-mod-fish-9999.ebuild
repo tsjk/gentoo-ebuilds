@@ -1,6 +1,6 @@
-EAPI="7"
+EAPI="8"
 
-inherit cmake-utils git-r3 toolchain-funcs
+inherit cmake git-r3 toolchain-funcs
 
 DESCRIPTION="FiSH blowfish encryption irssi module"
 HOMEPAGE="https://github.com/falsovsky/FiSH-irssi"
