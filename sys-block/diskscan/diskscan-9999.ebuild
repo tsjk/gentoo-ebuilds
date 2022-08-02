@@ -1,4 +1,4 @@
-EAPI=7
+EAPI=8
 
 PYTHON_COMPAT=( python{2_7,3_6,3_7,3_8} )
 
@@ -6,7 +6,7 @@ CMAKE_MAKEFILE_GENERATOR=ninja
 
 EGIT_REPO_URI="https://github.com/baruch/diskscan.git"
 
-inherit cmake-utils git-r3 python-single-r1
+inherit cmake git-r3 python-single-r1
 
 DESCRIPTION="Scan disk for bad or near failure sectors, performs disk diagnostics"
 HOMEPAGE="http://blog.disksurvey.org/proj/diskscan/"
