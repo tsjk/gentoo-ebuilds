@@ -4,7 +4,7 @@
 EAPI=7
 
 CMAKE_WARN_UNUSED_CLI=no
-inherit git-r3 cmake-utils bash-completion-r1
+inherit git-r3 cmake bash-completion-r1
 
 DESCRIPTION="Command line interface to LastPass.com. [Fork of the LogMeIn Lastpass CLI client. (c) 2014-2019 LastPass. (c) 2020-present Contributers.]"
 HOMEPAGE="https://github.com/lastpass-cli-fork/lastpass-cli"
@@ -33,15 +33,15 @@ src_configure() {
 		-DBASH_COMPLETION_COMPLETIONSDIR="$(get_bashcompdir)"
 	)
 
-	cmake-utils_src_configure
+	cmake_src_configure
 }
 
 src_compile() {
-	cmake-utils_src_compile all doc-man $(usex test lpass-test '')
+	cmake_src_compile all doc-man $(usex test lpass-test '')
 }
 
 src_install() {
-	cmake-utils_src_install install
+	cmake_src_install install
 
 	doman "${BUILD_DIR}"/lpass.1
 
@@ -61,5 +61,5 @@ src_test() {
 	sed -e "s|TEST_LPASS=.*|TEST_LPASS=\"${BUILD_DIR}/lpass-test\"|" \
 		-i "${S}"/test/include.sh || die
 
-	cmake-utils_src_test
+	cmake_src_test
 }
