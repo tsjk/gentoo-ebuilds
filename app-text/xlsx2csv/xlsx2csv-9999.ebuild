@@ -1,11 +1,11 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
 PYTHON_COMPAT=( python3_{8..10} )
-PYTHON_REQ_USE="xml"
-DISTUTILS_USE_SETUPTOOLS=pyproject.toml
+PYTHON_REQ_USE="xml(+)"
+DISTUTILS_USE_SETUPTOOLS=no
 
 inherit distutils-r1 git-r3
 
@@ -19,9 +19,15 @@ KEYWORDS=""
 
 BDEPEND="dev-lang/perl"
 
+
+
 python_compile_all() {
 	emake -C man
 }
+
+
+
+
 
 python_install_all() {
 	distutils-r1_python_install_all
