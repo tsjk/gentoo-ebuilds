@@ -6,7 +6,7 @@ SRC_URI="https://github.com/ZmnSCPxj/${PN}/releases/download/${PV^^}/${PN}-${PV^
 
 SLOT="0"
 LICENSE="Apache-2.0"
-KEYWORDS=""
+KEYWORDS="~amd64 ~arm64 ~x86"
 IUSE="+curl_ssl_gnutls curl_ssl_openssl"
 RESTRICT="mirror"
 
