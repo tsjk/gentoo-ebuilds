@@ -15,7 +15,7 @@ DEPEND="
 	dev-db/sqlite:=
 	dev-libs/gmp:=[cxx]
 	dev-libs/libev:=
-	net-misc/curl:=[cxx,ssl]
+	net-misc/curl:=[ssl]
 	curl_ssl_gnutls? ( net-libs/gnutls:=[cxx] )
 	curl_ssl_openssl? ( dev-libs/openssl:= )
 "
