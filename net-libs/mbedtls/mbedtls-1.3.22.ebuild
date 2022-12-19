@@ -1,10 +1,10 @@
 EAPI=7
 
-inherit multilib cmake-utils multilib-minimal
+inherit multilib cmake multilib-minimal
 
 DESCRIPTION="Cryptographic library for embedded systems"
 HOMEPAGE="http://tls.mbed.org/"
-SRC_URI="https://github.com/ARMmbed/mbedtls/archive/${P}.tar.gz"
+SRC_URI="https://github.com/Mbed-TLS/mbedtls/archive/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0/8"
@@ -38,7 +38,7 @@ src_prepare() {
 	use havege && enable_mbedtls_option POLARSSL_HAVEGE_C
 	use threads && enable_mbedtls_option POLARSSL_THREADING_C
 	use threads && enable_mbedtls_option POLARSSL_THREADING_PTHREAD
-	cmake-utils_src_prepare
+	cmake_src_prepare
 }
 
 multilib_src_configure() {
@@ -51,21 +51,21 @@ multilib_src_configure() {
 			-DUSE_SHARED_MBEDTLS_LIBRARY=ON \
 			-DINSTALL_MBEDTLS_HEADERS=ON \
 			-DLIB_INSTALL_DIR="/usr/$(get_libdir)" )
-	cmake-utils_src_configure
+	cmake_src_configure
 }
 
 multilib_src_compile() {
-	cmake-utils_src_compile
+	cmake_src_compile
 	use doc && multilib_is_native_abi && emake apidoc
 }
 
 multilib_src_test() {
 	LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${BUILD_DIR}/library" \
-		cmake-utils_src_test
+		cmake_src_test
 }
 
 multilib_src_install() {
-	cmake-utils_src_install
+	cmake_src_install
 }
 
 multilib_src_install_all() {
