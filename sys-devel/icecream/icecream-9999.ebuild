@@ -12,7 +12,7 @@ EGIT_REPO_URI="https://github.com/icecc/icecream.git"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~hppa ~ppc ~sparc ~x86"
+KEYWORDS=""
 
 DEPEND="app-arch/libarchive:=
 	app-arch/zstd:=
