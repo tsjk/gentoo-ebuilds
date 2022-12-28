@@ -1,4 +1,4 @@
-EAPI=6
+EAPI=8
 
 EGIT_REPO_URI="https://github.com/pvaret/rtl8192cu-fixes.git"
 
