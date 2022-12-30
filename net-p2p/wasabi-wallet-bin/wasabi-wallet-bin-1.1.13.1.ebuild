@@ -8,7 +8,7 @@ SRC_URI="https://github.com/zkSNACKs/WalletWasabi/releases/download/v${PV}/Wasab
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~amd64"
 IUSE=""
 
 DEPEND="
