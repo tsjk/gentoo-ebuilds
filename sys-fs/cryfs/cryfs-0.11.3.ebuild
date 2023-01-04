@@ -41,7 +41,7 @@ DEPEND="${RDEPEND}
 BDEPEND="${PYTHON_DEPS}"
 
 PATCHES=(
-	"${FILESDIR}/${PN}-0.11.2-unbundle-libs.patch"
+	"${FILESDIR}/${P}-unbundle-libs.patch"
 )
 
 pkg_setup() {
