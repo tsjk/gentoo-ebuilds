@@ -13,9 +13,9 @@ LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"
 KEYWORDS=""
 
-RDEPEND="x11-libs/libdrm"
-DEPEND="${RDEPEND}
-	sys-kernel/linux-headers"
+DEPEND="x11-libs/libdrm"
+RDEPEND="${DEPEND}"
+BDEPEND="sys-kernel/linux-headers"
 
 MODULE_NAMES="evdi(video:${S}/module)"
 
@@ -25,12 +25,18 @@ pkg_setup() {
 	linux-mod_pkg_setup
 }
 
+src_prepare() {
+	default
+	local KVER=$(cat "${KERNEL_DIR}/include/config/kernel.release")
+	sed -i "1i KVER := ${KVER}" "${S}/Makefile" || die "sed insert of KVER failed"
+}
+
 src_compile() {
 	filter-flags -fomit-frame-pointer	# x86_64-pc-linux-gnu-gcc: error: -pg and -fomit-frame-pointer are incompatible
 	linux-mod_src_compile
-	cd "${S}/library"
-	default
-	mv libevdi.so libevdi.so.0
+	( cd "${S}/library" && \
+		default && \
+		mv libevdi.so libevdi.so.0 )
 }
 
 src_install() {
