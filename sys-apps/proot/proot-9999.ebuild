@@ -27,7 +27,7 @@ RDEPEND="
 !static? ( ${LIB_DEPEND//\[static-libs(+)]} )
 "
 
-DEPEND="
+DEPEND="${PYTHON_DEPS}
 	${RDEPEND}
 	app-doc/doxygen
         static? ( ${LIB_DEPEND} )
