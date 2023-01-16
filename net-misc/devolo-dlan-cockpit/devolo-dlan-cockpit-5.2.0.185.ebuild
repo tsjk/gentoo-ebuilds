@@ -1,23 +1,26 @@
-EAPI=7
+EAPI=8
 
 inherit systemd
 
+# Date: 2022-04-04
 MY_PKG="devolo-cockpit-v${PV//./-}-linux.run"
 DESCRIPTION="Display and configure settings of your devolo device"
 HOMEPAGE="https://www.devolo.com/support/downloads/download/devolo-cockpit.html"
-SRC_URI="https://www.devolo.fr/fileadmin/Web-Content/DE/Contentseiten/Downloads/Cockpit/${MY_PKG}"
+SRC_URI="https://www.devolo.global/fileadmin/Web-Content/DE/products/hnw/devolo-cockpit/software/${MY_PKG}"
 
 LICENSE="EULA"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="systemd"
+RESTRICT="mirror"
 
+#  dev-util/adobe-air-runtime from steam-overlay
 DEPEND="	app-arch/bzip2[abi_x86_32]
 		app-arch/xz-utils
 		>=dev-libs/nss-3[abi_x86_32]
 		dev-libs/libxml2[abi_x86_32]
 		>=dev-libs/libxslt-1.1[abi_x86_32]
-		=dev-util/adobe-air-sdk-bin-2.6
+		~dev-util/adobe-air-runtime-2.6
 		gnome-base/libgnome-keyring
 		x11-libs/gtk+:2[abi_x86_32]
 		x11-libs/libXaw[abi_x86_32]"
@@ -25,7 +28,8 @@ RDEPEND="${DEPEND}"
 
 S="${WORKDIR}"
 
-QA_PRESTRIPPED="/opt/devolo/dlancockpit/bin/dlancockpit /usr/bin/devolonetsvc"
+QA_PREBUILT="*"
+QA_PRESTRIPPED="*"
 
 src_unpack() {
 	local _arch
@@ -42,7 +46,7 @@ src_unpack() {
 
 src_install(){
 	cp -ar "${S}/opt" "${S}/usr" "${ED}/"
-	ln -s "/opt/Adobe/AirSDK/runtimes/air/linux/Adobe AIR" "${ED}/opt/Adobe AIR"
+	patchelf --replace-needed libbz2.so.1.0 libbz2.so.1 "${ED}/usr/bin/devolonetsvc" || die
   	systemd_dounit "${FILESDIR}/devolonetsvc.service"
 	printf "<?xml version="1.0" encoding="utf-8"?>\n<data_collection><allowed>2</allowed></data_collection>" > "${S}/config.xml"
 	newinitd "${FILESDIR}/devolonetsvc.initd" devolonetsvc
