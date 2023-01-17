@@ -3,19 +3,23 @@
 
 EAPI=8
 
-inherit flag-o-matic git-r3 linux-mod
+inherit flag-o-matic linux-mod
 
+COMMIT="bdc258b25df4d00f222fde0e3c5003bf88ef17b5"
 DESCRIPTION="Extensible Virtual Display Interface"
 HOMEPAGE="https://github.com/DisplayLink/evdi"
-EGIT_REPO_URI="https://github.com/DisplayLink/evdi.git"
+SRC_URI="https://github.com/DisplayLink/${PN}/archive/${COMMIT}.tar.gz -> ${PV}.tar.gz"
 
 LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"
 KEYWORDS=""
+RESTRICT="mirror"
 
 DEPEND="x11-libs/libdrm"
 RDEPEND="${DEPEND}"
 BDEPEND="sys-kernel/linux-headers"
+
+S="${WORKDIR}/${PN}-${COMMIT}"
 
 MODULE_NAMES="evdi(video:${S}/module)"
 
