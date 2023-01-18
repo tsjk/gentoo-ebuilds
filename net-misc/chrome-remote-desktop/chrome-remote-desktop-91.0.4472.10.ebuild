@@ -1,1 +1,0 @@
-chrome-remote-desktop-92.0.4515.41.ebuild
