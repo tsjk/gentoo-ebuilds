@@ -39,5 +39,5 @@ src_install() {
 	insinto /usr/share/novnc
 	doins -r vnc.html vnc_lite.html app/ core/ vendor/
 	dosym vnc_lite.html /usr/share/novnc/vnc_auto.html  # for compat
-	dosym ../share/novnc/utils/launch.sh /usr/bin/novnc
+	dosym ../share/novnc/utils/novnc_proxy /usr/bin/novnc
 }
