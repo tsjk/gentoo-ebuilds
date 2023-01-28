@@ -1,6 +1,3 @@
-# Copyright 2020 Gentoo Authors
-# Distributed under the terms of the GNU General Public License v2
-
 EAPI=8
 
 inherit ecm kde.org
@@ -27,3 +24,11 @@ DEPEND="
 	dev-qt/qtcore:5
 "
 RDEPEND="${DEPEND}"
+
+src_configure() {
+	local mycmakeargs=(
+		-Wno-dev
+	)
+
+        cmake_src_configure
+}
