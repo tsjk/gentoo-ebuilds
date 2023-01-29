@@ -31,13 +31,15 @@ DEPEND="
 	>=dev-util/intltool-0.35.0
 "
 RDEPEND="${DEPEND}
-	x11-libs/cairo
+	app-accessibility/onboard
 	media-libs/freetype
-	>=x11-libs/gtk+-3.20:3
 	media-libs/libcanberra
+	x11-libs/cairo
+	>=x11-libs/gtk+-3.20:3
 	x11-libs/libXext
 	x11-libs/pixman
 	x11-libs/xapp
+	x11-misc/numlockx
 "
 
 src_prepare(){
