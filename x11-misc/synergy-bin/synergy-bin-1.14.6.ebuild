@@ -16,6 +16,7 @@ KEYWORDS="~amd64"
 RESTRICT="fetch"
 
 RDEPEND="
+	!x11-misc/synergy
 	>=dev-libs/glib-2.12.0
 	>=dev-libs/openssl-1.1.0:0/1.1
 	>=dev-qt/qtcore-5.12.2:5
