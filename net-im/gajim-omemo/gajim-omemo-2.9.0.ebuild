@@ -1,9 +1,7 @@
-# Copyright 1999-2021 Gentoo Authors
-# Distributed under the terms of the GNU General Public License v2
+EAPI=8
 
-EAPI=7
-
-PYTHON_COMPAT=( python3_{7,8,9} )
+PYTHON_COMPAT=( python3_{9,10} )
+DISTUTILS_USE_PEP517=setuptools
 
 DESCRIPTION="Gajim plugin for OMEMO XMPP end-to-end encryption"
 HOMEPAGE="https://dev.gajim.org/gajim/gajim-plugins/wikis/OmemoGajimPlugin"
@@ -15,7 +13,7 @@ if [[ "${PV}" = "9999" ]] ; then
 	EGIT_REPO_URI="https://dev.gajim.org/gajim/gajim-plugins.git"
 	KEYWORDS=""
 else
-	SRC_URI="https://ftp.gajim.org/plugins_releases/${MY_PN}_${PV}.zip"
+	SRC_URI="https://ftp.gajim.org/plugins/master/omemo/${MY_PN}_${PV}.zip"
 	KEYWORDS="~amd64"
 fi
 
@@ -37,5 +35,5 @@ RDEPEND="
 
 src_install() {
 	python_moduleinto "gajim/data/plugins"
-	python_foreach_impl python_domodule ${MY_PN}
+	python_foreach_impl python_domodule .
 }
