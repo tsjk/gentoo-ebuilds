@@ -27,6 +27,11 @@ RDEPEND="
 	<net-p2p/core-lightning-0.12
 "
 
+PATCHES=(
+		"${FILESDIR}/0001-clboss-destroyearningsinfo.patch"
+		"${FILESDIR}/0002-clboss-tallly.patch"
+)
+
 src_prepare() {
 	default
 	eautoreconf
