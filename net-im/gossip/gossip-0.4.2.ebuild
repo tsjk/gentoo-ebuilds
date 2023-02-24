@@ -473,6 +473,7 @@ src_configure() {
 src_install() {
 	default
 
+	dobin target/release/${PN}
 	dodoc LICENSE.txt README.md
 	doicon -s scalable ${PN}.svg
         domenu packaging/debian/${PN}.desktop
