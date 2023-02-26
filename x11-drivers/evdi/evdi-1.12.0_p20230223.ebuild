@@ -19,6 +19,8 @@ DEPEND="x11-libs/libdrm"
 RDEPEND="${DEPEND}"
 BDEPEND="sys-kernel/linux-headers"
 
+PATCHES=( "${FILESDIR}/${P}-0001-add_support_for_linux_kernel_v6.2.patch" )
+
 S="${WORKDIR}/${PN}-${COMMIT}"
 
 MODULE_NAMES="evdi(video:${S}/module)"
