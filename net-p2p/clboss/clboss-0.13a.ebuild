@@ -25,5 +25,5 @@ RDEPEND="
 	${DEPEND}
 	net-dns/bind-tools
 	>=net-p2p/core-lightning-0.9.1
-	<net-p2p/core-lightning-0.12
+	<net-p2p/core-lightning-0.12.2
 "
