@@ -4,7 +4,7 @@ inherit eutils unpacker
 
 DESCRIPTION="Additional proprietary codecs for vivaldi"
 HOMEPAGE="http://ffmpeg.org/"
-SRC_URI="http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-codecs-ffmpeg-extra_110.0.5481.100-0ubuntu0.18.04.1_amd64.deb"
+SRC_URI="http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-codecs-ffmpeg-extra_111.0.5563.64-0ubuntu0.18.04.5_amd64.deb"
 
 LICENSE="LGPL2.1"
 SLOT="0"
