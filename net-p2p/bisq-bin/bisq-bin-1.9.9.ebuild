@@ -4,7 +4,7 @@ inherit desktop unpacker xdg-utils
 
 DESCRIPTION="The decentralized bitcoin exchange (non-atomic, with arbitration)"
 HOMEPAGE="https://bisq.network/ https://github.com/bisq-network/exchange/"
-SRC_URI="https://bisq.network/downloads/v${PV}/Bisq-64bit-${PV}.deb"
+SRC_URI="https://github.com/bisq-network/bisq/releases/download/v${PV}/Bisq-64bit-${PV}.deb"
 
 LICENSE="GPLv3"
 SLOT="0"
