@@ -60,6 +60,7 @@ src_configure() {
 		-DNM_WITH_OVF_SUPPORT=$(usex ovf)
 		-DNM_WITH_QEMU=off
 	)
+	append-cflags -D_DEFAULT_SOURCE
 	cmake_src_configure
 }
 

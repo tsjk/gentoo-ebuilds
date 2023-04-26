@@ -13,30 +13,28 @@ SRC_URI=""
 LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS=""
-IUSE="dbus +ovf remote-api +spice svg +vnc-client"
+IUSE="dbus network-map +ovf remote-api"
 
 RDEPEND="
-	>=app-emulation/qemu-6.0.0-r3[vnc,virtfs,spice?]
+	>=app-emulation/qemu-6.0.0-r3[vnc,virtfs,spice]
 	dev-db/sqlite:3=
 	dev-libs/json-c
 	sys-libs/ncurses:=[unicode(+)]
 	virtual/libusb:1
 	virtual/libudev:=
 	dbus? ( sys-apps/dbus )
+	network-map? ( media-gfx/graphviz[svg] )
 	ovf? (
 		dev-libs/libxml2:2
 		app-arch/libarchive:=
 	)
 	remote-api? ( dev-libs/openssl )
-	spice? ( app-emulation/virt-viewer )
-	svg? ( media-gfx/graphviz[svg] )
-	vnc-client? ( net-misc/tigervnc )
 "
 DEPEND="
 	${RDEPEND}
 "
 BDEPEND="
-		sys-devel/gettext
+	sys-devel/gettext
 "
 
 pkg_pretend() {
@@ -56,17 +54,16 @@ pkg_pretend() {
 }
 
 src_configure() {
+	# -DNM_WITH_QEMU: Do not embbed qemu.
 	local mycmakeargs=(
-		-DNM_WITH_DBUS=$(usex dbus)
-		-DNM_WITH_NCURSES=off
-		-DNM_WITH_NETWORK_MAP=$(usex svg)
-		-DNM_WITH_REMOTE=$(usex remote-api)
 		-DNM_WITH_OVF_SUPPORT=$(usex ovf)
+		-DNM_WITH_NETWORK_MAP=$(usex network-map)
+		-DNM_WITH_DBUS=$(usex dbus)
 		-DNM_WITH_QEMU=off
-		-DNM_WITH_SPICE=$(usex spice)
-		-DNM_WITH_VNC_CLIENT=$(usex vnc-client)
-		-DCMAKE_INSTALL_PREFIX=/usr
+		-DNM_WITH_NCURSES=off
+		-DNM_WITH_REMOTE=$(usex remote-api)
 	)
+	append-cflags -D_DEFAULT_SOURCE
 	cmake_src_configure
 }
 
