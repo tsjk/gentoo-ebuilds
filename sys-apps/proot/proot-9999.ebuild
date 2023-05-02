@@ -2,7 +2,7 @@ EAPI=8
 
 MY_PN="PRoot"
 
-PYTHON_COMPAT=( python3_{8,9} )
+PYTHON_COMPAT=( python3_{10,11} )
 inherit autotools flag-o-matic git-r3 python-single-r1 toolchain-funcs
 
 DESCRIPTION="User-space implementation of chroot, mount --bind, and binfmt_misc"
