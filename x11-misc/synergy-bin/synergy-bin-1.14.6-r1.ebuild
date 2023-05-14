@@ -7,7 +7,7 @@ inherit desktop unpacker xdg-utils
 
 DESCRIPTION="Lets you easily share a single mouse and keyboard between multiple computers"
 HOMEPAGE="https://symless.com/synergy"
-SRC_URI="synergy_1.14.6-snapshot.88fdd263_ubuntu20_amd64.deb"
+SRC_URI="synergy_1.14.6-stable.455c59b4_ubuntu20_amd64.deb"
 S="${WORKDIR}"
 
 LICENSE="all-rights-reserved"
