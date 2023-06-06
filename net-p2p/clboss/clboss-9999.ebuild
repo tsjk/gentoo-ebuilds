@@ -24,8 +24,7 @@ RDEPEND="
 	${DEPEND}
 	net-dns/bind-tools
 	>=net-p2p/core-lightning-0.9.1
-	|| ( <net-p2p/core-lightning-22 ~net-p2p/core-lightning-22.11.1 )
-	<net-p2p/core-lightning-23
+	<=net-p2p/core-lightning-23.06
 "
 
 PATCHES=(
@@ -35,5 +34,8 @@ PATCHES=(
 
 src_prepare() {
 	default
+	if has_version '>=net-p2p/core-lightning-23.05' ; then
+		eapply "${FILESDIR}/0003-removed_msat_suffix.patch"
+	fi
 	eautoreconf
 }
