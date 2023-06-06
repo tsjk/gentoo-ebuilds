@@ -1,5 +1,7 @@
 EAPI=8
 
+inherit autotools
+
 COMMIT="f4a7715ab7e0480c9b73aa34165ff928e89fc2a2"
 DESCRIPTION="Automated Core Lightning Node Manager"
 HOMEPAGE="https://github.com/ZmnSCPxj/clboss"
@@ -11,7 +13,7 @@ KEYWORDS="~amd64 ~arm64 ~x86"
 IUSE="+curl_ssl_gnutls curl_ssl_openssl"
 RESTRICT="mirror"
 
-S="${WORKDIR}/${PN}-${PV^^}"
+S="${WORKDIR}/${PN}-${COMMIT}"
 
 DEPEND="
 	dev-db/sqlite:=
