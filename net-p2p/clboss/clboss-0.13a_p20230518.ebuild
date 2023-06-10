@@ -27,7 +27,8 @@ DEPEND="
 RDEPEND="
 	${DEPEND}
 	net-dns/bind-tools
-	~net-p2p/core-lightning-23.05
+	>=net-p2p/core-lightning-23.05
+	<=net-p2p/core-lightning-23.06
 "
 
 PATCHES=(
