@@ -1,0 +1,67 @@
+--- ./drivers/cpufreq/amd-pstate.c.orig	2023-06-10 16:27:04.116048610 +0200
++++ ./drivers/cpufreq/amd-pstate.c	2023-06-10 16:35:55.142218174 +0200
+@@ -465,26 +465,50 @@
+ 	des_perf = DIV_ROUND_CLOSEST(target_freq * cap_perf,
+ 				     cpudata->max_freq);
+ 
++	WARN_ON(fast_switch && !policy->fast_switch_enabled);
++	/*
++	 * If fast_switch is desired, then there aren't any registered
++	 * transition notifiers. See comment for
++	 * cpufreq_enable_fast_switch().
++	 */
++	if (!fast_switch)
+ 	cpufreq_freq_transition_begin(policy, &freqs);
+-	amd_pstate_update(cpudata, min_perf, des_perf,
+-			  max_perf, false, policy->governor->flags);
++
++	amd_pstate_update(cpudata, min_perf, des_perf, max_perf, fast_switch);
++
++	if (!fast_switch)
+ 	cpufreq_freq_transition_end(policy, &freqs, false);
+ 
+ 	return 0;
+ }
+ 
++static int amd_pstate_target(struct cpufreq_policy *policy,
++			     unsigned int target_freq,
++			     unsigned int relation)
++{
++	return amd_pstate_update_freq(policy, target_freq, false);
++}
++
++static unsigned int amd_pstate_fast_switch(struct cpufreq_policy *policy,
++				  unsigned int target_freq)
++{
++	return amd_pstate_update_freq(policy, target_freq, true);
++}
++
+ static void amd_pstate_adjust_perf(unsigned int cpu,
+ 				   unsigned long _min_perf,
+ 				   unsigned long target_perf,
+ 				   unsigned long capacity)
+ {
+ 	unsigned long max_perf, min_perf, des_perf,
+-		      cap_perf, lowest_nonlinear_perf;
++		      cap_perf, lowest_nonlinear_perf, max_freq;
+ 	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+ 	struct amd_cpudata *cpudata = policy->driver_data;
++	unsigned int target_freq;
+ 
+ 	cap_perf = READ_ONCE(cpudata->highest_perf);
+ 	lowest_nonlinear_perf = READ_ONCE(cpudata->lowest_nonlinear_perf);
++	max_freq = READ_ONCE(cpudata->max_freq);
+ 
+ 	des_perf = cap_perf;
+ 	if (target_perf < capacity)
+@@ -501,6 +525,10 @@
+ 	if (max_perf < min_perf)
+ 		max_perf = min_perf;
+ 
++	des_perf = clamp_t(unsigned long, des_perf, min_perf, max_perf);
++	target_freq = div_u64(des_perf * max_freq, max_perf);
++	policy->cur = target_freq;
++
+ 	amd_pstate_update(cpudata, min_perf, des_perf, max_perf, true,
+ 			policy->governor->flags);
+ 	cpufreq_cpu_put(policy);
