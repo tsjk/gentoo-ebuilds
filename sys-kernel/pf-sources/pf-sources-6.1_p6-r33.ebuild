@@ -48,7 +48,7 @@ SRC_URI="https://codeberg.org/pf-kernel/linux/archive/v${PFPV}.tar.gz -> linux-$
 
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 
-S="${WORKDIR}/linux-${PFPV}"
+S="${WORKDIR}/linux-${PFPV}-${PR}"
 
 K_EXTRAEINFO="For more info on pf-sources and details on how to report problems,
 	see: ${HOMEPAGE}."
@@ -69,7 +69,7 @@ src_unpack() {
 	# the src_unpack phase because kernel-2_src_unpack() does a lot of unwanted magic here.
 	unpack ${A}
 
-	mv linux linux-${PFPV} || die "Failed to move source directory"
+	mv linux linux-${PFPV}-${PR} || die "Failed to move source directory"
 }
 
 src_prepare() {
