@@ -272,7 +272,7 @@ REQUIRED_USE="
 "
 # FIXME: bundled deps: ccan
 
-PATCHES=( "${FILESDIR}/0001-annotations_in_header.patch" )
+PATCHES=( "${FILESDIR}/0001-remove_annotations.patch" )
 S=${WORKDIR}/${MyPN}-${MyPV}
 DOCS=( CHANGELOG.md README.md doc/{BACKUP,FAQ,GOSSIP_STORE,PLUGINS,TOR}.md )
 
