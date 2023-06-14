@@ -36,7 +36,7 @@ detect_version
 DESCRIPTION="Linux kernel fork that includes the pf-kernel patchset and Gentoo's genpatches"
 HOMEPAGE="https://pfkernel.natalenko.name/
 	https://dev.gentoo.org/~mpagano/genpatches/"
-for i in {13..33}; do f="patch-6.1.$((i - 1))-${i}.xz"
+for (( i=13; i <= "${PR#r}"; i++ )); do f="patch-6.1.$((i - 1))-${i}.xz"
 	[[ -z "${INCR_FILES}" ]] || INCR_FILES+=" "; [[ -z "${INCR_URIS}" ]] || INCR_URIS+=" "
 	INCR_FILES+="${f}"; INCR_URIS+="https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/incr/${f}"
 done; unset i f
@@ -103,6 +103,8 @@ src_prepare() {
 		[[ "$(sha512sum "${i%:*}" | awk '{ print $1 }')" == "${i#*:}" ]] && rm -f "${i%:*}"; done )
 	[[ -z $(find "${S}" -name '*.rej' 2> /dev/null) ]] || \
 		{ echo "Unexpected rejects:"; find "${S}" -name '*.rej' 2> /dev/null; die "Unexpected rejects found!"; }
+
+	sed -i -E 's@^SUBLEVEL\s*=\s*$@SUBLEVEL = 0@' "${S}/Makefile" || die "Failed to set SUBLEVEL!"
 
 	default
 }
