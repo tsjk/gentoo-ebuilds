@@ -8,7 +8,7 @@ inherit flag-o-matic linux-mod
 COMMIT="fe857b57259d7b4c39e30344a0d482205dc61753"
 DESCRIPTION="Extensible Virtual Display Interface"
 HOMEPAGE="https://github.com/DisplayLink/evdi"
-SRC_URI="https://github.com/DisplayLink/${PN}/archive/${COMMIT}.tar.gz -> ${PV}.tar.gz"
+SRC_URI="https://github.com/DisplayLink/${PN}/archive/${COMMIT}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"

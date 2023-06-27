@@ -5,10 +5,10 @@ EAPI=8
 
 inherit flag-o-matic linux-mod
 
-COMMIT="7501cfebfde58309c7091ca36718db41e8724728"
+COMMIT="eb83c2e3937f7e2cfaa78ac5e5e5be17c32a2f9e"
 DESCRIPTION="Extensible Virtual Display Interface"
 HOMEPAGE="https://github.com/DisplayLink/evdi"
-SRC_URI="https://github.com/blackPantherOS/${PN}/archive/${COMMIT}.tar.gz -> ${PV}.tar.gz"
+SRC_URI="https://github.com/DisplayLink/${PN}/archive/${COMMIT}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"
