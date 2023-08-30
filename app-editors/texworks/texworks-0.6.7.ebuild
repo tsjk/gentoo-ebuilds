@@ -1,11 +1,11 @@
 # Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-LUA_COMPAT=( lua5-{1..3} )
-PYTHON_COMPAT=( python3_{7,8,9} )
-CMAKE_REMOVE_MODULES_LIST="FindLua"
+LUA_COMPAT=( lua5-{1,3} )
+PYTHON_COMPAT=( python3_{10,11} )
+CMAKE_REMOVE_MODULES_LIST=("FindLua")
 inherit lua-single python-single-r1 cmake virtualx xdg-utils
 
 DESCRIPTION="A simple interface for working with TeX documents"
