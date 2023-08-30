@@ -1,6 +1,6 @@
-EAPI=7
+EAPI=8
 
-inherit eutils unpacker
+inherit unpacker
 
 DESCRIPTION="Additional proprietary codecs for vivaldi"
 HOMEPAGE="http://ffmpeg.org/"
