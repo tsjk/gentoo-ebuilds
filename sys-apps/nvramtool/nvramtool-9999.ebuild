@@ -1,6 +1,6 @@
-EAPI=7
+EAPI=8
 
-inherit eutils git-r3
+inherit git-r3
 
 DESCRIPTION="nvramtool is a utility for reading/writing/displaying LinuxBIOS parameters."
 HOMEPAGE="http://www.coreboot.org/nvramtool"
