@@ -1,6 +1,6 @@
-EAPI=7
+EAPI=8
 
-inherit autotools eutils flag-o-matic git-r3 linux-info
+inherit autotools flag-o-matic git-r3 linux-info
 
 DESCRIPTION="Linux FireWire bus inspection and configuration tools"
 HOMEPAGE="https://github.com/cladisch/linux-firewire-utils"
@@ -19,8 +19,8 @@ RDEPEND=""
 CONFIG_CHECK="~FIREWIRE"
 
 ERROR_FIREWIRE="
-linux-firewire-utils work with the new (juju) firewire 
-stack. You don't seem to have this enabled 
+linux-firewire-utils work with the new (juju) firewire
+stack. You don't seem to have this enabled
 in your kernel configuration.
 "
 
