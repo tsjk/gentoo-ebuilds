@@ -1,10 +1,10 @@
-EAPI=7
+EAPI=8
 
-inherit autotools eutils git-r3
+inherit autotools git-r3
 
 DESCRIPTION="Early unlocking of encrypted systems via ssh for dracut"
 HOMEPAGE="https://github.com/dracut-crypt-ssh/dracut-crypt-ssh"
-EGIT_REPO_URI="git://github.com/dracut-crypt-ssh/dracut-crypt-ssh.git"
+EGIT_REPO_URI="https://github.com/dracut-crypt-ssh/dracut-crypt-ssh.git"
 SRC_URI=""
 
 LICENSE="GPL2"
