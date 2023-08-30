@@ -1,6 +1,6 @@
-EAPI=7
+EAPI=8
 
-inherit autotools git-r3 eutils flag-o-matic
+inherit autotools flag-o-matic git-r3 udev
 
 DESCRIPTION="Enables USB charging for Apple devices."
 HOMEPAGE="https://github.com/mkorenkov/ipad_charge"
@@ -18,8 +18,18 @@ S="${WORKDIR}/${P}"
 
 PATCHES=("${FILESDIR}/${PN}-9999-makefile.patch")
 
+QA_PRESTRIPPED="usr/bin/ipad_charge"
+
 src_prepare() {
 	default
 	#sed -i 's|\/usr|\$\{DESTDIR\}\/usr|g' Makefile
 	#sed -i 's|\/etc|\$\{DESTDIR\}\/etc|g' Makefile
+}
+
+pkg_postinst() {
+	udev_reload
+}
+
+pkg_postrm() {
+	udev_reload
 }
