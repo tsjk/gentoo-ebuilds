@@ -1,6 +1,6 @@
-EAPI=7
+EAPI=8
 
-inherit toolchain-funcs vcs-snapshot eutils
+inherit edos2unix toolchain-funcs vcs-snapshot
 
 MY_PV="$(ver_rs 1- '')"
 DESCRIPTION="A stream editor for manipulating CSV files"
