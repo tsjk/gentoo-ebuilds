@@ -1,5 +1,4 @@
-EAPI=7
-inherit eutils
+EAPI=8
 
 DESCRIPTION="Lightweight HTTP server for static content"
 SRC_URI="http://dl.bytesex.org/releases/${PN}/${P}.tar.gz"
