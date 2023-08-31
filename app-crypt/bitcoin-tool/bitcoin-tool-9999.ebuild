@@ -1,8 +1,6 @@
-# $Id$
+EAPI=8
 
-EAPI=7
-
-inherit eutils git-r3
+inherit git-r3
 
 DESCRIPTION="Tool for converting Bitcoin keys and addresses"
 HOMEPAGE="https://github.com/matja/bitcoin-tool/"
