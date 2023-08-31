@@ -33,7 +33,7 @@ src_install() {
 	dodoc CHANGELOG LICENSE README.md base58prefix.txt
 	if use opencl; then
 		dobin oclvanitygen++ oclvanityminer
-		insinto /usr/lib/oclvanitygen
+		insinto /usr/lib/oclvanitygen-plusplus
 		newins calc_addrs.cl calc_addrs.cl
 	fi
 }
