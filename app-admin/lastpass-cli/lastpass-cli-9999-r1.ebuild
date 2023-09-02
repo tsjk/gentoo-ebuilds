@@ -1,7 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
-# Distributed under the terms of the GNU General Public License v2
-
-EAPI=7
+EAPI=8
 
 CMAKE_WARN_UNUSED_CLI=no
 inherit git-r3 cmake bash-completion-r1
@@ -14,7 +11,10 @@ SLOT="0"
 LICENSE="GPL-2+ GPL-2+-with-openssl-exception"
 KEYWORDS="amd64 x86"
 IUSE="libressl X +pinentry test"
-RESTRICT="!test? ( test )"
+RESTRICT="mirror !test? ( test )"
+PATCHES=(
+	"${FILESDIR}/0001-certificate_updates.patch"
+)
 
 RDEPEND="
 	X? ( || ( x11-misc/xclip x11-misc/xsel ) )
