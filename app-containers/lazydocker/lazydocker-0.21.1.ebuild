@@ -14,7 +14,6 @@ LICENSE="MIT"
 SLOT="0"
 
 BDEPEND=">=dev-lang/go-1.18"
-RDEPEND="app-containers/docker"
 
 EGO_PN="github.com/jesseduffield/lazydocker"
 
