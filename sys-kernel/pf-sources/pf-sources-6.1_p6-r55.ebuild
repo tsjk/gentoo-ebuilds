@@ -40,7 +40,11 @@ for (( i=13; i <= "${PR#r}"; i++ )); do f="patch-6.1.$((i - 1))-${i}.xz"
 	[[ -z "${INCR_FILES}" ]] || INCR_FILES+=" "; [[ -z "${INCR_URIS}" ]] || INCR_URIS+=" "
 	INCR_FILES+="${f}"; INCR_URIS+="https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/incr/${f}"
 done; unset i f
-PATCHES=( "${FILESDIR}/0001-amd-pstate.patch" "${FILESDIR}/0002-tpm-chip.patch" )
+PATCHES=(
+	"${FILESDIR}/0001-amd-pstate.patch"
+	"${FILESDIR}/0002-tpm-chip.patch"
+	"${FILESDIR}/0003-restore-export-of-tcp_enter_quickack_mode.patch"
+)
 SRC_URI="https://codeberg.org/pf-kernel/linux/archive/v${PFPV}.tar.gz -> linux-${PFPV}.tar.gz
 	https://dev.gentoo.org/~mpagano/genpatches/tarballs/genpatches-${SHPV}-${K_GENPATCHES_VER}.base.tar.xz
 	https://dev.gentoo.org/~mpagano/genpatches/tarballs/genpatches-${SHPV}-${K_GENPATCHES_VER}.extras.tar.xz
