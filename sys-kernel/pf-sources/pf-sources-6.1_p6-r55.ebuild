@@ -40,11 +40,12 @@ for (( i=13; i <= "${PR#r}"; i++ )); do f="patch-6.1.$((i - 1))-${i}.xz"
 	[[ -z "${INCR_FILES}" ]] || INCR_FILES+=" "; [[ -z "${INCR_URIS}" ]] || INCR_URIS+=" "
 	INCR_FILES+="${f}"; INCR_URIS+="https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/incr/${f}"
 done; unset i f
-PATCHES=( "${FILESDIR}/0001-amd-pstate.patch" )
+PATCHES=( "${FILESDIR}/0001-amd-pstate.patch" "${FILESDIR}/0002-tpm-chip.patch" )
 SRC_URI="https://codeberg.org/pf-kernel/linux/archive/v${PFPV}.tar.gz -> linux-${PFPV}.tar.gz
 	https://dev.gentoo.org/~mpagano/genpatches/tarballs/genpatches-${SHPV}-${K_GENPATCHES_VER}.base.tar.xz
 	https://dev.gentoo.org/~mpagano/genpatches/tarballs/genpatches-${SHPV}-${K_GENPATCHES_VER}.extras.tar.xz
 	${INCR_URIS}"
+RESTRICT="mirror"
 
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 
@@ -84,13 +85,15 @@ src_prepare() {
 	eapply "${WORKDIR}"/*.patch
 
 	local i
+	# All rejects are either fixed, or have already been patched by the pf patch set
 	local _EXPECTED_REJECTS=(
-		"Makefile.rej:bf978a313118d8ce7a9d5ed5497c0459483f56c5db9f4e628b828317d95632d2dd16a3cb28e7b6d2d9cf254fef78aa0e119e0a5cf0dce5872189e6a257ca89e7"
+		"Makefile.rej:21a1beed1e11efaada63c0be2417e4ab703b1943914e8bdb131a58eeb925897e77447269234f39bf0a2abc5e09567b7c9ee174e44a7874a108326a308f20621b"
 		"scripts/gcc-plugins/Makefile.rej:e99789de72c68cbcf00fa3b9b01f943e18056fb91b5263292d5c1a9e2c167ef8d16620aef9c9b856a53885f598b6fa63f07ce6ec607ed43a18000727ff44b26d"
 		"drivers/cpufreq/amd-pstate.c.rej:da986d13b2aa985d8fa41a73b5c551ff781aae7d7434fdc6e31411f129b08db06d3d848c7301a59588df567f81065a143dd6934b305464d69a6fda0760632f4e"
 		"drivers/cpufreq/davinci-cpufreq.c.rej:575071b8a491e881c94c06827095e82c62036b32274f49c041bf1ee8aed58b7e300c439a2f2b13ee44070af4cffa35478e006892a7523a1ac3e3962879432b14"
 		"drivers/char/tpm/tpm.h.rej:b15ff615ccb99311e9fb8db0a11ff832aad565d9b115dc3658355e9a24ca825f307a85e09103ec54fc4383ff24ecaca284e3dfd096b674d3d88e6e259abd992c"
-		"drivers/char/tpm/tpm-chip.c.rej:3ecf3bfe68b8d69691fea08541c373a10a878bfcb8dcfc5d45290eeda207048d1073fc55015df625abf796cacada0a97061a2c3111832df0ab0f77c225a7d169"
+		"drivers/char/tpm/tpm-chip.c.rej:ca695d3a848d6a1c22b775c6893649710ca0384658a01ff8bfdb28e52d3545ad1b87e67972f6663c999e68f621d30939ab8ac2c35209b2109e6b11e65e3dcf8b"
+		"scripts/gcc-plugins/gcc-common.h.rej:227943e1811ce61135cd530141d52fad93667982e2cf0cdba34624f6236ac953e5fda878029ab7bcf9efdfe4a44129240c100b6a1c9af214ba54529c255aab2e"
 	)
 	for i in ${INCR_FILES}; do
 		echo "Applying \"${i}\"..."
