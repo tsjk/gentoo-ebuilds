@@ -17,3 +17,13 @@
  
  /* Send ACKs quickly, if "quick" count is not exhausted
   * and the session is not interactive.
+--- ./include/net/tcp.h	2023-09-27 22:17:39.000000000 +0200
++++ ./include/net/tcp.h	2023-08-25 16:04:04.000000000 +0200
+@@ -355,6 +355,7 @@
+ struct sk_buff *tcp_stream_alloc_skb(struct sock *sk, int size, gfp_t gfp,
+ 				     bool force_schedule);
+ 
++void tcp_enter_quickack_mode(struct sock *sk, unsigned int max_quickacks);
+ static inline void tcp_dec_quickack_mode(struct sock *sk,
+ 					 const unsigned int pkts)
+ {
