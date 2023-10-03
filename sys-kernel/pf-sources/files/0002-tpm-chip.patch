@@ -1,0 +1,25 @@
+--- ./drivers/char/tpm/tpm-chip.c.orig	2023-09-27 09:51:51.000000000 +0200
++++ ./drivers/char/tpm/tpm-chip.c	2023-09-27 10:06:53.000000000 +0200
+@@ -577,10 +577,20 @@
+ 	return tpm_get_random(chip, data, max);
+ }
+ 
++static bool tpm_is_hwrng_enabled(struct tpm_chip *chip)
++{
++	if (!IS_ENABLED(CONFIG_HW_RANDOM_TPM))
++		return false;
++	if (tpm_is_firmware_upgrade(chip))
++		return false;
++	if (chip->flags & TPM_CHIP_FLAG_HWRNG_DISABLED)
++		return false;
++	return true;
++}
++
+ static int tpm_add_hwrng(struct tpm_chip *chip)
+ {
+-	if (!IS_ENABLED(CONFIG_HW_RANDOM_TPM) || tpm_is_firmware_upgrade(chip) ||
+-	    tpm_is_rng_defective(chip))
++	if (!tpm_is_hwrng_enabled(chip))
+ 		return 0;
+ 
+ 	snprintf(chip->hwrng_name, sizeof(chip->hwrng_name),
