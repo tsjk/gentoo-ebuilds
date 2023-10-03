@@ -1,13 +1,10 @@
-# Copyright 1999-2017 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-
-EAPI=6
+EAPI=8
 
 inherit java-pkg-2 java-pkg-simple
 
 DESCRIPTION="Mantissa (Mathematical Algorithms for Numerical Tasks In Space System Applications)"
-HOMEPAGE="http://www.spaceroots.org/software/mantissa/index.html"
-SRC_URI="http://www.spaceroots.org/software/mantissa/mantissa-7.2-src.zip"
+HOMEPAGE="https://wiki.gentoo.org/wiki/No_homepage"
+SRC_URI="https://ipfs.io/ipfs/Qmegc8L7UhddsDJb3JQZs2xoNu18VjhUC5ifp29KTSzsEb -> ${P}-src.zip"
 
 LICENSE="GPL-2"
 SLOT="0"
