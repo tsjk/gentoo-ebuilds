@@ -1,8 +1,10 @@
 EAPI=8
 
+inherit autotools
+
 DESCRIPTION="Automated Core Lightning Node Manager"
 HOMEPAGE="https://github.com/ZmnSCPxj/clboss"
-SRC_URI="https://github.com/ZmnSCPxj/${PN}/releases/download/${PV^^}/${PN}-${PV^^}.tar.gz"
+SRC_URI="https://github.com/ZmnSCPxj/${PN}/archive/refs/tags/v${PV}.tar.gz"
 
 SLOT="0"
 LICENSE="Apache-2.0"
@@ -24,6 +26,16 @@ DEPEND="
 RDEPEND="
 	${DEPEND}
 	net-dns/bind-tools
-	>=net-p2p/core-lightning-0.9.1
-	<net-p2p/core-lightning-0.12
+	>=net-p2p/core-lightning-0.12.1
+	<net-p2p/core-lightning-23.09
 "
+
+PATCHES=(
+		"${FILESDIR}/0001-clboss-destroyearningsinfo.patch"
+		"${FILESDIR}/0002-clboss-tallly.patch"
+)
+
+src_prepare() {
+	default
+	eautoreconf
+}

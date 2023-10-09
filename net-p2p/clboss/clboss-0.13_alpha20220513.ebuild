@@ -1,15 +1,16 @@
 EAPI=8
 
-inherit autotools git-r3
-
 DESCRIPTION="Automated Core Lightning Node Manager"
 HOMEPAGE="https://github.com/ZmnSCPxj/clboss"
-EGIT_REPO_URI="https://github.com/ZmnSCPxj/clboss.git"
+SRC_URI="https://github.com/ZmnSCPxj/${PN}/releases/download/0.13A/${PN}-0.13A.tar.gz"
 
 SLOT="0"
 LICENSE="Apache-2.0"
-KEYWORDS=""
+KEYWORDS="~amd64 ~arm64 ~x86"
 IUSE="+curl_ssl_gnutls curl_ssl_openssl"
+RESTRICT="mirror"
+
+S="${WORKDIR}/${PN}-${PV^^}"
 
 DEPEND="
 	dev-db/sqlite:=
@@ -23,16 +24,6 @@ DEPEND="
 RDEPEND="
 	${DEPEND}
 	net-dns/bind-tools
-	>=net-p2p/core-lightning-0.12.1
-	<net-p2p/core-lightning-23.09
+	>=net-p2p/core-lightning-0.9.1
+	<net-p2p/core-lightning-0.12
 "
-
-PATCHES=(
-		"${FILESDIR}/0001-clboss-destroyearningsinfo.patch"
-		"${FILESDIR}/0002-clboss-tallly.patch"
-)
-
-src_prepare() {
-	default
-	eautoreconf
-}
