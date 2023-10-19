@@ -1,6 +1,6 @@
-EAPI=7
+EAPI=8
 
-inherit desktop eutils unpacker xdg-utils
+inherit desktop unpacker xdg-utils
 
 DESCRIPTION="Unofficial Microsoft Teams client for Linux using Electron. It uses the Web App and wraps it as a standalone application using Electron"
 HOMEPAGE="https://github.com/IsmaelMartinez/teams-for-linux"
