@@ -12,7 +12,7 @@ KEYWORDS="~amd64"
 IUSE=""
 
 DEPEND="
-	dev-util/lttng-ust
+	dev-util/lttng-ust:0/2.12
 	media-libs/fontconfig
 	net-misc/curl
 	x11-themes/hicolor-icon-theme"
