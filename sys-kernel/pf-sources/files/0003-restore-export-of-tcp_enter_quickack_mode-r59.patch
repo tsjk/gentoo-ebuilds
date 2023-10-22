@@ -1,0 +1,30 @@
+--- ./include/net/tcp.h	2023-10-22 12:09:49.000000000 +0200
++++ ./include/net/tcp.h	2023-10-22 12:15:47.000000000 +0200
+@@ -355,6 +355,8 @@
+ struct sk_buff *tcp_stream_alloc_skb(struct sock *sk, int size, gfp_t gfp,
+ 				     bool force_schedule);
+ 
++void tcp_enter_quickack_mode(struct sock *sk, unsigned int max_quickacks);
++
+ static inline void tcp_dec_quickack_mode(struct sock *sk)
+ {
+ 	struct inet_connection_sock *icsk = inet_csk(sk);
+--- ./net/ipv4/tcp_input.c.orig	2023-10-22 14:33:23.000000000 +0200
++++ ./net/ipv4/tcp_input.c	2023-10-22 15:08:49.000000000 +0200
+@@ -300,7 +300,7 @@
+ 		icsk->icsk_ack.quick = quickacks;
+ }
+ 
+-static void tcp_enter_quickack_mode(struct sock *sk, unsigned int max_quickacks)
++void tcp_enter_quickack_mode(struct sock *sk, unsigned int max_quickacks)
+ {
+ 	struct inet_connection_sock *icsk = inet_csk(sk);
+ 
+@@ -308,6 +308,7 @@
+ 	inet_csk_exit_pingpong_mode(sk);
+ 	icsk->icsk_ack.ato = TCP_ATO_MIN;
+ }
++EXPORT_SYMBOL(tcp_enter_quickack_mode);
+ 
+ /* Send ACKs quickly, if "quick" count is not exhausted
+  * and the session is not interactive.
