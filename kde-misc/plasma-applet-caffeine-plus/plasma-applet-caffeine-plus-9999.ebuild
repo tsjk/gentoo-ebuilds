@@ -18,7 +18,7 @@ SLOT="5"
 
 DEPEND="
 	kde-frameworks/plasma:5
-	kde-frameworks/extra-cmake-modules:5
+	kde-frameworks/extra-cmake-modules
 	kde-frameworks/kio:5
 	dev-qt/qtquickcontrols2:5
 	dev-qt/qtcore:5
