@@ -43,7 +43,7 @@ done; unset i f
 PATCHES=(
 	"${FILESDIR}/0001-amd-pstate.patch"
 	"${FILESDIR}/0002-tpm-chip.patch"
-	"${FILESDIR}/0003-restore-export-of-tcp_enter_quickack_mode.patch"
+	"${FILESDIR}/0003-restore-export-of-tcp_enter_quickack_mode-r59.patch"
 )
 SRC_URI="https://codeberg.org/pf-kernel/linux/archive/v${PFPV}.tar.gz -> linux-${PFPV}.tar.gz
 	https://dev.gentoo.org/~mpagano/genpatches/tarballs/genpatches-${SHPV}-${K_GENPATCHES_VER}.base.tar.xz
@@ -91,7 +91,7 @@ src_prepare() {
 	local i
 	# All rejects are either fixed, or have already been patched by the pf patch set
 	local _EXPECTED_REJECTS=(
-		"Makefile.rej:21a1beed1e11efaada63c0be2417e4ab703b1943914e8bdb131a58eeb925897e77447269234f39bf0a2abc5e09567b7c9ee174e44a7874a108326a308f20621b"
+		"Makefile.rej:5d9855569df292c8269555efa8441790dffa042a48ab9357e2057c0dd03cea5862c6d03c665419014c64f275e2996d6eebd682e478be66ad3e2b03d400bb9db9"
 		"scripts/gcc-plugins/Makefile.rej:e99789de72c68cbcf00fa3b9b01f943e18056fb91b5263292d5c1a9e2c167ef8d16620aef9c9b856a53885f598b6fa63f07ce6ec607ed43a18000727ff44b26d"
 		"drivers/cpufreq/amd-pstate.c.rej:da986d13b2aa985d8fa41a73b5c551ff781aae7d7434fdc6e31411f129b08db06d3d848c7301a59588df567f81065a143dd6934b305464d69a6fda0760632f4e"
 		"drivers/cpufreq/davinci-cpufreq.c.rej:575071b8a491e881c94c06827095e82c62036b32274f49c041bf1ee8aed58b7e300c439a2f2b13ee44070af4cffa35478e006892a7523a1ac3e3962879432b14"
