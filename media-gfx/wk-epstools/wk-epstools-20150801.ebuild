@@ -1,5 +1,4 @@
-EAPI=6
-inherit eutils
+EAPI=8
 
 DESCRIPTION="A collection of shell scripts for Linux/Unix to convert EPS files to PDF, PNG and JPEG (via Ghostscript)."
 HOMEPAGE="http://www.few.vu.nl/~wkager/tools.htm"
