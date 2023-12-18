@@ -1,5 +1,4 @@
-EAPI=6
-inherit eutils
+EAPI=8
 
 DESCRIPTION="Shell scripts for Linux/Unix/MacOSX convert FIG files to EPS and PDF (via Ghostscript), allowing you to easily embed TeX output in your pictures."
 HOMEPAGE="http://www.few.vu.nl/~wkager/tools.htm"
@@ -16,7 +15,7 @@ RDEPEND="
 		sys-apps/gawk
 		sys-apps/grep
 		sys-apps/sed
-		media-gfx/transfig
+		|| ( media-gfx/fig2dev media-gfx/transfig )
 		virtual/latex-base
 		"
 
