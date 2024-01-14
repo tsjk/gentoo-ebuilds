@@ -29,7 +29,7 @@ RDEPEND="
 
 DEPEND="${PYTHON_DEPS}
 	${RDEPEND}
-	app-doc/doxygen
+	app-text/doxygen
         static? ( ${LIB_DEPEND} )
 	care? ( dev-libs/uthash )
 	test? ( dev-util/valgrind )
