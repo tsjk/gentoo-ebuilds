@@ -19,8 +19,8 @@ IUSE=""
 DEPEND="$(python_gen_cond_dep '
 		dev-python/pyyaml[${PYTHON_USEDEP}]
         ')
+	app-alternatives/ninja
 	dev-util/ctags
-	dev-util/ninja
 	sys-libs/libtermcap-compat
 	sys-libs/ncurses
 	sys-libs/zlib"
