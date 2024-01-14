@@ -16,7 +16,7 @@ RDEPEND="
 	programs? ( dev-libs/openssl:0 )
 	zlib? ( >=sys-libs/zlib-1.2.8-r1[${MULTILIB_USEDEP}] )"
 DEPEND="${RDEPEND}
-	doc? ( app-doc/doxygen media-gfx/graphviz )
+	doc? ( app-text/doxygen media-gfx/graphviz )
 	test? ( dev-lang/perl )"
 
 RESTRICT="mirror"
