@@ -36,6 +36,9 @@ src_prepare() {
 	sed -i -e '/tdrundir/s@\$localstatedir/run@\$runstatedir@' \
 		configure.ac || die
 
+	sed -i -e 's@\$(AM_V_GEN) glib-compile-resources@cd \$(top_srcdir) \&\& &@' \
+		Makefile.am || die
+
 	default
 	eautoreconf
 }
