@@ -28,9 +28,9 @@ RDEPEND="
 	policykit? ( sys-auth/polkit:= )
 "
 DEPEND="${RDEPEND}
+	dev-build/gtk-doc-am
 	dev-libs/libxslt
 	dev-util/glib-utils
-	dev-util/gtk-doc-am
 	>=dev-util/intltool-0.35
 	virtual/pkgconfig
 "
