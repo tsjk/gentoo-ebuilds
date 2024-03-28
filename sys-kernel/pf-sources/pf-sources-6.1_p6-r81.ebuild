@@ -40,11 +40,6 @@ for (( i=13; i <= "${PR#r}"; i++ )); do f="patch-6.1.$((i - 1))-${i}.xz"
 	[[ -z "${INCR_FILES}" ]] || INCR_FILES+=" "; [[ -z "${INCR_URIS}" ]] || INCR_URIS+=" "
 	INCR_FILES+="${f}"; INCR_URIS+="https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/incr/${f}"
 done; unset i f
-PATCHES=(
-	"${FILESDIR}/0001-amd-pstate.patch"
-	"${FILESDIR}/0002-tpm-chip.patch"
-	"${FILESDIR}/0003-restore-export-of-tcp_enter_quickack_mode-r59.patch"
-)
 SRC_URI="https://codeberg.org/pf-kernel/linux/archive/v${PFPV}.tar.gz -> linux-${PFPV}.tar.gz
 	https://dev.gentoo.org/~mpagano/genpatches/tarballs/genpatches-${SHPV}-${K_GENPATCHES_VER}.base.tar.xz
 	https://dev.gentoo.org/~mpagano/genpatches/tarballs/genpatches-${SHPV}-${K_GENPATCHES_VER}.extras.tar.xz
@@ -91,19 +86,25 @@ src_prepare() {
 	local i
 	# All rejects are either fixed, or have already been patched by the pf patch set
 	local _EXPECTED_REJECTS=(
-		"Makefile.rej:5d9855569df292c8269555efa8441790dffa042a48ab9357e2057c0dd03cea5862c6d03c665419014c64f275e2996d6eebd682e478be66ad3e2b03d400bb9db9"
+		"Makefile.rej:5bafa825d2861d9facbd323c739ce7b4e53c717e81640d132fdf62bf2c6bad5d2f8c0f9f535a6090395ed67200bdc85e0b2c542a2904b3a3fc3be362217177c4"
 		"scripts/gcc-plugins/Makefile.rej:e99789de72c68cbcf00fa3b9b01f943e18056fb91b5263292d5c1a9e2c167ef8d16620aef9c9b856a53885f598b6fa63f07ce6ec607ed43a18000727ff44b26d"
 		"drivers/cpufreq/amd-pstate.c.rej:da986d13b2aa985d8fa41a73b5c551ff781aae7d7434fdc6e31411f129b08db06d3d848c7301a59588df567f81065a143dd6934b305464d69a6fda0760632f4e"
 		"drivers/cpufreq/davinci-cpufreq.c.rej:575071b8a491e881c94c06827095e82c62036b32274f49c041bf1ee8aed58b7e300c439a2f2b13ee44070af4cffa35478e006892a7523a1ac3e3962879432b14"
 		"drivers/char/tpm/tpm.h.rej:b15ff615ccb99311e9fb8db0a11ff832aad565d9b115dc3658355e9a24ca825f307a85e09103ec54fc4383ff24ecaca284e3dfd096b674d3d88e6e259abd992c"
 		"drivers/char/tpm/tpm-chip.c.rej:ca695d3a848d6a1c22b775c6893649710ca0384658a01ff8bfdb28e52d3545ad1b87e67972f6663c999e68f621d30939ab8ac2c35209b2109e6b11e65e3dcf8b"
 		"scripts/gcc-plugins/gcc-common.h.rej:227943e1811ce61135cd530141d52fad93667982e2cf0cdba34624f6236ac953e5fda878029ab7bcf9efdfe4a44129240c100b6a1c9af214ba54529c255aab2e"
+		"arch/x86/Kconfig.cpu.rej:2774c551cd19cb1347de59c0a0b6ddaeaedfad1fc51e5760d1e788ea2d4f4f32f728c3bdac1e5c40bfcfdec89e964f0d34980fd44fd660e71fa48d69d9fac6fd"
 	)
 	for i in ${INCR_FILES}; do
 		echo "Applying \"${i}\"..."
 		( cd "${S}" && xzcat "${DISTDIR}"/"${i}" | patch -Nsp1 | \
 		  egrep -v '^[0-9]+ out of [0-9]+ hunks? FAILED -- saving rejects to file Makefile\.rej$|^[0-9]+ out of [0-9]+ hunk ignored -- saving rejects to file |Skipping patch\.$' )
-		echo "Applied \"${i}\"..."; done
+		echo "Applied \"${i}\"..."
+		[[ "${i}" != "patch-6.1.31-32.xz" ]] || eapply "${FILESDIR}/0001-amd-pstate.patch"
+		[[ "${i}" != "patch-6.1.45-46.xz" ]] || eapply "${FILESDIR}/0002-tpm-chip.patch"
+		[[ "${i}" != "patch-6.1.58-59.xz" ]] || eapply "${FILESDIR}/0003-restore-export-of-tcp_enter_quickack_mode-r59.patch"
+		[[ "${i}" != "patch-6.1.78-79.xz" ]] || eapply "${FILESDIR}/0004-Kconfig_cpu.patch"
+	done
 
 	( cd "${S}" && sed -i -e "s:^\(SUBLEVEL =\).*:\1 ${K_SUBLEVEL}:" Makefile )
 	( cd "${S}" && for i in "${_EXPECTED_REJECTS[@]}"; do
