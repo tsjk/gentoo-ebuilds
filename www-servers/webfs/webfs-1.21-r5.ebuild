@@ -1,4 +1,9 @@
+#
+#
+
 EAPI=8
+
+inherit systemd
 
 DESCRIPTION="Lightweight HTTP server for static content"
 SRC_URI="http://dl.bytesex.org/releases/${PN}/${P}.tar.gz"
@@ -6,14 +11,10 @@ HOMEPAGE="http://linux.bytesex.org/misc/webfs.html"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~ppc ~x86 ~arm-linux ~x86-linux"
-IUSE="libressl ssl threads"
+KEYWORDS="~amd64 ~x86"
+IUSE="ssl threads"
 
-DEPEND="
-	ssl?  (
-		!libressl? ( dev-libs/openssl:0= )
-		libressl? ( dev-libs/libressl:= )
-	)"
+DEPEND="ssl? ( dev-libs/openssl:0= )"
 
 RDEPEND="${DEPEND}
 	app-misc/mime-types"
@@ -24,8 +25,8 @@ PATCHES=(
 )
 
 src_prepare() {
-	default
 	sed -e "s:/etc/mime.types:${EPREFIX}\\0:" -i GNUmakefile || die "sed failed"
+	default
 }
 
 src_compile() {
@@ -40,9 +41,11 @@ src_install() {
 	local myconf
 	use ssl || myconf="${myconf} USE_SSL=no"
 	use threads && myconf="${myconf} USE_THREADS=yes"
-	emake install ${myconf} prefix="${EPREFIX}/usr" mandir="${ED}/usr/share/man" DESTDIR="${D}"
+	emake DESTDIR="${D}" install prefix="${EPREFIX}/usr"  ${myconf} mandir="${ED}/usr/share/man"
 	newinitd "${FILESDIR}"/${PN}.initd-r1 ${PN}
 	newconfd "${FILESDIR}"/${PN}.confd ${PN}
+	systemd_dounit "${FILESDIR}/${PN}.service"
+	systemd_install_serviced "${FILESDIR}/${PN}.service.conf"
 	dodoc README
 }
 
