@@ -1,17 +1,18 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit flag-o-matic git-r3 linux-mod
+inherit flag-o-matic linux-mod
 
 DESCRIPTION="Extensible Virtual Display Interface"
 HOMEPAGE="https://github.com/DisplayLink/evdi"
-EGIT_REPO_URI="https://github.com/DisplayLink/evdi.git"
+SRC_URI="https://github.com/DisplayLink/evdi/archive/v${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-2 LGPL-2.1"
-SLOT="0"
-KEYWORDS=""
+SLOT="0/$(ver_cut 1-2)"
+KEYWORDS="~amd64 ~arm ~x86"
+RESTRICT="mirror"
 
 RDEPEND="x11-libs/libdrm"
 DEPEND="${RDEPEND}

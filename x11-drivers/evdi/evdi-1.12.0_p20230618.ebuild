@@ -26,7 +26,7 @@ MODULE_NAMES="evdi(video:${S}/module)"
 CONFIG_CHECK="~FB_VIRTUAL ~I2C"
 
 pkg_setup() {
-	linux-mod_pkg_setup
+	linux-mod-pkg_setup
 }
 
 src_prepare() {
@@ -36,14 +36,14 @@ src_prepare() {
 
 src_compile() {
 	filter-flags -fomit-frame-pointer	# x86_64-pc-linux-gnu-gcc: error: -pg and -fomit-frame-pointer are incompatible
-	linux-mod_src_compile
+	linux-mod-src_compile
 	( cd "${S}/library" && \
 		default && \
 		mv libevdi.so libevdi.so.0 )
 }
 
 src_install() {
-	linux-mod_src_install
+	linux-mod-src_install
 	dolib.so library/libevdi.so.0
 	dosym libevdi.so.0 "/usr/$(get_libdir)/libevdi.so"
 }
