@@ -26,6 +26,11 @@ pkg_setup() {
 	linux-mod_pkg_setup
 }
 
+src_prepare() {
+	default
+	sed -i "1i KVER := ${KV_FULL}" "${S}/module/Makefile" || die "sed insert of KVER failed"
+}
+
 src_compile() {
 	local modlist=( evdi=video:module )
 	local modargs=(	KVER="${KV_FULL}" KDIR="${KV_OUT_DIR}" )
