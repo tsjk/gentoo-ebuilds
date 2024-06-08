@@ -1,6 +1,6 @@
-EAPI=6
+EAPI=8
 
-inherit autotools eutils
+inherit autotools
 
 DESCRIPTION="Secure, small, anonymous only ftpd"
 HOMEPAGE="http://www.time-travellers.org/oftpd"
@@ -17,25 +17,25 @@ RDEPEND="${DEPEND}"
 
 src_prepare() {
 	cd "${WORKDIR}" || die
-	epatch "${FILESDIR}"/oftpd-0.3.7-ipv6rel2-0.3.6-to-0.3.7.patch
+	eapply -p0 "${FILESDIR}"/oftpd-0.3.7-ipv6rel2-0.3.6-to-0.3.7.patch
 
 	cd "${S}" || die
-	epatch "${WORKDIR}"/${PN}-0.3.6-ipv6rel2.patch
-	epatch "${FILESDIR}"/${PN}-0.3.7-delay-root-check.patch
-	epatch "${FILESDIR}"/${PN}-0.3.7-error-output.patch
-	epatch "${FILESDIR}"/${PN}-0.3.7-pthread-cancel.patch
+	eapply "${WORKDIR}"/${PN}-0.3.6-ipv6rel2.patch
+	eapply "${FILESDIR}"/${PN}-0.3.7-delay-root-check.patch
+	eapply "${FILESDIR}"/${PN}-0.3.7-error-output.patch
+	eapply "${FILESDIR}"/${PN}-0.3.7-pthread-cancel.patch
 
 	# Don't crash when using an unsupported address family, #159178.
 	# updated in bug #157005
-	epatch "${FILESDIR}"/${P}-family-1.patch
+	eapply "${FILESDIR}"/${P}-family-1.patch
 
 	# htons patch #371963
-	epatch "${FILESDIR}"/${P}-htons.patch
+	eapply "${FILESDIR}"/${P}-htons.patch
 
-	epatch "${FILESDIR}"/${P}-unistd.patch
+	eapply "${FILESDIR}"/${P}-unistd.patch
 
-	epatch "${FILESDIR}"/${PN}-0.3.7-ipv6-broken-configure-script.patch
-	epatch "${FILESDIR}"/${PN}-0.3.7-ipv4.patch
+	eapply "${FILESDIR}"/${PN}-0.3.7-ipv6-broken-configure-script.patch
+	eapply "${FILESDIR}"/${PN}-0.3.7-ipv4.patch
 
 	eapply_user
 
