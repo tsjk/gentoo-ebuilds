@@ -18,8 +18,8 @@ RDEPEND="
 DEPEND="${RDEPEND}"
 
 PATCHES=(
-	"${FILESDIR}/0000-remove-ltls.patch"
-	"${FILESDIR}/0001-add-foreign.patch"
+	"${FILESDIR}/0001-remove-ltls.patch"
+	"${FILESDIR}/0002-add-foreign.patch"
 )
 
 QA_CONFIG_IMPL_DECL_SKIP=(
