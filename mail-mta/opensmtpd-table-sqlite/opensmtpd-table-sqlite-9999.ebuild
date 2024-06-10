@@ -37,6 +37,10 @@ src_prepare() {
 src_configure() {
 	append-cppflags -D_DEFAULT_SOURCE
 	econf \
+		--sysconfdir="${EPREFIX}"/etc/smtpd \
+		--with-user-smtpd=smtpd \
+		--with-path-empty="${EPREFIX}"/var/empty \
 		--with-mantype=man \
+		--with-libssl="${EPREFIX}"/usr/$(get_libdir) \
 		--with-table-sqlite
 }
