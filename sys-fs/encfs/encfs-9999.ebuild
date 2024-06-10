@@ -1,4 +1,4 @@
-EAPI=7
+EAPI=8
 inherit cmake git-r3
 
 DESCRIPTION="An implementation of encrypted filesystem in user-space using FUSE"
@@ -16,7 +16,7 @@ IUSE="nls"
 
 RDEPEND="dev-libs/openssl:=
 	dev-libs/tinyxml2:=
-	sys-fs/fuse:0=
+	sys-fs/fuse:3=
 	sys-libs/zlib"
 DEPEND="${RDEPEND}"
 BDEPEND="dev-lang/perl
