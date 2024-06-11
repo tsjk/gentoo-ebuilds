@@ -12,6 +12,7 @@ KEYWORDS=""
 IUSE=""
 
 RDEPEND="
+	dev-libs/openssl
 	mail-mta/opensmtpd
 	"
 DEPEND="${RDEPEND}"
