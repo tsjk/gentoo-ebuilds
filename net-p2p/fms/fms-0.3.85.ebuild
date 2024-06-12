@@ -8,7 +8,8 @@ inherit edos2unix cmake
 DESCRIPTION="Spam-resistant message board application for Freenet"
 # FMS only has a homepage within freenet, so the closest is a wiki linking to it
 HOMEPAGE="https://github.com/hyphanet/wiki/wiki/FMS"
-SRC_URI="http://127.0.0.1:8888/CHK@2X~YXMidLm-D4MmrlfskVhiY1ZqaS0TlU-QxUzMrPUo,ZEZ~QPDQpF-WeaR5iOM~Hfk2jiFkYxxUsYAOSMpplMI,AAMC--8/fms-src-0.3.85.zip"
+SRC_URI="https://ipfs.io/ipfs/QmTByFmHCnqcLgoP44eYm1atmZkwEF3ZpeyPUH9LLpnSYn -> ${P}.zip"
+#	 http://127.0.0.1:8888/CHK@2X~YXMidLm-D4MmrlfskVhiY1ZqaS0TlU-QxUzMrPUo,ZEZ~QPDQpF-WeaR5iOM~Hfk2jiFkYxxUsYAOSMpplMI,AAMC--8/fms-src-0.3.85.zip
 RESTRICT="mirror"
 S="${WORKDIR}"
 
