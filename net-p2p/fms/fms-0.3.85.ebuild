@@ -1,7 +1,7 @@
 # Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
 inherit edos2unix cmake
 
@@ -39,6 +39,7 @@ BDEPEND="
 PATCHES=(
 	"${FILESDIR}/${PN}-use-system-libs4.patch"
 	"${FILESDIR}/${PN}-0.3.83-fix-for-mbedtls-3.patch"
+	"${FILESDIR}/${PN}-0.3.84-require-cxx14.patch"
 )
 
 DOCS=( "readme.txt" )
