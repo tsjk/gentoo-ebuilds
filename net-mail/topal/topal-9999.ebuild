@@ -15,7 +15,10 @@ IUSE="doc"
 RDEPEND="${ADA_DEPS}
 	app-crypt/gnupg
 	|| ( app-text/dos2unix app-text/hd2u )
+	dev-perl/mime-construct
+	dev-perl/run-mailcap
 	mail-filter/procmail
+	net-mail/metamail
 	sys-libs/ncurses
 	sys-libs/readline"
 DEPEND="${RDEPEND}
