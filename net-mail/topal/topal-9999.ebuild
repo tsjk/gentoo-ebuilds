@@ -12,12 +12,12 @@ SLOT="0"
 KEYWORDS=""
 IUSE="doc"
 
-RDEPEND="app-crypt/gnupg
+RDEPEND="${ADA_DEPS}
+	app-crypt/gnupg
 	|| ( app-text/dos2unix app-text/hd2u )
 	sys-libs/ncurses
 	sys-libs/readline"
 DEPEND="${RDEPEND}
-	virtual/ada
 	doc? ( app-text/texlive )"
 
 src_prepare() {
