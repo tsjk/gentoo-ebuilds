@@ -15,6 +15,7 @@ IUSE="doc"
 RDEPEND="${ADA_DEPS}
 	app-crypt/gnupg
 	|| ( app-text/dos2unix app-text/hd2u )
+	mail-filter/procmail
 	sys-libs/ncurses
 	sys-libs/readline"
 DEPEND="${RDEPEND}
