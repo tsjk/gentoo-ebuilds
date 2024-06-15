@@ -1,8 +1,5 @@
-# Copyright 1999-2017 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-
-EAPI=6
-inherit eutils multilib-minimal
+EAPI=8
+inherit multilib-minimal
 
 DESCRIPTION="libhal stub forwarding to UDisks for Adobe Flash to play DRM content"
 HOMEPAGE="https://github.com/cshorler/hal-flash https://build.opensuse.org/package/show/devel:openSUSE:Factory/hal-flash"
@@ -28,5 +25,5 @@ PATCHES=( "${FILESDIR}"/0001-Make-build-work-outside-of-source-tree.patch )
 
 src_install() {
 	multilib-minimal_src_install
-	prune_libtool_files
+	find "${ED}" -name '*.la' -delete || die
 }
