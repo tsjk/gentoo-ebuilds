@@ -30,6 +30,7 @@ RDEPEND="
 DEPEND="${PYTHON_DEPS}
 	${RDEPEND}
 	app-text/doxygen
+	dev-python/docutils
         static? ( ${LIB_DEPEND} )
 	care? ( dev-libs/uthash )
 	test? ( dev-util/valgrind )
@@ -73,13 +74,22 @@ src_compile() {
 		CHECK_VERSION="true" \
 		CAREBUILDENV="ok" \
 		proot $(use care && echo "care")
-	emake -C doc \
-		V=1 \
-		CC="$(tc-getCC)" \
-		OBJCOPY="$(tc-getOBJCOPY)" \
-		OBJDUMP="$(tc-getOBJDUMP)" \
-		STRIP="$(tc-getSTRIP)" \
-		SUFFIX=".py"
+        if has_version ">=dev-python/docutils-0.21" ; then
+		emake -C doc \
+			V=1 \
+			CC="$(tc-getCC)" \
+			OBJCOPY="$(tc-getOBJCOPY)" \
+			OBJDUMP="$(tc-getOBJDUMP)" \
+			STRIP="$(tc-getSTRIP)"
+        else
+		emake -C doc \
+			V=1 \
+			CC="$(tc-getCC)" \
+			OBJCOPY="$(tc-getOBJCOPY)" \
+			OBJDUMP="$(tc-getOBJDUMP)" \
+			STRIP="$(tc-getSTRIP)" \
+			SUFFIX=".py"
+        fi
 }
 
 src_install() {
