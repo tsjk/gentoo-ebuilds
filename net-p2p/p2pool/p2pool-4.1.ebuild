@@ -70,8 +70,9 @@ src_unpack() {
 
 src_configure() {
 	local mycmakeargs=(
-		-DWITH_RANDOMX=OFF
 		-DWITH_GRPC=OFF
+		-DWITH_RANDOMX=OFF
+		-DWITH_TLS=OFF
 	)
 
 	cmake_src_configure
