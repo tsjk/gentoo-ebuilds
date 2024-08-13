@@ -20,18 +20,24 @@ LICENSE="MIT"
 SLOT="0"
 IUSE=""
 
-RDEPEND="
-	dev-qt/qtcore:5
-	dev-qt/qtdeclarative:5
-	dev-qt/qtgui:5
-	dev-qt/qtlocation:5
-	dev-qt/qtmultimedia:5
-	dev-qt/qtnetwork:5
-	dev-qt/qtpositioning:5
-	dev-qt/qtwebengine:5
-	dev-qt/qtwidgets:5
-	dev-qt/qtxmlpatterns:5"
-DEPEND="${RDEPEND}"
+QT_MIN="5.15"
+
+DEPEND="
+	x11-libs/libX11
+	x11-libs/libxcb:=
+	>=dev-qt/qtcore-${QT_MIN}:5
+	>=dev-qt/qtdeclarative-${QT_MIN}:5
+	>=dev-qt/qtgui-${QT_MIN}:5
+	>=dev-qt/qtlocation-${QT_MIN}:5
+	>=dev-qt/qtnetwork-${QT_MIN}:5
+	>=dev-qt/qtpositioning-${QT_MIN}:5
+	>=dev-qt/qtwebengine-${QT_MIN}:5[widgets]
+	>=dev-qt/qtwidgets-${QT_MIN}:5
+	>=dev-qt/qtxmlpatterns-${QT_MIN}:5
+"
+
+RDEPEND="${DEPEND}"
+
 BDEPEND="
 	media-libs/libglvnd[X]
 	x11-libs/libX11
@@ -49,7 +55,7 @@ src_configure() {
 }
 
 src_install() {
-	emake INSTALL_ROOT="${D}" install
+	emake INSTALL_ROOT="${ED}" install
 	einstalldocs
 }
 
