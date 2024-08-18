@@ -8,7 +8,7 @@ SRC_URI="https://github.com/retoaccess1/haveno-reto/releases/download/v${PV}/hav
 
 LICENSE="GPLv3"
 SLOT="0"
-KEYWORDS="amd64"
+KEYWORDS="~amd64"
 IUSE=""
 
 DEPEND="
