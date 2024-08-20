@@ -79,7 +79,7 @@ DESCRIPTION="A tool for running an application in an isolated network namespace,
 # Double check the homepage as the cargo_metadata crate
 # does not provide this value so instead repository is used
 HOMEPAGE="https://github.com/stevenengler/socksns"
-SRC_URI="https://github.com/stevenengler/${PN}/archive/refs/tags/${PV}.tar.gz -> ${P}.tar.gz
+SRC_URI="https://github.com/stevenengler/${PN}/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz
 	$(cargo_crate_uris)"
 
 # License set may be more restrictive as OR is not respected
