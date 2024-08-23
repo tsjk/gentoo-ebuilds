@@ -1,7 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
-# Distributed under the terms of the GNU General Public License v2
-
-EAPI=7
+EAPI=8
 
 inherit cmake git-r3 toolchain-funcs systemd
 
@@ -31,9 +28,9 @@ DEPEND="${RDEPEND}
 		upnp? ( net-libs/miniupnpc:=[static-libs] )
 	)"
 
-CMAKE_USE_DIR="${S}/build"
+CMAKE_USE_DIR="${WORKDIR}/${P}/build"
 
-DOCS=( README.md contrib/i2pd.conf contrib/tunnels.conf )
+DOCS=( ../README.md ../contrib/i2pd.conf ../contrib/tunnels.conf )
 
 pkg_pretend() {
 	if use i2p-hardening && ! tc-is-gcc; then
@@ -42,14 +39,14 @@ pkg_pretend() {
 }
 
 src_configure() {
-	mycmakeargs=(
+	local mycmakeargs=(
 		-DWITH_AESNI=$(usex cpu_flags_x86_aes ON OFF)
 		-DWITH_HARDENING=$(usex i2p-hardening ON OFF)
-		-DWITH_PCH=OFF
-		-DWITH_STATIC=$(usex static ON OFF)
-		-DWITH_UPNP=$(usex upnp ON OFF)
 		-DWITH_LIBRARY=ON
 		-DWITH_BINARY=ON
+		-DWITH_STATIC=$(usex static ON OFF)
+		-DWITH_UPNP=$(usex upnp ON OFF)
+		-DWITH_GIT_VERSION=ON
 	)
 	cmake_src_configure
 }
