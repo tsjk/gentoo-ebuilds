@@ -1,4 +1,4 @@
-EAPI=7
+EAPI=8
 
 inherit cmake git-r3 xdg
 
@@ -20,6 +20,7 @@ RDEPEND="
 	dev-qt/qtxml:5
 	x11-libs/qscintilla
 	>=x11-libs/qtermwidget-1.0.0
+	<x11-libs/qtermwidget-2
 "
 DEPEND="${RDEPEND}"
 BDEPEND="dev-qt/linguist-tools:5"
