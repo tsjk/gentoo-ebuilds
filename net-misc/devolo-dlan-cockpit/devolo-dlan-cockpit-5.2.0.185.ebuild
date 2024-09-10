@@ -21,7 +21,7 @@ DEPEND="	app-arch/bzip2[abi_x86_32]
 		dev-libs/libxml2[abi_x86_32]
 		>=dev-libs/libxslt-1.1[abi_x86_32]
 		~dev-util/adobe-air-runtime-2.6
-		gnome-base/libgnome-keyring
+		virtual/secret-service
 		x11-libs/gtk+:2[abi_x86_32]
 		x11-libs/libXaw[abi_x86_32]"
 RDEPEND="${DEPEND}"
