@@ -1,6 +1,6 @@
-EAPI=6
+EAPI=8
 
-inherit eutils multilib flag-o-matic
+inherit multilib flag-o-matic
 
 MY_P=${P/-/.}
 
@@ -21,6 +21,8 @@ RDEPEND=""
 
 S="${WORKDIR}/dmd"
 
+QA_PRESTRIPPED="usr/bin/rdmd usr/bin/obj2asm usr/bin/dumpobj"
+
 src_prepare() {
 	default
 	# remove unnecessary files
@@ -29,15 +31,18 @@ src_prepare() {
 	windows samples README.TXT license.txt || die "something went wrong"
 
 	cd "${S}"/src
-
 	# patch for slot-compatibility
-	epatch "${FILESDIR}/${P}-slot-compat.patch"
+	eapply "${FILESDIR}/${P}-slot-compat.patch"
+
+	cd "${WORKDIR}"
 	# patch for makefile
-	epatch "${FILESDIR}/${P}-makefile.patch"
+	eapply "${FILESDIR}/${P}-makefile.patch"
 
-	epatch "${FILESDIR}/${P}-code_fixes.patch"
-	has_version '>=sys-libs/glibc-2.26' && epatch "${FILESDIR}/${P}-no_bits_slash_nan_h.patch"
+	eapply "${FILESDIR}/${P}-code_fixes.patch"
+	has_version '>=sys-libs/glibc-2.26' && eapply "${FILESDIR}/${P}-no_bits_slash_nan_h.patch"
 
+	append-cflags -Wno-narrowing -Wno-register
+	append-cxxflags -Wno-narrowing -Wno-register
 	append-ldflags $(no-as-needed)
 }
 
@@ -47,7 +52,7 @@ src_compile() {
 	# make dmd
 	TARGET_CPU=X86 emake -f posix.mak
 	cp dmd idgen impcnvgen optabgen "${S}"/linux/bin32 || die "failed"
-	fperms guo=rx ../../linux/bin32/dmd
+	chmod guo=rx ../../linux/bin32/dmd
 
 	# make phobos
 	cd "${S}"/src/phobos
