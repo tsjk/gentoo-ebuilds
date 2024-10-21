@@ -1,9 +1,6 @@
-# Copyright 1999-2022 Gentoo Authors
-# Distributed under the terms of the GNU General Public License v2
-
 EAPI=8
 
-LUA_COMPAT=( lua5-{1..4} luajit )
+LUA_COMPAT=( lua5-{3..4} luajit )
 inherit git-r3 lua-single plocale toolchain-funcs
 
 DESCRIPTION="Window matching utility with Lua scripting"
@@ -21,13 +18,17 @@ RDEPEND="
 	x11-libs/gtk+:3
 	x11-libs/libX11
 	x11-libs/libXinerama
-	x11-libs/libwnck:3"
+	x11-libs/libXrandr
+	x11-libs/libwnck:3
+"
 DEPEND="
 	${RDEPEND}
-	x11-base/xorg-proto"
+	x11-base/xorg-proto
+"
 BDEPEND="
 	sys-devel/gettext
-	virtual/pkgconfig"
+	virtual/pkgconfig
+"
 
 src_compile() {
 	tc-export CC PKG_CONFIG
@@ -37,7 +38,7 @@ src_compile() {
 	DEVILSPIE2_ARGS=(
 		PREFIX="${EPREFIX}"/usr
 		LANGUAGES="$(plocale_get_locales)"
-		LUA=${ELUA}
+		LUA="${ELUA}"
 	)
 
 	mkdir obj || die # race condition (bug #881473)
