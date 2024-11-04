@@ -4,7 +4,7 @@ inherit desktop unpacker xdg-utils
 
 DESCRIPTION="Haveno is a non-custodial, decentralized exchange platform for crypto and fiat currencies built on Tor and Monero"
 HOMEPAGE="https://haveno.exchange https://github.com/retoaccess1/haveno-reto"
-SRC_URI="https://github.com/retoaccess1/haveno-reto/releases/download/v${PV}/haveno_amd64_deb-latest.zip -> ${P}.zip"
+SRC_URI="https://github.com/retoaccess1/haveno-reto/releases/download/v${PV}/haveno-linux-deb.zip -> ${P}.zip"
 
 LICENSE="GPLv3"
 SLOT="0"
@@ -34,7 +34,7 @@ REQUIRES_EXCLUDE="libavcodec.so.54 libavformat.so.54 libavcodec.so.56 libavforma
 S="${WORKDIR}"
 
 src_unpack() {
-	unpack_zip "${A}" && unpack_deb "haveno_${PV}-1_amd64.deb"
+	unpack_zip "${A}" && unpack_deb "haveno-v${PV}-linux-x86_64-installer.deb"
 }
 
 src_compile() {
