@@ -256,14 +256,18 @@ DEPEND="
 
 QA_FLAGS_IGNORED="usr/bin/xplr"
 
-src_configure() {
-	cargo_src_configure --bin xplr
+pkg_setup() {
+	rust_pkg_setup
 }
 
 src_prepare() {
 	sed -i Cargo.toml -e "s/'vendored', //" || die
 	# for dynamic linking with lua
 	default
+}
+
+src_configure() {
+	cargo_src_configure --bin xplr
 }
 
 src_compile() {
