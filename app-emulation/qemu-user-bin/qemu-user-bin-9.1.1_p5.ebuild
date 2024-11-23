@@ -17,7 +17,7 @@ DEPEND=""
 
 S=${WORKDIR}
 
-QA_PRESTRIPPED="usr/bin/qemu-.*-static"
+QA_PRESTRIPPED="usr/bin/qemu-user-bin-*"
 
 src_unpack() {
 	unpack_deb ${A}
@@ -25,9 +25,10 @@ src_unpack() {
 
 src_install() {
 	gunzip usr/share/doc/qemu-user/changelog.Debian.gz
+	gunzip usr/share/doc/qemu-user/main.rst.gz
 	gunzip usr/share/man/man1/qemu-user.1.gz
 	mv usr/share/doc/qemu-user{,-bin-${PV}}
-	mv usr/share/man/man1/qemu-user{,-bin}.1.gz
+	mv usr/share/man/man1/qemu-user{,-bin}.1
 	insinto /usr
 	doins -r usr/{bin,libexec,share}
 	for f in "${ED}/usr/bin"/qemu-*; do
@@ -35,13 +36,17 @@ src_install() {
 	done
 	( cd "${ED}/usr/bin" && {
 		for f in qemu-*; do
-			mv "${f}" "${f/qemu-/qemu-user-bin-}"
+			if [[ -L "${f}" ]]; then
+				l=$(readlink "${f}"); rm "${f}"; ln -s "${l/qemu-/qemu-user-bin-}" "${f/qemu-/qemu-user-bin-}"
+			else
+				mv "${f}" "${f/qemu-/qemu-user-bin-}"
+			fi
 		done
 	} )
 	cd "${D}/usr/share/man/man1" && { \
 		for i in *.gz; do [[ ! -L "${i}" ]] || { \
 			j=$(readlink "${i}"); rm "${i}"; \
-			ln -sv $(echo "${j}" | sed 's@\.gz@\.bz2@') $(echo "${i}" | sed 's@\.gz@\.bz2@'); \
+			ln -sv "${PN}.1.bz2" $(echo "${i}" | sed 's@^qemu-@qemu-user-bin-@; s@\.gz@\.bz2@'); \
 		}; done
 	}
 }
