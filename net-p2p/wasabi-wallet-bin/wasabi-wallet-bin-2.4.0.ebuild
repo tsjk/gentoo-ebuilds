@@ -2,7 +2,7 @@ EAPI=8
 
 inherit desktop unpacker xdg-utils
 
-MY_PV="${PV}.0"
+MY_PV="${PV}"
 
 DESCRIPTION="Wasabi is an open-source, non-custodial, privacy-focused Bitcoin wallet for Desktop, that implements trustless CoinJoin"
 HOMEPAGE="https://wasabiwallet.io/ https://github.com/zkSNACKs/WalletWasabi/"
