@@ -8,7 +8,7 @@ SRC_URI="https://github.com/bisq-network/bisq2/releases/download/v${PV}/Bisq-${P
 
 LICENSE="GPLv3"
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="amd64"
 IUSE=""
 
 DEPEND="
