@@ -26,7 +26,7 @@ CDEPEND="
 RDEPEND="
 	${CDEPEND}
 	dev-db/sqlite:3=
-	dev-libs/poco
+	<dev-libs/poco-1.14
 	frost? ( net-libs/mbedtls:0= )
 	ssl? ( net-libs/mbedtls:0= )
 "
