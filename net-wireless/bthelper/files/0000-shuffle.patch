@@ -1,0 +1,10 @@
+--- ./src/shuffle.cc.orig	2025-02-19 08:13:12.963608173 +0100
++++ ./src/shuffle.cc	2025-02-19 08:14:05.494361850 +0100
+@@ -21,6 +21,7 @@
+ #include <cstdio>
+ #include <iostream>
+ #include <stdexcept>
++#include <algorithm>
+ 
+ namespace {
+ bool set_nonblock(int fd)
