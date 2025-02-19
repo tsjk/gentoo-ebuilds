@@ -36,6 +36,7 @@ src_prepare() {
 
 src_configure() {
 	append-cppflags -D_DEFAULT_SOURCE
+	append-cflags -std=gnu89
 	econf \
 		--sysconfdir="${EPREFIX}"/etc/smtpd \
 		--with-user-smtpd=smtpd \
