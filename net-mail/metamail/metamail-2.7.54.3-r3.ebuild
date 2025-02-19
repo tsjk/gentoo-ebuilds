@@ -1,6 +1,6 @@
 EAPI=8
 
-inherit autotools toolchain-funcs
+inherit autotools flag-o-matic toolchain-funcs
 
 MY_PV=$(ver_cut 1-2)
 DEB_PV=${MY_PV}-$(ver_cut 3)
@@ -54,6 +54,7 @@ src_configure() {
 }
 
 src_compile() {
+	append-cflags -std=gnu89
 	emake CC="$(tc-getCC)" CFLAGS="${CFLAGS}"
 }
 
