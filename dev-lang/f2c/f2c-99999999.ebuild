@@ -1,6 +1,6 @@
 EAPI=8
 
-inherit autotools git-r3 flag-o-matic
+inherit autotools flag-o-matic git-r3
 
 DESCRIPTION="f2c (FORTRAN to C converter) and libi77/libi77 (library that converts FORTRAN to C source) all together in an autoconf package."
 HOMEPAGE="https://github.com/juanjosegarciaripoll/f2c"
@@ -18,6 +18,11 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	eapply_user
 	eautoreconf
+}
+
+src_configure() {
+	append-cflags -std=gnu89
+	default
 }
 
 src_install() {
