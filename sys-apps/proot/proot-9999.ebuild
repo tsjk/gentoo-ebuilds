@@ -55,6 +55,7 @@ src_prepare() {
 }
 
 src_compile() {
+	append-cflags -std=gnu89
 	# build the proot and care targets
 	emake -C src \
 		V=1 \
