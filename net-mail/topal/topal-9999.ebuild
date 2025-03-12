@@ -1,6 +1,6 @@
 EAPI=8
 
-ADA_COMPAT=( gnat_2021 gcc_12 gcc_13 )
+ADA_COMPAT=( gcc_12 gcc_13 gcc_14 gcc_15 )
 inherit ada flag-o-matic git-r3 toolchain-funcs
 
 DESCRIPTION="Topal is a 'glue' program that links GnuPG and Pine/Alpine"
