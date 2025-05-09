@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{10..13} )
+PYTHON_COMPAT=( python3_{11..13} )
 inherit flag-o-matic linux-mod python-single-r1
 
 DESCRIPTION="Extensible Virtual Display Interface"
@@ -18,18 +18,22 @@ RESTRICT="mirror"
 
 RDEPEND="${PYTHON_DEPS}
 	python? ( $(python_gen_cond_dep 'dev-python/pybind11[${PYTHON_USEDEP}]') )
-	x11-libs/libdrm
 "
 
 DEPEND="${RDEPEND}
 	sys-kernel/linux-headers
+	x11-libs/libdrm
 "
 
 REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
 
-CONFIG_CHECK="~FB_VIRTUAL ~I2C DRM ~USB_SUPPORT USB_ARCH_HAS_HCD MODULES"
+CONFIG_CHECK="~FB_VIRTUAL ~I2C ~DRM ~USB_SUPPORT ~USB_ARCH_HAS_HCD MODULES"
 
 MODULE_NAMES="evdi(video:${S}/module)"
+
+PATCHES=(
+	"${FILESDIR}/${PN}-1.14.4-format-truncation.patch"
+)
 
 pkg_setup() {
 	linux-mod_pkg_setup
