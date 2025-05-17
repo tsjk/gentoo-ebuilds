@@ -1,8 +1,8 @@
-EAPI=7
+EAPI=8
 
 WX_GTK_VER=3.2-gtk3
 
-inherit wxwidgets
+inherit wxwidgets xdg-utils
 
 DESCRIPTION="A collection of several tools by Dirk Krause. dktools includes graphic converters, text converters, some daemons, Perl modules, some development tools, administration tools and printing tools."
 HOMEPAGE="http://dktools.sourceforge.net"
@@ -49,4 +49,16 @@ src_install() {
 	keepdir /var/lib/log
 	keepdir /var/lib/run
 	export QA_DT_NEEDED=$(find "${ED}" -type f -name 'libdk4m*.so.*' -printf '/%P\n')
+}
+
+pkg_postinst() {
+	xdg_desktop_database_update
+	xdg_icon_cache_update
+	xdg_mimeinfo_database_update
+}
+
+pkg_postrm() {
+	xdg_desktop_database_update
+	xdg_icon_cache_update
+	xdg_mimeinfo_database_update
 }
