@@ -1,6 +1,6 @@
 EAPI=7
 
-WX_GTK_VER=3.0
+WX_GTK_VER=3.2-gtk3
 
 inherit wxwidgets
 
@@ -27,7 +27,7 @@ RDEPEND="
 		sys-libs/gdbm
 		sys-libs/zlib
 		virtual/jpeg
-		x11-libs/wxGTK:3.0
+		x11-libs/wxGTK:3.2-gtk3
 		"
 
 DEPEND="${RDEPEND}"
