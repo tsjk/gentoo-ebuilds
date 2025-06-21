@@ -10,7 +10,7 @@ EGIT_BRANCH="openssl"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS=""
-IUSE="cpu_flags_x86_aes cpu_flags_x86_avx i2p-hardening static +upnp"
+IUSE="i2p-hardening static +upnp"
 
 RDEPEND="
 	acct-user/i2pd
@@ -40,7 +40,6 @@ pkg_pretend() {
 
 src_configure() {
 	local mycmakeargs=(
-		-DWITH_AESNI=$(usex cpu_flags_x86_aes ON OFF)
 		-DWITH_HARDENING=$(usex i2p-hardening ON OFF)
 		-DWITH_LIBRARY=ON
 		-DWITH_BINARY=ON
