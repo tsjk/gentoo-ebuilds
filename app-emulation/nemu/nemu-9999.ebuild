@@ -1,41 +1,57 @@
-# Copyright 2019-2023 Gentoo Authors
+# Copyright 2020-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=8
+EAPI="8"
 
-inherit cmake linux-info git-r3
+inherit cmake linux-info
+
+MY_PV="${PV/_rc/-RC}"
+COMMIT_ID="8bcf47fa424458bbff798a8b5409a0f8d905f0e5"
 
 DESCRIPTION="ncurses interface for QEMU"
 HOMEPAGE="https://github.com/nemuTUI/nemu"
-EGIT_REPO_URI="https://github.com/nemuTUI/nemu"
-SRC_URI=""
-
 LICENSE="BSD-2"
+
+if [[ ${PV} == *9999 ]]; then
+	EGIT_REPO_URI="https://github.com/nemuTUI/${PN}.git"
+	inherit git-r3
+else
+	if [[ ${PV} == *_p* ]]; then
+		SRC_URI="https://github.com/nemuTUI/${PN}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
+		S="${WORKDIR}/${PN}-${COMMIT_ID}"
+	else
+		SRC_URI="https://github.com/nemuTUI/${PN}/archive/v${MY_PV}.tar.gz -> ${P}.tar.gz"
+		S="${WORKDIR}/$PN-${MY_PV}/"
+	fi
+fi
 SLOT="0"
-KEYWORDS=""
-IUSE="dbus network-map +ovf remote-api"
+KEYWORDS="~amd64"
+IUSE="dbus network-map +ovf remote-control spice +usb +vnc-client"
 
 RDEPEND="
-	>=app-emulation/qemu-6.0.0-r3[vnc,virtfs,spice]
+	app-emulation/qemu[vnc,virtfs,spice?]
 	dev-db/sqlite:3=
 	dev-libs/json-c
 	sys-libs/ncurses:=[unicode(+)]
-	virtual/libusb:1
-	virtual/libudev:=
 	dbus? ( sys-apps/dbus )
 	network-map? ( media-gfx/graphviz[svg] )
 	ovf? (
 		dev-libs/libxml2:2
 		app-arch/libarchive:=
 	)
-	remote-api? ( dev-libs/openssl )
+	remote-control? (
+		dev-libs/openssl:=
+	)
+	spice? ( app-emulation/virt-viewer[spice] )
+	vnc-client? ( net-misc/tigervnc )
+	usb? (
+		virtual/libusb:1
+		|| ( sys-apps/systemd-utils[udev] sys-apps/systemd )
+	)
 "
-DEPEND="
-	${RDEPEND}
-"
-BDEPEND="
-	sys-devel/gettext
-"
+
+DEPEND="${RDEPEND}"
+BDEPEND="sys-devel/gettext"
 
 pkg_pretend() {
 	if use kernel_linux; then
@@ -47,23 +63,25 @@ pkg_pretend() {
 			ERROR_VETH+=" into your kernel or loaded as a module to use the"
 			ERROR_VETH+=" local network settings feature."
 			ERROR_MACVTAP="You will also need support for MAC-VLAN based tap driver."
-
 			check_extra_config
 		fi
 	fi
 }
 
 src_configure() {
-	# -DNM_WITH_QEMU: Do not embbed qemu.
+	# -DNM_WITH_NCURSES: Don't build the embbeded ncurses.
+	# -DNM_WITH_QEMU: Don't build the embbeded qemu.
 	local mycmakeargs=(
-		-DNM_WITH_OVF_SUPPORT=$(usex ovf)
-		-DNM_WITH_NETWORK_MAP=$(usex network-map)
-		-DNM_WITH_DBUS=$(usex dbus)
-		-DNM_WITH_QEMU=off
+		-DNM_DEFAULT_DBFILE=".local/share/nemu/nemu.db"
+		-DNM_DEFAULT_VMDIR="nemu_vm"
 		-DNM_WITH_NCURSES=off
-		-DNM_WITH_REMOTE=$(usex remote-api)
+		-DNM_WITH_DBUS=$(usex dbus)
+		-DNM_WITH_NETWORK_MAP=$(usex network-map)
+		-DNM_WITH_OVF_SUPPORT=$(usex ovf)
+		-DNM_WITH_QEMU=off
+		-DNM_WITH_REMOTE=$(usex remote-control)
+		-DNM_WITH_USB=$(usex usb)
 	)
-	append-cflags -D_DEFAULT_SOURCE
 	cmake_src_configure
 }
 
@@ -73,10 +91,15 @@ src_install() {
 }
 
 pkg_postinst() {
+	elog ""
 	elog "For non-root usage execute script:"
 	elog "/usr/share/nemu/scripts/setup_nemu_nonroot.sh linux <username>"
 	elog "and add udev rule:"
-	elog "cp -a /usr/share/nemu/scripts/42-net-macvtap-perm.rules /etc/udev/rules.d"
+	elog "cp /usr/share/nemu/scripts/42-net-macvtap-perm.rules /etc/udev/rules.d"
 	elog "Afterwards reboot or reload udev with"
 	elog "udevadm control --reload-rules && udevadm trigger"
+
+	elog ""
+	elog "This ebuild moves the default database path into a different place:"
+	elog "~/.local/share/nemu/nemu.db"
 }
