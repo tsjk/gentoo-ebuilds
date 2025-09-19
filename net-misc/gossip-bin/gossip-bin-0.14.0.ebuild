@@ -12,7 +12,7 @@ KEYWORDS="~amd64"
 IUSE=""
 
 DEPEND="
-	>=sys-libs/glibc-2.29
+	>=sys-libs/glibc-2.40
 "
 
 RESTRICT="mirror strip"
