@@ -34,7 +34,7 @@ src_install() {
 }
 
 pkg_postinst() {
-	if has_version www-client/opera; then
+	if has_version 'www-client/opera[-proprietary-codecs]'; then
 		if [[ ! -f "${EROOT}"/opt/opera/libffmpeg.so.opera ]]; then
 			mv -v "${EROOT}"/opt/opera/libffmpeg.so{,.opera} && \
 				chmod a-r "${EROOT}"/opt/opera/libffmpeg.so.opera || die
@@ -42,7 +42,7 @@ pkg_postinst() {
 		[[ ! -L "${EROOT}"/opt/opera/libffmpeg.so ]] || rm "${EROOT}"/opt/opera/libffmpeg.so
 		ln -s -v ../opera-ffmpeg-codecs-bin/libffmpeg.so "${EROOT}"/opt/opera/libffmpeg.so || die
 	fi
-	if has_version www-client/opera-beta; then
+	if has_version 'www-client/opera-beta[-proprietary-codecs]'; then
 		if [[ ! -f "${EROOT}"/opt/opera-beta/libffmpeg.so.opera ]]; then
 			mv -v "${EROOT}"/opt/opera-beta/libffmpeg.so{,.opera} && \
 				chmod a-r "${EROOT}"/opt/opera-beta/libffmpeg.so.opera || die
