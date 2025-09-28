@@ -38,7 +38,7 @@ pkg_postinst() {
 			chmod a-r "${EROOT}"/opt/vivaldi/lib/libffmpeg.so.vivaldi || die
 	fi
 	[[ ! -L "${EROOT}"/opt/vivaldi/lib/libffmpeg.so ]] || rm "${EROOT}"/opt/vivaldi/lib/libffmpeg.so
-	ln -s -v ../vivaldi-ffmpeg-codecs-bin/libffmpeg.so "${EROOT}"/opt/vivaldi/lib/libffmpeg.so || die
+	ln -s -v ../../vivaldi-ffmpeg-codecs-bin/libffmpeg.so "${EROOT}"/opt/vivaldi/lib/libffmpeg.so || die
 }
 
 pkg_prerm() {
