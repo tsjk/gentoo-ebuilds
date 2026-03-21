@@ -27,6 +27,11 @@ BDEPEND="virtual/pkgconfig"
 S="${WORKDIR}/mm${MY_PV}/src"
 
 src_prepare() {
+	# Hackish workaround to make the legacy code work with >=gcc-15.
+	# A cleaner approach would be to add/fix function declarations, but this
+	# should better happen upstream
+	append-cflags -std=gnu17 -Wno-implicit-int -Wno-implicit-function-declaration -Wno-return-mismatch
+
 	eapply "${WORKDIR}"/metamail_${DEB_PV}.diff
 	eapply "${FILESDIR}"/${PN}-2.7.45.3-CVE-2006-0709.patch
 	eapply "${FILESDIR}"/${P}-glibc-2.10.patch
@@ -43,6 +48,15 @@ src_prepare() {
 	sed -i -e "s/-lncurses/$($(tc-getPKG_CONFIG) --libs ncurses)/" \
 		"${S}"/src/richmail/Makefile.am \
 		"${S}"/src/metamail/Makefile.am || die
+
+	if has_version ">=sys-libs/glibc-2.42"; then
+		sed -i -e 's/^#include <termio\.h>/#include <termios\.h>/' \
+			"${S}"/configure.in "${S}"/configure "${S}"/metamail/common.h "${S}"/metamail/metamail.c || die
+		sed -i -e '/^#include <termios\.h>/a #include <sys/ioctl.h>' \
+			"${S}"/configure.in "${S}"/configure "${S}"/metamail/common.h "${S}"/metamail/metamail.c || die
+		sed -i -e 's/struct termio /struct termios /' \
+			"${S}"/configure.in "${S}"/configure "${S}"/metamail/common.h "${S}"/metamail/metamail.c "${S}"/src/metamail/metamail.c || die
+	fi
 
 	eapply_user
 	eautoreconf
