@@ -1,13 +1,11 @@
-# Copyright 1999-2015 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Header: $
+EAPI=8
 
-EAPI=5
-
-EGIT_REPO_URI="https://github.com/vysheng/tg.git"
+EGIT_REPO_URI="https://github.com/kenorb-contrib/tg.git"
 EGIT_BRANCH="master"
 EGIT_HAS_SUBMODULES=1
-inherit git-2
+
+inherit git-r3
+
 IUSE="json lua python"
 DESCRIPTION="Command line interface client for Telegram"
 HOMEPAGE="https://github.com/vysheng/tg"
@@ -25,7 +23,7 @@ DEPEND="sys-libs/zlib
 	python? ( dev-lang/python )"
 
 src_unpack() {
-	git-2_src_unpack
+	git-r3_src_unpack
 	cd $EGIT_SOURCEDIR
 	git submodule update --init --recursive
 }
