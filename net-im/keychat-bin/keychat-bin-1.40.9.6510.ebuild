@@ -17,10 +17,6 @@ DEPEND="
 
 RESTRICT="mirror strip"
 
-# Bundled java, and seems to mostly work without an old ffmpeg
-#QA_PREBUILT="opt/Bisq/Bisq opt/Bisq/libpackager.so opt/Bisq/runtime/*"
-#REQUIRES_EXCLUDE="libgstreamer-lite.so libavplugin-53.so libavplugin-54.so libavplugin-55.so libavplugin-56.so libavplugin-57.so libavplugin-ffmpeg-56.so libavplugin-ffmpeg-57.so"
-
 S="${WORKDIR}"
 
 src_unpack() {
