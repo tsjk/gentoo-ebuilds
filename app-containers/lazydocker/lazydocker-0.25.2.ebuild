@@ -13,7 +13,7 @@ KEYWORDS="~amd64"
 LICENSE="MIT"
 SLOT="0"
 
-BDEPEND=">=dev-lang/go-1.23"
+BDEPEND=">=dev-lang/go-1.25"
 
 EGO_PN="github.com/jesseduffield/lazydocker"
 
