@@ -44,9 +44,6 @@ src_prepare() {
 }
 
 my_src_configure() {
-	# bug 618948
-	append-cxxflags -std=c++14
-
 	ECONF_SOURCE="${S}" econf \
 		--disable-werror \
 		--runstatedir="${EPREFIX}"/run \
