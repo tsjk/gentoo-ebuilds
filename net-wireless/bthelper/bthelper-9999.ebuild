@@ -11,8 +11,6 @@ LICENSE="Apache-2.0"
 KEYWORDS=""
 IUSE=""
 
-PATCHES=( "${FILESDIR}/0000-shuffle.patch" )
-
 src_prepare() {
 	default
 	eautoreconf
