@@ -1,8 +1,4 @@
-# Copyright 1999-2007 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Header: $
-
-EAPI="5"
+EAPI=8
 
 inherit flag-o-matic
 
@@ -18,15 +14,15 @@ SLOT="0"
 KEYWORDS="~x86 ~amd64"
 IUSE="doc"
 
-DEPEND="=dev-libs/kpathsea-6.1.0_p20120701
+DEPEND="dev-libs/kpathsea
 	virtual/libc
 	doc? ( app-text/texlive )"
 RDEPEND="$DEPEND"
 
 src_unpack()
 {
-	unpack ${A}
-	cd ${S}
+	unpack "${A}"
+	cd "${S}"
 	sed -i -e 's,^INSTALL_DIR.*\./mkdirchain,INSTALL_DIR = install -d,g' \
 		-e 's,^BIBTOOL_DEFAULT.*$,BIBTOOL_DEFAULT = \\"\.:/usr/share/bibtool\\",g' \
 		-e 's,^LIBDIR.*$,LIBDIR = @libdir@/bibtool,g' \
@@ -36,8 +32,8 @@ src_unpack()
 
 src_compile()
 {
-	append-flags -fno-strict-aliasing
-	econf --with-system-kpathsea --prefix=${D}/usr --libdir=${D}/usr/share || die "econf failed"
+	append-flags -std=gnu89 -fno-strict-aliasing -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast
+	econf --prefix="${D}/usr" --libdir="${D}/usr/share" --with-kpathsea || die "econf failed"
 	sed -i -e 's#@kpathsea_lib_static@##' makefile
 	emake CFLAGS="${CFLAGS}" || die "emake failed"
 	if use doc ; then
@@ -50,9 +46,9 @@ src_install()
 {
 	emake DESTDIR="${D}" install || die "emake install failed"
 
-	doman Doc/bibtool.1 || die
+	doman doc/bibtool.1 || die
 
 	if use doc ; then
-		dodoc Doc/{bibtool.pdf,c_lib.pdf,ref_card.pdf} || die
+		dodoc doc/{bibtool.pdf,c_lib.pdf,ref_card.pdf} || die
 	fi
 }
