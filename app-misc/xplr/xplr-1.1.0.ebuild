@@ -7,49 +7,48 @@ EAPI=8
 
 LUA_COMPAT=( luajit )
 
-RUST_MIN_VER="1.81"
+RUST_MIN_VER="1.88"
 CRATES="
-	aho-corasick@1.1.3
+	aho-corasick@1.1.4
 	allocator-api2@0.2.21
-	android-tzdata@0.1.1
 	android_system_properties@0.1.5
 	anes@0.1.6
 	ansi-to-tui@7.0.0
-	anstream@0.6.18
-	anstyle-parse@0.2.6
-	anstyle-query@1.1.2
-	anstyle-wincon@3.0.7
-	anstyle@1.0.10
-	anyhow@1.0.95
+	anstream@0.6.21
+	anstyle-parse@0.2.7
+	anstyle-query@1.1.5
+	anstyle-wincon@3.0.11
+	anstyle@1.0.13
+	anyhow@1.0.100
 	arrayvec@0.7.6
-	assert_cmd@2.0.16
-	autocfg@1.4.0
+	assert_cmd@2.1.1
+	autocfg@1.5.0
 	beef@0.5.2
 	bitflags@1.3.2
-	bitflags@2.8.0
-	bstr@1.11.3
-	bumpalo@3.17.0
-	byteorder@1.5.0
+	bitflags@2.10.0
+	bstr@1.12.1
+	bumpalo@3.19.0
 	cassowary@0.3.0
 	cast@0.3.0
-	castaway@0.2.3
-	cc@1.2.10
-	cfg-if@1.0.0
+	castaway@0.2.4
+	cc@1.2.49
+	cfg-if@1.0.4
 	cfg_aliases@0.2.1
-	chrono@0.4.39
+	chrono@0.4.42
 	ciborium-io@0.2.2
 	ciborium-ll@0.2.2
 	ciborium@0.2.2
-	clap@4.5.27
-	clap_builder@4.5.27
-	clap_derive@4.5.24
-	clap_lex@0.7.4
-	colorchoice@1.0.3
+	clap@4.5.53
+	clap_builder@4.5.53
+	clap_complete@4.5.61
+	clap_derive@4.5.49
+	clap_lex@0.7.6
+	colorchoice@1.0.4
 	compact_str@0.8.1
 	core-foundation-sys@0.8.7
 	criterion-plot@0.5.0
-	criterion@0.5.1
-	crossbeam-channel@0.5.14
+	criterion@0.6.0
+	crossbeam-channel@0.5.15
 	crossbeam-deque@0.8.6
 	crossbeam-epoch@0.9.18
 	crossbeam-queue@0.3.12
@@ -57,149 +56,158 @@ CRATES="
 	crossbeam@0.8.4
 	crossterm@0.28.1
 	crossterm_winapi@0.9.1
-	crunchy@0.2.3
-	darling@0.20.10
-	darling_core@0.20.10
-	darling_macro@0.20.10
+	crunchy@0.2.4
+	darling@0.20.11
+	darling_core@0.20.11
+	darling_macro@0.20.11
 	defer-drop@1.3.0
-	deranged@0.3.11
+	deranged@0.5.5
 	derive_builder@0.20.2
 	derive_builder_core@0.20.2
 	derive_builder_macro@0.20.2
 	difflib@0.4.0
 	dirs-next@2.0.0
 	dirs-sys-next@0.1.2
-	doc-comment@0.3.3
-	either@1.13.0
-	env_filter@0.1.3
+	either@1.15.0
+	env_filter@0.1.4
 	env_home@0.1.0
-	env_logger@0.11.6
-	equivalent@1.0.1
-	erased-serde@0.4.5
-	errno@0.3.10
+	env_logger@0.11.8
+	equivalent@1.0.2
+	erased-serde@0.4.9
+	errno@0.3.14
+	find-msvc-tools@0.1.5
 	fnv@1.0.7
-	foldhash@0.1.4
+	foldhash@0.1.5
 	fuzzy-matcher@0.3.7
-	gethostname@0.5.0
-	getrandom@0.2.15
-	half@2.4.1
-	hashbrown@0.15.2
+	gethostname@1.1.0
+	getrandom@0.2.16
+	getrandom@0.3.4
+	half@2.7.1
+	hashbrown@0.15.5
+	hashbrown@0.16.1
 	heck@0.5.0
-	hermit-abi@0.4.0
-	home@0.5.11
+	home@0.5.12
 	humansize@2.1.3
-	humantime@2.1.0
 	iana-time-zone-haiku@0.1.2
-	iana-time-zone@0.1.61
+	iana-time-zone@0.1.64
 	ident_case@1.0.1
-	indexmap@2.7.1
-	indoc@2.0.5
-	instability@0.3.7
-	is-terminal@0.4.15
-	is_terminal_polyfill@1.70.1
+	indexmap@2.12.1
+	indoc@2.0.7
+	instability@0.3.10
+	is_terminal_polyfill@1.70.2
 	itertools@0.10.5
 	itertools@0.13.0
-	itoa@1.0.14
+	itoa@1.0.15
 	jf@0.6.2
-	js-sys@0.3.77
+	jiff-static@0.2.16
+	jiff@0.2.16
+	js-sys@0.3.83
 	lazy_static@1.5.0
-	libc@0.2.169
-	libm@0.2.11
-	libredox@0.1.3
+	libc@0.2.178
+	libm@0.2.15
+	libredox@0.1.10
+	linux-raw-sys@0.11.0
 	linux-raw-sys@0.4.15
-	lock_api@0.4.12
-	log@0.4.25
+	lock_api@0.4.14
+	log@0.4.29
 	lru@0.12.5
-	lscolors@0.20.0
-	lua-src@547.0.0
-	luajit-src@210.5.12+a4f56a4
-	memchr@2.7.4
+	lscolors@0.21.0
+	lua-src@548.1.2
+	luajit-src@210.6.4+e17ee83
+	memchr@2.7.6
 	mime@0.3.17
 	mime_guess@2.0.5
 	minimal-lexical@0.2.1
-	mio@1.0.3
-	mlua-sys@0.6.7
-	mlua@0.10.3
+	mio@1.1.1
+	mlua-sys@0.9.0
+	mlua@0.11.5
 	natord@1.0.9
-	nix@0.24.3
 	nix@0.29.0
 	nom@7.1.3
-	nu-ansi-term@0.50.1
+	nu-ansi-term@0.50.3
 	num-conv@0.1.0
 	num-traits@0.2.19
 	num_threads@0.1.7
-	once_cell@1.20.2
-	oorandom@11.1.4
+	once_cell@1.21.3
+	once_cell_polyfill@1.70.2
+	oorandom@11.1.5
 	ordered-float@2.10.1
-	parking_lot@0.12.3
-	parking_lot_core@0.9.10
+	parking_lot@0.12.5
+	parking_lot_core@0.9.12
 	paste@1.0.15
 	path-absolutize@3.1.1
 	path-dedot@3.1.1
-	pkg-config@0.3.31
+	pkg-config@0.3.32
 	plotters-backend@0.3.7
 	plotters-svg@0.3.7
 	plotters@0.3.7
+	portable-atomic-util@0.2.4
+	portable-atomic@1.11.1
 	powerfmt@0.2.0
-	ppv-lite86@0.2.20
+	ppv-lite86@0.2.21
 	predicates-core@1.0.9
 	predicates-tree@1.0.12
 	predicates@3.1.3
-	proc-macro2@1.0.93
-	quote@1.0.38
-	rand@0.8.5
-	rand_chacha@0.3.1
-	rand_core@0.6.4
+	proc-macro2@1.0.103
+	pulldown-cmark@0.13.0
+	quote@1.0.42
+	r-efi@5.3.0
+	rand@0.9.2
+	rand_chacha@0.9.0
+	rand_core@0.9.3
 	ratatui@0.29.0
-	rayon-core@1.12.1
-	rayon@1.10.0
-	redox_syscall@0.5.8
+	rayon-core@1.13.0
+	rayon@1.11.0
+	redox_syscall@0.5.18
 	redox_users@0.4.6
-	regex-automata@0.4.9
-	regex-syntax@0.8.5
-	regex@1.11.1
-	rustc-hash@2.1.0
+	regex-automata@0.4.13
+	regex-syntax@0.8.8
+	regex@1.12.2
+	rustc-hash@2.1.1
 	rustix@0.38.44
-	rustversion@1.0.19
-	ryu@1.0.19
+	rustix@1.1.2
+	rustversion@1.0.22
+	ryu@1.0.20
 	same-file@1.0.6
 	scopeguard@1.2.0
 	serde-value@0.7.0
-	serde@1.0.217
-	serde_derive@1.0.217
-	serde_json@1.0.138
+	serde@1.0.228
+	serde_core@1.0.228
+	serde_derive@1.0.228
+	serde_json@1.0.145
 	serde_yaml@0.9.34+deprecated
 	shell-quote@0.7.2
 	shlex@1.3.0
-	signal-hook-mio@0.2.4
-	signal-hook-registry@1.4.2
-	signal-hook@0.3.17
+	signal-hook-mio@0.2.5
+	signal-hook-registry@1.4.7
+	signal-hook@0.3.18
 	simdutf8@0.1.5
-	skim@0.16.0
-	smallvec@1.13.2
+	skim-common@0.1.2
+	skim-tuikit@0.6.2
+	skim@0.18.0
+	smallvec@1.15.1
 	smawk@0.3.2
 	snailquote@0.3.1
 	static_assertions@1.1.0
 	strsim@0.11.1
 	strum@0.26.3
 	strum_macros@0.26.4
-	syn@2.0.96
+	syn@2.0.111
 	term@0.7.0
 	termtree@0.5.1
-	textwrap@0.16.1
+	textwrap@0.16.2
 	thiserror-impl@1.0.69
 	thiserror@1.0.69
-	thread_local@1.1.8
-	time-core@0.1.2
-	time-macros@0.2.19
-	time@0.3.37
+	thread_local@1.1.9
+	time-core@0.1.6
+	time-macros@0.2.24
+	time@0.3.44
 	timer@0.2.0
 	tinytemplate@1.2.1
-	tui-input@0.11.1
-	tuikit@0.5.0
-	typeid@1.0.2
+	tui-input@0.14.0
+	typeid@1.0.3
 	unicase@2.8.1
-	unicode-ident@1.0.16
+	unicode-ident@1.0.22
 	unicode-linebreak@0.1.5
 	unicode-segmentation@1.12.0
 	unicode-truncate@1.1.0
@@ -208,24 +216,30 @@ CRATES="
 	unicode_categories@0.1.1
 	unsafe-libyaml@0.2.11
 	utf8parse@0.2.2
-	vte@0.14.1
-	wait-timeout@0.2.0
+	vte@0.15.0
+	wait-timeout@0.2.1
 	walkdir@2.5.0
-	wasi@0.11.0+wasi-snapshot-preview1
-	wasm-bindgen-backend@0.2.100
-	wasm-bindgen-macro-support@0.2.100
-	wasm-bindgen-macro@0.2.100
-	wasm-bindgen-shared@0.2.100
-	wasm-bindgen@0.2.100
-	web-sys@0.3.77
-	which@7.0.1
+	wasi@0.11.1+wasi-snapshot-preview1
+	wasip2@1.0.1+wasi-0.2.4
+	wasm-bindgen-macro-support@0.2.106
+	wasm-bindgen-macro@0.2.106
+	wasm-bindgen-shared@0.2.106
+	wasm-bindgen@0.2.106
+	web-sys@0.3.83
+	which@7.0.3
+	which@8.0.0
 	winapi-i686-pc-windows-gnu@0.4.0
-	winapi-util@0.1.9
+	winapi-util@0.1.11
 	winapi-x86_64-pc-windows-gnu@0.4.0
 	winapi@0.3.9
-	windows-core@0.52.0
-	windows-sys@0.52.0
+	windows-core@0.62.2
+	windows-implement@0.60.2
+	windows-interface@0.59.3
+	windows-link@0.2.1
+	windows-result@0.4.1
+	windows-strings@0.5.1
 	windows-sys@0.59.0
+	windows-sys@0.61.2
 	windows-targets@0.52.6
 	windows_aarch64_gnullvm@0.52.6
 	windows_aarch64_msvc@0.52.6
@@ -236,9 +250,10 @@ CRATES="
 	windows_x86_64_gnullvm@0.52.6
 	windows_x86_64_msvc@0.52.6
 	winsafe@0.0.19
-	xdg@2.5.2
-	zerocopy-derive@0.7.35
-	zerocopy@0.7.35
+	wit-bindgen@0.46.0
+	xdg@3.0.0
+	zerocopy-derive@0.8.31
+	zerocopy@0.8.31
 "
 
 inherit cargo desktop lua-single xdg-utils
