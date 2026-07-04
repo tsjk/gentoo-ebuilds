@@ -46,6 +46,7 @@ src_compile() {
 	filter-lto
 	filter-flags -fomit-frame-pointer	# x86_64-pc-linux-gnu-gcc: error: -pg and -fomit-frame-pointer are incompatible
 	linux-mod-r1_src_compile
+	append-cflags -Wno-unused-result
 	emake -C library
 	use python && emake -C pyevdi
 }
