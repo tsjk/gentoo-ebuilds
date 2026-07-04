@@ -1,12 +1,10 @@
-# $Id$
+EAPI=8
 
-EAPI=6
-
-inherit eutils git-r3
+inherit git-r3
 
 DESCRIPTION="Emulates the detach feature of screen"
 HOMEPAGE="http://dtach.sourceforge.net/"
-EGIT_REPO_URI="git://github.com/crigler/dtach.git"
+EGIT_REPO_URI="https://github.com/crigler/dtach.git"
 
 SLOT="0"
 LICENSE="GPL-2"
