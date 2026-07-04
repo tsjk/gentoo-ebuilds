@@ -1,13 +1,7 @@
-# Copyright 1999-2012 Gentoo Foundation
-# Distributed under the terms of the GNU General Public License v2
-# $Header: $
-
-EAPI=4
-
-inherit versionator
+EAPI=9
 
 MY_P="${PN}-${PV/_p/-r}"
-C_PV="$(get_version_component_range 1-2)"
+C_PV="$(ver_cut 1-2)"
 
 DESCRIPTION="Static/dynamic menu-generator for Openbox"
 HOMEPAGE="https://launchpad.net/obmenugen"
