@@ -1,0 +1,20 @@
+--- ./src/c/wrapper.c.orig	2024-11-02 01:46:20.000000000 +0100
++++ ./src/c/wrapper.c	2026-07-04 18:10:28.031910905 +0200
+@@ -7538,7 +7538,7 @@
+     if (!path) {
+         log_printf(WRAPPER_SOURCE_WRAPPER, LEVEL_WARN, TEXT("The configured wrapper.java.command could not be found, attempting to launch anyway: %s"), *para);
+     } else {
+-        replacePath = getBooleanProperty(properties, TEXT("wrapper.java.command.resolve"), TRUE);
++        replacePath = getBooleanProperty(properties, TEXT("wrapper.java.command.resolve"), FALSE);
+         if (replacePath) {
+             free(*para);
+             *para = malloc((_tcslen(path) + 1) * sizeof(TCHAR));
+@@ -7830,7 +7830,7 @@
+ #else
+             /* On Unix the Java command may not be resolved, but we need to make sure that we are targeting
+              *  the same installation directory when calling 'java' without path. */
+-            if (getBooleanProperty(properties, TEXT("wrapper.java.command.resolve"), TRUE)) {
++            if (getBooleanProperty(properties, TEXT("wrapper.java.command.resolve"), FALSE)) {
+                 /* The only possible reason is that findPathOf already failed in checkIfRegularExe.
+                  *  An error has already been logged but we also want to show a warning for the Java version. */
+                 error = 1;
