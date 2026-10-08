@@ -5,10 +5,11 @@ DESCRIPTION="QEMU + Kernel-based Virtual Machine userland tools (static build fr
 HOMEPAGE="http://www.qemu.org http://www.linux-kvm.org"
 MY_PV=${PV/_p/+ds-}
 SRC_URI="amd64? ( mirror://debian/pool/main/q/qemu/qemu-user_${MY_PV}_amd64.deb )
-	arm? ( mirror://debian/pool/main/q/qemu/qemu-user_${MY_PV}_armhf.deb )
 	arm64? ( mirror://debian/pool/main/q/qemu/qemu-user_${MY_PV}_arm64.deb )
+	loong? ( mirror://debian/pool/main/q/qemu/qemu-user_${MY_PV}_loong64.deb )
 	ppc64? ( mirror://debian/pool/main/q/qemu/qemu-user_${MY_PV}_ppc64el.deb )
-	x86? ( mirror://debian/pool/main/q/qemu/qemu-user_${MY_PV}_i386.deb )"
+	riscv? ( mirror://debian/pool/main/q/qemu/qemu-user_${MY_PV}_riscv64.deb )
+	s390? ( mirror://debian/pool/main/q/qemu/qemu-user_${MY_PV}_s390x.deb )"
 
 LICENSE="GPL-2 LGPL-2 BSD-2"
 SLOT="0"
