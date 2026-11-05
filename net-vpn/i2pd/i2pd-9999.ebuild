@@ -1,9 +1,9 @@
-#
-#
+# Copyright 1999-2026 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit cmake git-r3 toolchain-funcs systemd
+inherit cmake git-r3 systemd
 
 DESCRIPTION="A C++ daemon for accessing the I2P anonymous network"
 HOMEPAGE="https://github.com/PurpleI2P/i2pd"
@@ -13,43 +13,38 @@ EGIT_BRANCH="openssl"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS=""
-IUSE="i2p-hardening static +upnp"
+IUSE="test +torrents +upnp"
+RESTRICT="!test? ( test )"
 
+COMMON_DEPEND="
+	dev-libs/boost:=
+	dev-libs/openssl:=
+	virtual/zlib:=
+	upnp? ( net-libs/miniupnpc:= )
+"
+DEPEND="
+	${COMMON_DEPEND}
+	test? ( dev-libs/check )
+"
 RDEPEND="
+	${COMMON_DEPEND}
 	acct-user/i2pd
 	acct-group/i2pd
-	!static? (
-		dev-libs/boost:=[threads(+)]
-		dev-libs/openssl:0=[-bindist(-)]
-		virtual/zlib
-		upnp? ( net-libs/miniupnpc:= )
-	)"
-DEPEND="${RDEPEND}
-	static? (
-		dev-libs/boost:=[static-libs,threads(+)]
-		dev-libs/openssl:0=[static-libs]
-		virtual/zlib[static-libs]
-		upnp? ( net-libs/miniupnpc:=[static-libs] )
-	)"
+"
 
 CMAKE_USE_DIR="${WORKDIR}/${P}/build"
 
 DOCS=( ../README.md ../contrib/i2pd.conf ../contrib/tunnels.conf )
 
-pkg_pretend() {
-	if use i2p-hardening && ! tc-is-gcc; then
-		die "i2p-hardening requires gcc"
-	fi
-}
-
 src_configure() {
 	local mycmakeargs=(
-		-DWITH_HARDENING=$(usex i2p-hardening ON OFF)
+		-DBUILD_TESTING=$(usex test ON OFF)
+		-DWITH_HARDENING=OFF # worsens or matches the non-hardened profiles
+		-DWITH_STATIC=OFF
+		-DWITH_TORRENTS=$(usex torrents ON OFF)
+		-DWITH_UPNP=$(usex upnp ON OFF)
 		-DWITH_LIBRARY=ON
 		-DWITH_BINARY=ON
-		-DWITH_STATIC=$(usex static ON OFF)
-		-DWITH_UPNP=$(usex upnp ON OFF)
-		-DWITH_GIT_VERSION=ON
 	)
 	cmake_src_configure
 }
@@ -86,4 +81,7 @@ pkg_postinst() {
 		ewarn "subscriptions.txt to i2pd.conf. We recommend updating"
 		ewarn "i2pd.conf accordingly and deleting subscriptions.txt."
 	fi
+
+	elog "Version 3.0.0 adds a torrent client, enabled by default."
+	elog "Guide: https://i2pd.readthedocs.io/en/latest/tutorials/Filesharing/I2PD Built-in Torrent/built-inTorrent/"
 }
