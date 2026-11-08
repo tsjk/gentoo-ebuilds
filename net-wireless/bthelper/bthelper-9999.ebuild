@@ -15,3 +15,8 @@ src_prepare() {
 	default
 	eautoreconf
 }
+
+src_configure() {
+	append-cxxflags -std=c++17
+	default
+}
