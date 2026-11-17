@@ -20,7 +20,7 @@ SRC_URI="https://codeberg.org/vaporup/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz
 # tar cf $P-deps.tar go-mod \
 #       --mtime="1970-01-01" --sort=name --owner=portage --group=portage
 # xz -k -9eT0 --memlimit-decompress=8192M $P-deps.tar
-SRC_URI+=" https://ipfs.orbitor.dev/ipfs/bafybeifyow5q7ksgn2xqd6q5khs4v3nbkubvixftegf6waw6dfgn3zlo2mhttps -> ${P}-deps.tar.xz"
+SRC_URI+=" https://ipfs.orbitor.dev/ipfs/bafybeifyow5q7ksgn2xqd6q5khs4v3nbkubvixftegf6waw6dfgn3zlo2m -> ${P}-deps.tar.xz"
 
 S="${WORKDIR}/${PN}"
 
