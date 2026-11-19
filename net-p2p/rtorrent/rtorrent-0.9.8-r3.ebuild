@@ -62,6 +62,8 @@ src_configure() {
 	# https://github.com/rakshasa/rtorrent/issues/1264
 	filter-lto
 
+	append-cxxflags -std=gnu++11 -w
+
 	# configure needs bash or script bombs out on some null shift, bug #291229
 	CONFIG_SHELL=${BASH} econf \
 		$(use_enable debug) \
